@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 20:47:33 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/10 10:23:44 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/10 10:48:55 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@ int	main(int ac, char **av, char **envp)
 {
 	char	*line;
 	char	**args;
-	t_env	*env; // ✅ use t_env *
+	t_env	*env; 
 
 	(void)ac;
 	(void)av;
-	env = copy_env(envp); // ✅ updated return type
+	env = copy_env(envp); 
 	while (1)
 	{
 		line = readline("minishell$ ");

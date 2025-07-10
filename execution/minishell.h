@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 09:32:14 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/10 10:33:29 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/10 13:54:53 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,8 @@ void	print_echo_args(char **args, int i);
 
 /* ================= Execution ================= */
 
-int		ft_execute_cmd(char **argv, char **envp); 	 // Note: still uses char **envp
+int		ft_execute_cmd(char **argv, char **envp);
+char 	*get_command_path(char *cmd, char **envp);
+
 
 #endif
