@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 09:32:14 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/04 23:16:09 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/04 20:15:55 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,7 @@ typedef struct s_cmd
 	int					fd_out;
 }						t_cmd;
 
-/* ============================ execution ============================ */
-
-/*  Builtin Function Prototypes  */
+/* ================= Builtin Function Prototypes ================= */
 
 int		ft_cd(char **args, char **env);             // change directory
 int		ft_pwd(void);                               // print working directory
@@ -80,7 +78,7 @@ int		ft_exit(char **args, int *exit_status);     // exit shell
 int		ft_unset(char **args, char **env);          // unset variables
 int		ft_export(char **args, char ***env);        // export variables
 
-/*  Env Management  */
+/* ================= Env Management ================= */
 
 char	**copy_env(char **envp);                             // duplicate environment
 int		update_env_var(char **env, char *key, char *value);   // update key=value
@@ -88,7 +86,7 @@ char	**realloc_env(char **env, char *new_var);            // reallocate env
 void	unset_env_var(char **env, char *key);                // remove key from env
 int		env_has_key(char **env, char *key);                  // check if key exists
 
-/* Export Helpers */
+/* ================= Export Helpers ================= */
 
 void	add_env(char ***env, char *key, char *value);        // add key=value
 void	replace_env(char ***env, char *key, char *value);    // replace or add key=value
@@ -98,7 +96,7 @@ void	print_export_env(char **env);                        // print as declare -x
 int		is_valid_key(char *key);                              // key format validation
 char	*create_env_var(const char *key, const char *value); // join key=value
 
-/*  Utility Functions  */
+/* ================= Utility Functions ================= */
 
 int		ft_strcmp(const char *s1, const char *s2);             // compare strings
 void	free_split(char **split);                            // free array of strings
@@ -107,13 +105,7 @@ int		ft_is_numeric(const char *str);                        // check if numeric
 void	print_echo_args(char **args, int i);                 // echo helper
 
 
-// int		ft_execute_cmd(char **argv, char **envp);
 
-
-/* ============================ parsing ============================ */
-
-
-
-
+int		ft_execute_cmd(char **argv, char **envp);
 
 #endif
