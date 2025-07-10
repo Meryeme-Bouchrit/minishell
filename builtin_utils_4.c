@@ -6,72 +6,54 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 12:31:51 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/04 13:05:19 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/10 09:15:34 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 // Returns the length of a NULL-terminated env array
-int env_len(char **envp)
+int	env_len(char **envp)
 {
-	int i;
+	int	i;
+
 	i = 0;
 	while (envp[i])
 		i++;
 	return (i);
 }
 
-// Duplicates a NULL-terminated env array in heap memory
-char **copy_env(char **envp)
+// Creates a t_env* linked list from a char **envp array
+t_env	*copy_env(char **envp)
 {
-	int i;
-	char **new_env;
-	int len;
+	t_env	*head;
+	t_env	*node;
+	char	*equal;
+	char	*key;
+	char	*value;
 
-	i = 0;
-	len = env_len(envp);
-	new_env = malloc(sizeof(char *) * (len + 1));
-	if (!new_env)
-		return (NULL);
-	while (envp[i])
+	head = NULL;
+	while (*envp)
 	{
-		new_env[i] = ft_strdup(envp[i]);
-		if (!new_env[i])
+		equal = ft_strchr(*envp, '=');
+		if (equal)
 		{
-			while (i-- > 0)
-				free(new_env[i]);
-			free(new_env);
-			return (NULL);
+			key = ft_substr(*envp, 0, equal - *envp);
+			value = ft_strdup(equal + 1);
 		}
-		i++;
+		else
+		{
+			key = ft_strdup(*envp);
+			value = NULL;
+		}
+		node = malloc(sizeof(t_env));
+		if (!node)
+			return (free_env_list(head), NULL);
+		node->key = key;
+		node->value = value;
+		node->next = NULL;
+		add_node_back(&head, node);
+		envp++;
 	}
-	new_env[i] = NULL;
-	return (new_env);
-}
-
-// Adds a new env var string to an existing env array
-char **realloc_env(char **env, char *new_var)
-{
-	int		i;
-	char	**new_env;
-
-	if (!env || !new_var)
-		return (NULL);
-	i = 0;
-	while (env[i])
-		i++;
-	new_env = malloc(sizeof(char *) * (i + 2));
-	if (!new_env)
-		return (NULL);
-	i = 0;
-	while (env[i])
-	{
-		new_env[i] = env[i];
-		i++;
-	}
-	new_env[i++] = new_var;
-	new_env[i] = NULL;
-	free(env);
-	return (new_env);
+	return (head);
 }

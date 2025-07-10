@@ -9,7 +9,8 @@ SRC = \
 	builtin_utils_3.c \
 	builtin_utils_4.c \
 	builtin_utils_5.c \
-	execution_1.c
+	execution_1.c \
+	env_list.c
 
 OBJ = $(SRC:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 12:16:14 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/04 13:05:06 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/10 10:18:31 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	ft_exit(char **args, int *exit_status)
 }
 
 // Removes each variable name passed in args from the environment
-int	ft_unset(char **args, char **env)
+int	ft_unset(char **args, t_env **env)
 {
 	int	j;
 
@@ -55,7 +55,7 @@ int	ft_unset(char **args, char **env)
 }
 
 // Adds or updates environment variables, or prints them sorted
-int	ft_export(char **args, char ***env)
+int	ft_export(char **args, t_env **env)
 {
 	int		i;
 	char	*key;

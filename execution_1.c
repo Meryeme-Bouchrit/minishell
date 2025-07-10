@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 16:52:12 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/04 20:21:14 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/10 10:33:56 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,19 +40,19 @@ int	ft_execute_cmd(char **argv, char **envp)
 
 // PATH=/usr/local/bin:/usr/bin:/bin
 
-char *get_command_path(char *cmd, char **envp)
-{
-	int i;
-	char *path_value;
+// char *get_command_path(char *cmd, char **envp)
+// {
+// 	int i;
+// 	char *path_value;
 
-	i = 0;
-	while(envp[i] != NULL)
-	{
-		if(strncmp(envp[i], "PATH=", 5) == 0)
-		{
-			path_value = envp[i] + 5;
-			ft_split(path_value, ':');
-		}
-		i++;
-	}
-}
+// 	i = 0;
+// 	while(envp[i] != NULL)
+// 	{
+// 		if(strncmp(envp[i], "PATH=", 5) == 0)
+// 		{
+// 			path_value = envp[i] + 5;
+// 			ft_split(path_value, ':');
+// 		}
+// 		i++;
+// 	}
+// }

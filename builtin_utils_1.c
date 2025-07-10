@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 19:24:24 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/04 13:05:09 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/10 09:12:57 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,28 +59,26 @@ int	ft_echo(char **args)
 	return (0);
 }
 
-
-// Removes the key from env if it exists, shifting the array
-void	unset_env_var(char **env, char *key)
+// Removes the key from env linked list if it exists
+void	unset_env_var(t_env **env, char *key)
 {
-	int	i = 0;
-	int	k;
-	int	len = ft_strlen(key);
+	t_env	*cur = *env;
+	t_env	*prev = NULL;
 
-	while (env[i])
+	while (cur)
 	{
-		if (!ft_strncmp(env[i], key, len) && env[i][len] == '=')
+		if (ft_strcmp(cur->key, key) == 0)
 		{
-			free(env[i]);
-			k = i;
-			while (env[k])
-			{
-				env[k] = env[k + 1];
-				k++;
-			}
-			break;
+			if (prev)
+				prev->next = cur->next;
+			else
+				*env = cur->next;
+			free(cur->key);
+			free(cur->value);
+			free(cur);
+			return;
 		}
-		i++;
+		prev = cur;
+		cur = cur->next;
 	}
 }
-
