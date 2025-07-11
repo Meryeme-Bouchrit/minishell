@@ -5,79 +5,99 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/21 12:35:07 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/10 09:14:53 by mbouchri         ###   ########.fr       */
+/*   Created: 2025/07/10 09:19:29 by mbouchri          #+#    #+#             */
+/*   Updated: 2025/07/11 18:45:20 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Prints environment variables in export format with quotes
-void	print_export_env(t_env *env)
-{
-	while (env)
-	{
-		write(1, "declare -x ", 11);
-		write(1, env->key, ft_strlen(env->key));
-		if (env->value)
-		{
-			write(1, "=\"", 2);
-			write(1, env->value, ft_strlen(env->value));
-			write(1, "\"", 1);
-		}
-		write(1, "\n", 1);
-		env = env->next;
-	}
-}
-
-// Verifies that a variable key name is valid (alphanum + underscore)
-int	is_valid_key(char *key)
-{
-	int	i;
-
-	if (!key || !key[0])
-		return (0);
-	if (!ft_isalpha(key[0]) && key[0] != '_')
-		return (0);
-	i = 1;
-	while (key[i])
-	{
-		if (!ft_isalnum(key[i]) && key[i] != '_')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-// Creates a new "key=value" string (used internally if needed)
-char	*create_env_var(const char *key, const char *value)
-{
-	char	*tmp;
-	char	*full;
-
-	tmp = ft_strjoin(key, "=");
-	if (!tmp)
-		return (NULL);
-	full = ft_strjoin(tmp, value);
-	free(tmp);
-	return (full);
-}
-
-// Sets or updates a key=value in the linked list environment
-void	set_env_var(t_env **env, const char *key, const char *value)
+// Add a node at the end of the env list
+void	add_node_back(t_env **env, t_env *new)
 {
 	t_env	*cur;
 
+	if (!*env)
+	{
+		*env = new;
+		return;
+	}
 	cur = *env;
+	while (cur->next)
+		cur = cur->next;
+	cur->next = new;
+}
+
+// Free entire env linked list
+void	free_env_list(t_env *env)
+{
+	t_env	*tmp;
+
+	while (env)
+	{
+		tmp = env->next;
+		free(env->key);
+		if (env->value)
+			free(env->value);
+		free(env);
+		env = tmp;
+	}
+}
+
+// Find node by key, return pointer or NULL if not found
+t_env	*find_env_node(t_env *env, const char *key)
+{
+	while (env)
+	{
+		if (ft_strcmp(env->key, key) == 0)
+			return (env);
+		env = env->next;
+	}
+	return (NULL);
+}
+
+// Removes the key from env linked list if it exists
+void	unset_env_var(t_env **env, char *key)
+{
+	t_env	*cur = *env;
+	t_env	*prev = NULL;
+
 	while (cur)
 	{
 		if (ft_strcmp(cur->key, key) == 0)
 		{
+			if (prev)
+				prev->next = cur->next;
+			else
+				*env = cur->next;
+			free(cur->key);
 			free(cur->value);
-			cur->value = ft_strdup(value);
+			free(cur);
 			return;
 		}
+		prev = cur;
 		cur = cur->next;
 	}
-	add_env(env, (char *)key, (char *)value);
+}
+
+// Adds a new key=value to the environment list
+void	add_env(t_env **env, char *key, char *value)
+{
+	t_env	*new;
+
+	new = malloc(sizeof(t_env));
+	if (!new)
+		return;
+	new->key = ft_strdup(key);
+	new->value = ft_strdup(value);
+	new->next = NULL;
+
+	if (!*env)
+	{
+		*env = new;
+		return;
+	}
+	while ((*env)->next)
+		env = &(*env)->next;
+	(*env)->next = new;
 }

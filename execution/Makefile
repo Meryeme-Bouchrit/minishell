@@ -4,13 +4,12 @@ SRC = \
 	main.c \
 	builtin_1.c \
 	builtin_2.c \
+	builtin_3.c \
 	builtin_utils_1.c \
 	builtin_utils_2.c \
 	builtin_utils_3.c \
 	builtin_utils_4.c \
-	builtin_utils_5.c \
-	execution_1.c \
-	env_list.c
+	execution_1.c 
 
 OBJ = $(SRC:.c=.o)
 
