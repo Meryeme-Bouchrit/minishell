@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:23:58 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/14 05:15:55 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/14 07:04:07 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ char	*ft_substr(const char *s, int start, int len)
 		i++;
 	}
 	sub[len] = '\0';
-	printf("Sub----%s---\n", sub);
 	return (sub);
 }
 

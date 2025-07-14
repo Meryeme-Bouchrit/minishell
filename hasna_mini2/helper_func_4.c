@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:04:18 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/14 06:15:58 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/14 07:04:22 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ void	free_token_list(t_token *list)
 {
 	t_token	*tmp;
 
-	printf("free token list ++++++++++++++++\n");
 	while (list)
 	{
 		tmp = list;
