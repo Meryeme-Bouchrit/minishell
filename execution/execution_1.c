@@ -6,34 +6,29 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 16:52:12 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/11 17:40:46 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/14 14:55:25 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_execute_cmd(char **argv, char **envp)
+int	ft_execute_cmd(t_cmd *cmd, char **envp)
 {
 	pid_t	pid;
 	int		status;
 	char	*cmd_path;
 
-	cmd_path = get_command_path(argv[0], envp);
-	if (cmd_path == NULL)
+	if (!cmd || !cmd->args || !cmd->args[0])
+		return (1);
+	cmd_path = get_command_path(cmd->args[0], envp);
+	if (!cmd_path)
 	{
 		perror("cmd");
 		return (127);
 	}
 	pid = fork();
 	if (pid == 0)
-	{
-		if (execve(cmd_path, argv, envp) == -1)
-		{
-			free(cmd_path);
-			perror("execve");
-			exit(1);
-		}
-	}
+		child_process(cmd, cmd_path, envp);
 	else if (pid > 0)
 	{
 		waitpid(pid, &status, 0);

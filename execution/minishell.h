@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 09:32:14 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/10 13:54:53 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/14 14:55:20 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,49 +32,30 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
-/* ================= REDIRECTION STRUCTS ================= */
+/* ================= STRUCTS ================= */
 
 typedef enum e_redirections
 {
-	REDIR_IN,     // <
-	REDIR_OUT,    // >
-	REDIR_APPEND, // >>
-	REDIR_HEREDOC // <<
-}	t_redirections;
+	T_REDIR_IN,
+	T_REDIR_OUT,
+	REDIR_APPEND,
+	REDIR_HEREDOC
+}						t_redirections;
 
 typedef struct s_in_out_fds
 {
 	t_redirections		type;
-	int					fd;
 	char				*filename;
-	char				*heredoc_delimiter;
-	bool				heredoc_quotes;
 	struct s_in_out_fds	*next;
-}	t_in_out_fds;
-
-/* ================= EXECUTION STRUCT ================= */
-
-typedef struct s_pipex
-{
-	int		fork_pid;
-	int		status;
-	char	*path;
-}	t_pipex;
+}						t_in_out_fds;
 
 typedef struct s_cmd
 {
-	char			*command;
-	char			**args;
-	bool			pipe_output;
-	t_in_out_fds	*io_fds;
-	t_pipex			*pipex;
-	struct s_cmd	*next;
-	struct s_cmd	*prev;
-
-	bool			is_builtin;
-	int				fd_in;
-	int				fd_out;
-}	t_cmd;
+	char				**args;
+	t_in_out_fds		*io_fds;
+	bool				pipe_output;
+	struct s_cmd		*next;
+}						t_cmd;
 
 /* ================= BUILTIN PROTOTYPES ================= */
 
@@ -119,7 +100,7 @@ void	print_echo_args(char **args, int i);
 
 /* ================= Execution ================= */
 
-int		ft_execute_cmd(char **argv, char **envp);
+int		ft_execute_cmd(t_cmd *cmd, char **envp);
 char 	*get_command_path(char *cmd, char **envp);
 
 
