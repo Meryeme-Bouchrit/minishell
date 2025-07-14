@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:24:44 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/14 02:28:41 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/14 05:20:03 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,11 +87,17 @@ int						token_list_size(t_token *list);
 
 ////////////////////helper_func_3.c///////////////
 void					add_token(t_token **head, char *val, t_token_type type);
-char					*substr(const char *s, int start, int len);
+char					*ft_substr(const char *s, int start, int len);
 t_token_type			get_type(char *s);
 t_token					*new_token(char *value, t_token_type type);
 int						is_special(char c);
 
-////////////////////////
+////////////////////////libft////////////////////////////////
+int		my_strcmp(const char *s1, const char *s2);
+int		ft_strncmp(const char *s1, const char *s2, size_t n);
+char	*ft_strdup(const char *s1);
+char    *ft_strncpy(char *dest, const char *src, size_t n);
+
+
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:23:58 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/14 02:24:03 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/14 05:15:55 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,25 +32,27 @@ t_token	*new_token(char *value, t_token_type type)
 
 t_token_type	get_type(char *s)
 {
-	if (strcmp(s, "|") == 0)
-		return (PIPE);
-	if (strcmp(s, "<") == 0)
-		return (REDIR_IN);
-	if (strcmp(s, ">") == 0)
-		return (REDIR_OUT);
-	if (strcmp(s, ">>") == 0)
-		return (APPEND);
-	if (strcmp(s, "<<") == 0)
-		return (HEREDOC);
-	return (WORD);
+	if (my_strcmp(s, "|") == 0)
+		return (free(s), PIPE);
+	if (my_strcmp(s, "<") == 0)
+		return (free(s), REDIR_IN);
+	if (my_strcmp(s, ">") == 0)
+		return (free(s), REDIR_OUT);
+	if (my_strcmp(s, ">>") == 0)
+		return (free(s), APPEND);
+	if (my_strcmp(s, "<<") == 0)
+		return (free(s), HEREDOC);
+	return (free(s), WORD);
 }
 
-char	*substr(const char *s, int start, int len)
+char	*ft_substr(const char *s, int start, int len)
 {
 	int		i;
 	char	*sub;
 
 	i = 0;
+	if (!s)
+		return (NULL);
 	sub = malloc(len + 1);
 	if (!sub)
 		return (NULL);
@@ -60,6 +62,7 @@ char	*substr(const char *s, int start, int len)
 		i++;
 	}
 	sub[len] = '\0';
+	printf("Sub----%s---\n", sub);
 	return (sub);
 }
 

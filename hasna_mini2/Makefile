@@ -5,8 +5,9 @@ RM = rm -f
 
 SRC = helper_func_1.c \
       helper_func_2.c \
-      helper_func_2_1.c \
       helper_func_3.c \
+      helper_func_4.c \
+      libft.c \
       main.c 
 OBJ = ${SRC:.c=.o}
 

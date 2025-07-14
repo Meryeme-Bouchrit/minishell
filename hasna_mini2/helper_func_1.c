@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 01:37:15 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/14 01:38:12 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/14 04:52:15 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	*extract_quoted(const char *str, int *i, char quote)
 		(*i)++;
 	len = *i - start - 1;
 	result = malloc(len + 1);
-	strncpy(result, str + start + 1, len);
+	ft_strncpy(result, str + start + 1, len);
 	result[len] = '\0';
 	if (str[*i] == quote)
 		(*i)++;
@@ -33,26 +33,26 @@ char	*extract_quoted(const char *str, int *i, char quote)
 
 bool	is_redirection(char *s)
 {
-	if (strcmp(s, "<") == 0)
+	if (my_strcmp(s, "<") == 0)
 		return (1);
-	if (strcmp(s, ">") == 0)
+	if (my_strcmp(s, ">") == 0)
 		return (1);
-	if (strcmp(s, ">>") == 0)
+	if (my_strcmp(s, ">>") == 0)
 		return (1);
-	if (strcmp(s, "<<") == 0)
+	if (my_strcmp(s, "<<") == 0)
 		return (1);
 	return (0);
 }
 
 t_redirections	get_redirect_type(char *s)
 {
-	if (strcmp(s, "<") == 0)
+	if (my_strcmp(s, "<") == 0)
 		return (T_REDIR_IN);
-	if (strcmp(s, ">") == 0)
+	if (my_strcmp(s, ">") == 0)
 		return (T_REDIR_OUT);
-	if (strcmp(s, ">>") == 0)
+	if (my_strcmp(s, ">>") == 0)
 		return (REDIR_APPEND);
-	if (strcmp(s, "<<") == 0)
+	if (my_strcmp(s, "<<") == 0)
 		return (REDIR_HEREDOC);
 	return (T_REDIR_IN);
 }

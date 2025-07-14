@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 01:50:36 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/14 02:41:11 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/14 06:45:15 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ t_token	*tokenize(const char *line)
 		{
 			if (line[i] == line[i + 1]) // >> or <<
 			{
-				add_token(&tokens, substr(line, i, 2), get_type(substr(line, i,
+				add_token(&tokens, ft_substr(line, i, 2), get_type(ft_substr(line, i,
 							2)));
 				i += 2;
 			}
 			else
 			{
-				add_token(&tokens, substr(line, i, 1), get_type(substr(line, i,
+				add_token(&tokens, ft_substr(line, i, 1), get_type(ft_substr(line, i,
 							1)));
 				i++;
 			}
@@ -47,7 +47,7 @@ t_token	*tokenize(const char *line)
 			while (line[i] && !isspace(line[i]) && !is_special(line[i])
 				&& line[i] != '\'' && line[i] != '"')
 				i++;
-			add_token(&tokens, substr(line, start, i - start), WORD);
+			add_token(&tokens, ft_substr(line, start, i - start), WORD);
 		}
 	}
 	return (tokens);
@@ -78,15 +78,15 @@ int	main(void)
 			break ;
 		}
 		tokens = tokenize(line);
-		//	print_tokens(tokens);
+		//print_tokens(tokens);
 		//  char *tokensi[] = {"echo", "hello world", ">", "out.txt", "|", "cat", "-n", NULL};
 		array = token_list_to_array(tokens);
 		cmds = parse_commands(array);
 		print_commands(cmds);
 		if (*line)
 			add_history(line);
-		//     printf("🧠 You said: %s\n", line);
 		free(line);
+		free_token_list(tokens);
 	}
 	return (0);
 }
