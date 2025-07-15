@@ -6,13 +6,15 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 09:32:14 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/14 14:55:20 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/15 16:43:46 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <readline/readline.h>
+# include <readline/history.h>
 # include "libft/libft.h"
 # include <fcntl.h>
 # include <stdbool.h>
@@ -22,6 +24,7 @@
 # include <string.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <unistd.h>          
 
 /* ================= ENVIRONMENT STRUCT ================= */
 
@@ -102,6 +105,7 @@ void	print_echo_args(char **args, int i);
 
 int		ft_execute_cmd(t_cmd *cmd, char **envp);
 char 	*get_command_path(char *cmd, char **envp);
+void	child_process(t_cmd *cmd, char *cmd_path, char **envp);
 
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 16:52:12 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/14 14:55:25 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/15 16:24:45 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,4 +85,91 @@ char	*get_command_path(char *cmd, char **envp)
 	}
 	free_split(paths);
 	return (NULL);
+}
+
+void	child_process(t_cmd *cmd, char *cmd_path, char **envp)
+{
+	t_in_out_fds *redir;
+	int fd;
+	int pipe_fd[2];
+	char *line;
+
+	redir = cmd->io_fds;
+	while (redir)
+	{
+		if (redir->type == T_REDIR_IN)
+		{
+			fd = open(redir->filename, O_RDONLY);
+			if (fd == -1)
+			{
+				perror("open");
+				exit(1);
+			}
+			if (dup2(fd, 0) == -1)
+			{
+				perror("dup2");
+				close(fd);
+				exit(1);
+			}
+			close(fd);
+		}
+		else if (redir->type == T_REDIR_OUT)
+		{
+			fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			if (fd == -1)
+			{
+				perror("open");
+				exit(1);
+			}
+			if (dup2(fd, 1) == -1)
+			{
+				perror("dup2");
+				close(fd);
+				exit(1);
+			}
+			close(fd);
+		}
+		else if (redir->type == REDIR_APPEND)
+		{
+			fd = open(redir->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			if (fd == -1)
+			{
+				perror("open");
+				exit(1);
+			}
+			if (dup2(fd, 1) == -1)
+			{
+				perror("dup2");
+				close(fd);
+				exit(1);
+			}
+			close(fd);
+		}
+		else if (redir->type == REDIR_HEREDOC)
+		{
+			pipe(pipe_fd);
+			while (1)
+			{
+				line = readline("> ");
+				if (!line || ft_strcmp(line, redir->filename) == 0)
+					break;
+				write(pipe_fd[1], line, ft_strlen(line));
+				write(pipe_fd[1], "\n", 1);
+				free(line);
+			}
+			free(line);
+			close(pipe_fd[1]);
+			if (dup2(pipe_fd[0], 0) == -1)
+			{
+				perror("dup2");
+				close(pipe_fd[0]);
+				exit(1);
+			}
+			close(pipe_fd[0]);
+		}
+		redir = redir->next;
+	}
+	execve(cmd_path, cmd->args, envp);
+	perror("execve");
+	exit(127);
 }
