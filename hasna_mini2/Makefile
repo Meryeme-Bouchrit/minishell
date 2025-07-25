@@ -1,14 +1,16 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror 
 RM = rm -f
 
-SRC = helper_func_1.c \
-      helper_func_2.c \
-      helper_func_3.c \
-      helper_func_4.c \
+SRC = a_get_type.c \
+      array_to_tokens.c \
+      libft2.c \
+      a_token_list.c \
       libft.c \
-      main.c 
+      a_utils_1.c \
+      main.c
+
 OBJ = ${SRC:.c=.o}
 
 all: ${NAME}
@@ -16,13 +18,13 @@ all: ${NAME}
 ${NAME}: ${OBJ}
 	${CC} ${CFLAGS} ${OBJ} -lreadline -o ${NAME}
 
-clean:
+clean :
 	${RM} ${OBJ}
 
-fclean: clean
+fclean : clean
 	${RM} ${NAME}
 
-re: fclean all
+re : fclean all
 
-.PHONY: all clean fclean re
+.PHONY : all clean fclean re
 .SECONDARY:
