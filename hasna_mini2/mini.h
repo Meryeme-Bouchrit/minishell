@@ -20,7 +20,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
-# include "libft_/libft.h"
+# include "libft/libft.h"
 
 typedef enum e_token_type
 {
