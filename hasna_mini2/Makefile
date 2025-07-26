@@ -17,15 +17,15 @@ OBJ = ${SRC:.c=.o}
 all: ${NAME}
 
 ${NAME}: ${OBJ}
-	@make -C libft
+	@make -C libft_
 	@${CC} ${CFLAGS} ${OBJ} -Llibft -lft -lreadline -o ${NAME}
 
 clean :
-	@make clean -C libft
+	@make clean -C libft_
 	@${RM} ${OBJ}
 
 fclean : clean
-	@make fclean -C libft
+	@make fclean -C libft_
 	@${RM} ${NAME}
 
 re : fclean all
