@@ -20,6 +20,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
+# include "libft/libft.h"
 
 typedef enum e_token_type
 {
@@ -88,7 +89,7 @@ int						token_list_size(t_token *list);
 
 ////////////////////helper_func_3.c///////////////
 void					add_token(t_token **head, char *val, t_token_type type);
-char					*ft_substr(const char *s, int start, int len);
+//char					*ft_substr(const char *s, int start, int len);
 t_token_type			get_type(char *s);
 t_token					*new_token(char *value, t_token_type type);
 int						is_special(char c);

@@ -40,15 +40,13 @@ t_token	*tokenize(const char *line)
 		}
 		else if (line[i] == '\'' || line[i] == '"')
 		{
-			printf("found a q\n");
 			quoted_str = extract_quoted(line, &i, line[i]);
 			if (quoted_str && quoted_str[0] != '\0')
 			{
-				printf("entred if result\n");
-				add_token(&tokens, quoted_str, WORD);
-			//	char *expanded = expand_if_needed(quoted_str, line[i]);
-			//	add_token(&tokens, expanded, WORD);
-			//	free(quoted_str);
+			//	add_token(&tokens, quoted_str, WORD);
+				char *expanded = expand_if_needed(quoted_str, line[i]);
+				add_token(&tokens, expanded, WORD);
+				free(quoted_str);
 
 			}
 			else
@@ -60,11 +58,11 @@ t_token	*tokenize(const char *line)
 			while (line[i] && !ft_isspace(line[i]) && !is_special(line[i])
 				&& line[i] != '\'' && line[i] != '"')
 				i++;
-			add_token(&tokens, ft_substr(line, start, i - start), WORD);
-		//	char *raw = ft_substr(line, start, i - start);
-		//	char *expanded = expand_if_needed(raw, 0);
-		//	add_token(&tokens, expanded, WORD);
-		//	free(raw);
+		//	add_token(&tokens, ft_substr(line, start, i - start), WORD);
+			char *raw = ft_substr(line, start, i - start);
+			char *expanded = expand_if_needed(raw, 0);
+			add_token(&tokens, expanded, WORD);
+			free(raw);
 		}
 	}
 	return (tokens);

@@ -9,6 +9,7 @@ SRC = a_get_type.c \
       a_token_list.c \
       libft.c \
       a_utils_1.c \
+      expansion.c \
       main.c
 
 OBJ = ${SRC:.c=.o}
@@ -16,13 +17,16 @@ OBJ = ${SRC:.c=.o}
 all: ${NAME}
 
 ${NAME}: ${OBJ}
-	${CC} ${CFLAGS} ${OBJ} -lreadline -o ${NAME}
+	@make -C libft
+	@${CC} ${CFLAGS} ${OBJ} -Llibft -lft -lreadline -o ${NAME}
 
 clean :
-	${RM} ${OBJ}
+	@make clean -C libft
+	@${RM} ${OBJ}
 
 fclean : clean
-	${RM} ${NAME}
+	@make fclean -C libft
+	@${RM} ${NAME}
 
 re : fclean all
 

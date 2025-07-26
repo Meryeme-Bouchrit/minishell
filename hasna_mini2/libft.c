@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "mini.h"
-
+/*
 size_t	ft_strlen(const char *s)
 {
 	size_t	i;
@@ -58,7 +58,7 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	}
 	return (0);
 }
-
+*/
 int	my_strcmp(const char *s1, const char *s2)
 {
 	size_t			i;

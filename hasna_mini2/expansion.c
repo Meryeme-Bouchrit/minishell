@@ -39,7 +39,7 @@ char	*expand_if_needed(char *token_value, char quote_type)
 		{
 			ptr++;
 			tmp = expand_dollar(ptr);
-			result = ft_strjoin_free(result, tmp); // You can define this helper to join + free
+			result = ft_strjoin(result, tmp); // You can define this helper to join + free
 			while (*ptr && (ft_isalnum(*ptr) || *ptr == '_'))
 				ptr++;
 		}
@@ -54,7 +54,7 @@ char	*expand_if_needed(char *token_value, char quote_type)
 	}
 	return (result);
 }
-
+/*
 void    shell_expansion()
 {
     if (double_quoted or no quotes)
@@ -66,3 +66,19 @@ void    shell_expansion()
         dont_expand();
     }
 }
+
+make
+cc -Wall -Wextra -Werror    -c -o expansion.o expansion.c
+expansion.c: In function ‘expand_if_needed’:
+expansion.c:42:34: error: implicit declaration of function ‘ft_strjoin_free’; did you mean ‘ft_strjoin’? [-Werror=implicit-function-declaration]
+   42 |                         result = ft_strjoin_free(result, tmp); // You can define this helper to join + free
+      |                                  ^~~~~~~~~~~~~~~
+      |                                  ft_strjoin
+expansion.c:42:32: error: assignment to ‘char *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
+   42 |                         result = ft_strjoin_free(result, tmp); // You can define this helper to join + free
+      |                                ^
+cc1: all warnings being treated as errors
+make: *** [<builtin>: expansion.o] Error 1
+
+
+*/

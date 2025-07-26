@@ -46,7 +46,7 @@ t_token_type	get_type(char *s)
 		return (free(s), HEREDOC);
 	return (free(s), WORD);
 }
-*/
+
 char	*ft_substr(const char *s, int start, int len)
 {
 	int		i;
@@ -66,7 +66,7 @@ char	*ft_substr(const char *s, int start, int len)
 	sub[len] = '\0';
 	return (sub);
 }
-/*
+
 void	add_token(t_token **head, char *val, t_token_type type)
 {
 	t_token	*new;

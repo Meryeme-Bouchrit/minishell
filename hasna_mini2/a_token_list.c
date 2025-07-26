@@ -47,7 +47,6 @@ void	secnd_free_token_list(t_token **list)
 {
 	t_token	*tmp;
 
-	printf("hi i'm secnd free token list..................\n\n");
 	if (!list || !*list)
 		return ;
 	while (*list)
@@ -64,7 +63,6 @@ void	free_token_list(t_token *list)
 {
 	t_token	*tmp;
 
-	printf("hi i'm first free token list.....................\n\n");
 	while (list)
 	{
 		tmp = list;
