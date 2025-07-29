@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   array_to_tokens.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:04:44 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/25 07:57:47 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/27 10:13:01 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini.h"
+#include "parsing.h"
 
 void	handle_pipe(t_cmd **head, t_cmd **current, t_token **temp_args)
 {

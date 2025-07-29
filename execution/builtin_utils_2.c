@@ -6,11 +6,11 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 12:22:14 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/11 18:44:39 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/29 12:03:44 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "execution.h"
 
 // Splits "key=value" into separate key and value strings
 void	parse_export_arg(char *arg, char **key, char **value)

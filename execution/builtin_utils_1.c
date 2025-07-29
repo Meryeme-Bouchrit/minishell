@@ -6,11 +6,11 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 19:24:24 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/11 18:44:00 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/27 09:32:32 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "execution.h"
 
 // Creates a t_env* linked list from a char **envp array
 t_env	*copy_env(char **envp)

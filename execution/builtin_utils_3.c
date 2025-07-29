@@ -6,11 +6,11 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 09:19:29 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/11 18:45:20 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/29 12:11:48 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "execution.h"
 
 // Add a node at the end of the env list
 void	add_node_back(t_env **env, t_env *new)
@@ -81,23 +81,28 @@ void	unset_env_var(t_env **env, char *key)
 }
 
 // Adds a new key=value to the environment list
-void	add_env(t_env **env, char *key, char *value)
+void add_env(t_env **env, char *key, char *value)
 {
-	t_env	*new;
+    t_env *new;
+    t_env *cur;
 
-	new = malloc(sizeof(t_env));
-	if (!new)
-		return;
-	new->key = ft_strdup(key);
-	new->value = ft_strdup(value);
-	new->next = NULL;
+    new = malloc(sizeof(t_env));
+    if (!new)
+        return;
+    new->key = ft_strdup(key);
+    new->value = ft_strdup(value);
+    new->next = NULL;
 
-	if (!*env)
-	{
-		*env = new;
-		return;
-	}
-	while ((*env)->next)
-		env = &(*env)->next;
-	(*env)->next = new;
+    if (!*env)
+    {
+        *env = new;
+        return;
+    }
+    cur = *env;
+    while (cur->next)
+        cur = cur->next;
+    cur->next = new;
 }
+
+
+

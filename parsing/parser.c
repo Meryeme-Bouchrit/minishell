@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 01:50:36 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/25 23:09:56 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/27 10:13:23 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini.h"
+#include "parsing.h"
 
 t_token	*tokenize(const char *line)
 {
@@ -108,28 +108,28 @@ void	free_cmds(t_cmd **cmds)
 	}
 }
 
-int	main(void)
-{
-	char	*line;
-	t_token	*tokens;
-	t_cmd	*cmds;
+// int	main(void)
+// {
+// 	char	*line;
+// 	t_token	*tokens;
+// 	t_cmd	*cmds;
 
-	while (1)
-	{
-		line = readline("🐚 minishell$ ");
-		if (!line)
-		{
-			printf("Goodbye!\n");
-			break ;
-		}
-		tokens = tokenize(line);
-		cmds = parse_commands(tokens);
-		print_commands(cmds);
-		if (*line)
-			add_history(line);
-		free(line);
-		free_token_list(tokens);
-		free_cmds(&cmds);
-	}
-	return (0);
-}
+// 	while (1)
+// 	{
+// 		line = readline("🐚 minishell$ ");
+// 		if (!line)
+// 		{
+// 			printf("Goodbye!\n");
+// 			break ;
+// 		}
+// 		tokens = tokenize(line);
+// 		cmds = parse_commands(tokens);
+// 		print_commands(cmds);
+// 		if (*line)
+// 			add_history(line);
+// 		free(line);
+// 		free_token_list(tokens);
+// 		free_cmds(&cmds);
+// 	}
+// 	return (0);
+// }

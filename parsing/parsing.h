@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   mini.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:24:44 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/25 23:06:56 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/27 10:13:41 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINI_H
-# define MINI_H
+#ifndef PARSING_H
+# define PARSING_H
 
 # include <ctype.h>
 # include <readline/history.h>
@@ -21,6 +21,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include "libft/libft.h"
+# include "minishell.h" // ✅ Shared structs
 
 typedef enum e_token_type
 {
@@ -30,55 +31,28 @@ typedef enum e_token_type
 	REDIR_OUT,
 	APPEND,
 	HEREDOC
-}						t_token_type;
+}	t_token_type;
 
 typedef struct s_token
 {
-	char				*value;
-	t_token_type		type;
-	bool				freed;
-	struct s_token		*next;
-}						t_token;
-
-///////////////////////////cmd////////////////////
-
-typedef enum e_redirections
-{
-	T_REDIR_IN,
-	T_REDIR_OUT,
-	REDIR_APPEND,
-	REDIR_HEREDOC
-}						t_redirections;
-
-typedef struct s_in_out_fds
-{
-	t_redirections		type;
-	char				*filename;
-	struct s_in_out_fds	*next;
-}						t_in_out_fds;
-
-typedef struct s_cmd
-{
-	char				**args;
-	t_in_out_fds		*io_fds;
-	bool				pipe_output;
-	struct s_cmd		*next;
-}						t_cmd;
+	char			*value;
+	t_token_type	type;
+	bool			freed;
+	struct s_token	*next;
+}	t_token;
 
 //////////////////////helper_func_1.c///////////////////////////////
 char					*extract_quoted(const char *str, int *i, char quote);
 
 ////////////////////helper_func_2.c//////////////////
 void					print_commands(t_cmd *cmds);
-// t_cmd					*parse_commands(char **tokens);
 int						token_list_size(t_token *list);
 char					**token_list_to_array(t_token *list);
-// void add_token(t_token **list, const char *val);
-// t_token *new_token(const char *val);
 void					add_token(t_token **head, char *val, t_token_type type);
 
 bool					is_redirection(char *s);
 t_redirections			get_redirect_type(char *s);
+
 //////////////////////helper_func_2_1.c////////////////////////////
 void					add_redirection(t_cmd *cmd, t_redirections type,
 							const char *filename);
@@ -89,7 +63,6 @@ int						token_list_size(t_token *list);
 
 ////////////////////helper_func_3.c///////////////
 void					add_token(t_token **head, char *val, t_token_type type);
-//char					*ft_substr(const char *s, int start, int len);
 t_token_type			get_type(char *s);
 t_token					*new_token(char *value, t_token_type type);
 int						is_special(char c);
@@ -105,8 +78,11 @@ int						ft_isspace(char c);
 t_cmd					*parse_commands(t_token *token);
 void					secnd_free_token_list(t_token **list);
 
+/* ===== Added prototypes needed by main.c ===== */
+t_token					*tokenize(const char *line);
+void					free_cmds(t_cmd **cmds);
+
 char    *expand_if_needed(char *token_value, char quote_type);
 char    *expand_dollar(const char *str);
-
 
 #endif

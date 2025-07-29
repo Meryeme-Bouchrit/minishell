@@ -6,11 +6,11 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 18:00:49 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/11 18:45:54 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/27 09:32:47 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "execution.h"
 
 // Returns the length of a NULL-terminated env array
 int	env_len(char **envp)

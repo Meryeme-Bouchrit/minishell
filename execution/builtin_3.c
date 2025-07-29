@@ -6,23 +6,11 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 18:06:32 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/11 18:07:46 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/29 11:45:13 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-
-// Prints echo arguments starting from index i, space-separated
-void	print_echo_args(char **args, int i)
-{
-	while (args[i])
-	{
-		write(1, args[i], ft_strlen(args[i]));
-		if (args[i + 1])
-			write(1, " ", 1);
-		i++;
-	}
-}
+#include "execution.h"
 
 // Handles echo builtin with support for -n flag (no newline)
 int	ft_echo(char **args)
@@ -43,8 +31,15 @@ int	ft_echo(char **args)
 		newline = 0;
 		i++;
 	}
-	print_echo_args(args, i);
+	while (args[i])
+	{
+		write(1, args[i], ft_strlen(args[i]));
+		if (args[i + 1])
+			write(1, " ", 1);
+		i++;
+	}
 	if (newline)
 		write(1, "\n", 1);
 	return (0);
 }
+

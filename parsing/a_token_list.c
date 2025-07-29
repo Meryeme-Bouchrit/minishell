@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   a_token_list.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:04:18 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/25 07:47:48 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/27 10:12:55 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini.h"
+#include "parsing.h"
 
 int	token_list_size(t_token *list)
 {

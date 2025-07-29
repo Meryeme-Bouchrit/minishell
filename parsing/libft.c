@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   libft.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 04:54:02 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/14 05:20:51 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/27 10:13:14 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini.h"
+#include "parsing.h"
 /*
 size_t	ft_strlen(const char *s)
 {

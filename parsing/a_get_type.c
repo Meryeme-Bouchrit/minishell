@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper_func_1.c                                    :+:      :+:    :+:   */
+/*   a_get_type.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 01:37:15 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/14 09:27:28 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/27 10:12:51 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "mini.h"
+#include "parsing.h"
 
 /*
 char	*extract_quoted(const char *str, int *i, char quote)

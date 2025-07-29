@@ -6,11 +6,11 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 20:31:35 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/11 18:07:02 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/29 11:52:00 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "execution.h"
 
 // Changes the current working directory and updates PWD and OLDPWD
 int	ft_cd(char **args, t_env **env)
@@ -19,26 +19,50 @@ int	ft_cd(char **args, t_env **env)
 	char	*new_directory;
 	char	*path;
 
-	if (!args[1])
-		return (write(2, "cd: missing argument\n", 22), 1);
-	path = ft_remove_quotes(args[1]);
-	if (!path)
+	if (args[1] && args[2])
+	{
+		write(2, "minishell: cd: too many arguments\n", 34);
 		return (1);
+	}
+	path = args[1];
+	if (!path)
+		path = get_env_value(*env, "HOME");
+	if (!path)
+	{
+		write(2, "minishell: cd: HOME not set\n", 29);
+		return (1);
+	}
 	old_directory = getcwd(NULL, 0);
 	if (!old_directory)
-		return (perror("cd: getcwd"), free(path), 1);
+	{
+		perror("minishell: cd");
+		return (1);
+	}
 	if (chdir(path) != 0)
-		return (perror("cd"), free(old_directory), free(path), 1);
+	{
+		write(2, "minishell: cd: ", 16);
+		write(2, path, ft_strlen(path));
+		write(2, ": ", 2);
+		perror("");
+		free(old_directory);
+		return (1);
+	}
 	new_directory = getcwd(NULL, 0);
 	if (!new_directory)
-		return (perror("cd: getcwd"), free(old_directory), free(path), 1);
+	{
+		perror("minishell: cd");
+		free(old_directory);
+		return (1);
+	}
 	set_env_var(env, "OLDPWD", old_directory);
 	set_env_var(env, "PWD", new_directory);
 	free(old_directory);
 	free(new_directory);
-	free(path);
 	return (0);
 }
+
+
+
 
 // Prints the current working directory to stdout
 int	ft_pwd(void)
@@ -47,12 +71,16 @@ int	ft_pwd(void)
 
 	dir = getcwd(NULL, 0);
 	if (!dir)
-		return (perror("pwd"), 1);
+	{
+		perror("pwd");
+		return (1);
+	}
 	write(1, dir, ft_strlen(dir));
 	write(1, "\n", 1);
 	free(dir);
 	return (0);
 }
+
 
 // Displays all environment variables that have a value
 int	ft_env(t_env *env)
@@ -70,3 +98,4 @@ int	ft_env(t_env *env)
 	}
 	return (0);
 }
+
