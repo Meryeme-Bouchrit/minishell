@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:41:18 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/29 12:14:19 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/30 13:19:04 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int main(int argc, char **argv, char **envp)
         else
         {
             add_history(line);
-            tokens = tokenize(line);
+            tokens = make_tokens(line);
             cmds = parse_commands(tokens);
             if (cmds && cmds->args && cmds->args[0])
             {

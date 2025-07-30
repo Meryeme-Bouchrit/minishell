@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 05:57:10 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/27 10:04:18 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/30 13:14:16 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 # include <sys/wait.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include "libft/libft.h"
+# include "../libft/libft.h"
 # include "minishell.h" // ✅ Shared structs
 
 typedef struct s_env

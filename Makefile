@@ -27,34 +27,33 @@ SRC = 		\
 			parsing/libft.c \
 			parsing/a_utils_1.c \
 			parsing/expansion.c \
+			parsing/correct_token.c \
+			parsing/continue.c \
+			parsing/my_strjoin.c \
 			main.c
 
 OBJ			= $(SRC:.c=.o)
 
-INCLUDES	= -I. -I$(EXEC_DIR) -I$(EXEC_DIR)/libft -I$(PARSING_DIR) -I$(PARSING_DIR)/libft
+INCLUDES	= -I. -I$(EXEC_DIR) -Ilibft -I$(PARSING_DIR)
 
-LIBFT_EXEC	= $(EXEC_DIR)/libft/libft.a
-LIBFT_PARSE	= $(PARSING_DIR)/libft/libft.a
+LIBFT	= libft/libft.a
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@make -C $(EXEC_DIR)/libft
-	@make -C $(PARSING_DIR)/libft
-	$(CC) $(CFLAGS) $(OBJ) $(LIBFT_EXEC) $(LIBFT_PARSE) $(LDFLAGS) -o $(NAME)
+	@make -C libft
+	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(LDFLAGS) -o $(NAME)
 
 %.o: %.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
 	$(RM) $(OBJ)
-	@make -C $(EXEC_DIR)/libft clean
-	@make -C $(PARSING_DIR)/libft clean
+	@make -C libft clean
 
 fclean: clean
 	$(RM) $(NAME)
-	@make -C $(EXEC_DIR)/libft fclean
-	@make -C $(PARSING_DIR)/libft fclean
+	@make -C libft fclean
 
 re: fclean all
 

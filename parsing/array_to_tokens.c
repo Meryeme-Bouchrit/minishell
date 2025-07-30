@@ -37,13 +37,13 @@ t_cmd	*parse_commands(t_token *tokens)
 	t_cmd	*head;
 	t_cmd	*current;
 	t_token	*temp_args;
-//	int		i;
 	t_cmd	*tmp;
 
+	//	int		i;
 	head = NULL;
 	current = new_cmd();
 	temp_args = NULL;
-//	i = 0;
+	//	i = 0;
 	while (tokens)
 	{
 		if (my_strcmp(tokens->value, "|") == 0)

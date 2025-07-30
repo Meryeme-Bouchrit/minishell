@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   my_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zhassna <zhassna@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 22:47:00 by zhassna           #+#    #+#             */
-/*   Updated: 2024/11/20 01:09:58 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/28 17:57:23 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "parsing.h"
 
 static char	*join_str(char const *s1, char const *s2, char *str)
 {
@@ -39,7 +39,7 @@ static char	*join_str(char const *s1, char const *s2, char *str)
 	return (str);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*my_strjoin(char const *s1, char const *s2)
 {
 	size_t	s1len;
 	size_t	s2len;
