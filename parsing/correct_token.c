@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 10:05:47 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/31 10:19:25 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/31 12:21:36 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ t_token	*make_tokens(const char *line)
 	{
 		while (ft_isspace(line[i]))
 			i++;
-		if (is_special(line[i]))
+		if (is_special(line[i]) && line[i])
 		{
 			if ((line[i] == '<' && line[i + 1] == '<')
 				|| (line[i] == '>' && line[i + 1] == '>'))
@@ -60,11 +60,14 @@ t_token	*make_tokens(const char *line)
 				token_value = ft_substr(line, i, 1);
 			i++;
 		}
-		else
+		else 
+		{	if (!line[i])
+				break;
 			token_value = token_next_string(line, &i);
-		if (!token_value || token_value[0] == '\0')
-			break ;
-		add_token(&tokens, ft_strdup(token_value), get_type(token_value));
+		}
+		if (token_value)
+			add_token(&tokens, ft_strdup(token_value), get_type(token_value));
+		token_value = NULL;
 	}
 	return (tokens);
 }

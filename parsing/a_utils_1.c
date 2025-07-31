@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 08:53:30 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/27 10:12:59 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/31 12:25:25 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,22 +53,6 @@ void	add_token(t_token **head, char *val, t_token_type type)
 	}
 }
 
-/*
-t_token_type	get_type(char *s)
-{
-		if (my_strcmp(s, "|") == 0)
-				return (free(s), PIPE);
-		if (my_strcmp(s, "<") == 0)
-				return (free(s), REDIR_IN);
-		if (my_strcmp(s, ">") == 0)
-				return (free(s), REDIR_OUT);
-		if (my_strcmp(s, ">>") == 0)
-				return (free(s), APPEND);
-		if (my_strcmp(s, "<<") == 0)
-				return (free(s), HEREDOC);
-		return (free(s), WORD);
-}
-*/
 char	*extract_quoted(const char *str, int *i, char quote)
 {
 	int		start;

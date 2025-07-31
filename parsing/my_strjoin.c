@@ -6,7 +6,7 @@
 /*   By: zhassna <zhassna@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 22:47:00 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/28 17:57:23 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/31 12:14:50 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static char	*join_str(char const *s1, char const *s2, char *str)
 	return (str);
 }
 
-char	*my_strjoin(char const *s1, char const *s2)
+char	*my_strjoin(char *s1, char *s2)
 {
 	size_t	s1len;
 	size_t	s2len;
@@ -57,5 +57,9 @@ char	*my_strjoin(char const *s1, char const *s2)
 	if (!str)
 		return (NULL);
 	str = join_str(s1, s2, str);
+	if (s1)
+		free(s1);
+	if (s2)
+		free(s2);
 	return (str);
 }

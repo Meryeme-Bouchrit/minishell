@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:24:44 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/28 17:54:01 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/31 12:15:56 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,6 @@ char				*grep_sq(int end, int *start, const char *line);
 char				*grep_no_quotes(int end, int *start, const char *line);
 int					end_len(const char *line, int i);
 
-char				*my_strjoin(char const *s1, char const *s2);
+char				*my_strjoin(char *s1, char *s2);
 
 #endif

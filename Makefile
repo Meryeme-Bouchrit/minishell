@@ -22,7 +22,6 @@ SRC = 		\
 			parsing/parser.c \
 			parsing/a_get_type.c \
 			parsing/array_to_tokens.c \
-			parsing/libft2.c \
 			parsing/a_token_list.c \
 			parsing/libft.c \
 			parsing/a_utils_1.c \

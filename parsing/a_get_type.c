@@ -3,35 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   a_get_type.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/14 01:37:15 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/27 10:12:51 by mbouchri         ###   ########.fr       */
+/*   Created: 2025/07/31 12:24:13 by zhassna           #+#    #+#             */
+/*   Updated: 2025/07/31 12:24:17 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
-
-/*
-char	*extract_quoted(const char *str, int *i, char quote)
-{
-	int		start;
-	int		len;
-	char	*result;
-
-	start = *i;
-	(*i)++;
-	while (str[*i] && str[*i] != quote)
-		(*i)++;
-	len = *i - start - 1;
-	result = malloc(len + 1);
-	ft_strncpy(result, str + start + 1, len);
-	result[len] = '\0';
-	if (str[*i] == quote)
-		(*i)++;
-	return (result);
-}
-*/
 
 t_token_type	get_type(char *s)
 {

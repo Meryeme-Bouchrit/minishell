@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:04:44 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/27 10:13:01 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/07/31 12:24:36 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,9 @@ t_cmd	*parse_commands(t_token *tokens)
 	t_token	*temp_args;
 	t_cmd	*tmp;
 
-	//	int		i;
 	head = NULL;
 	current = new_cmd();
 	temp_args = NULL;
-	//	i = 0;
 	while (tokens)
 	{
 		if (my_strcmp(tokens->value, "|") == 0)
