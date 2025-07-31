@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 10:05:47 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/31 12:21:36 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/31 14:59:55 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,9 @@ t_token	*make_tokens(const char *line)
 				break;
 			token_value = token_next_string(line, &i);
 		}
-		if (token_value)
-			add_token(&tokens, ft_strdup(token_value), get_type(token_value));
+		if (!token_value)
+			return (NULL);
+		add_token(&tokens, ft_strdup(token_value), get_type(token_value));
 		token_value = NULL;
 	}
 	return (tokens);

@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:27:51 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/31 12:27:53 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/31 13:02:58 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,18 @@
 char	*expand_dollar(const char *str)
 {
 	int		i;
-	char	var[256];
+	//char	var[256];
+	char	*var;
 	char	*value;
 	char	*result;
 	int		vlen;
 
 	i = 0;
 	vlen = 0;
+	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
+		i++;
+	var = malloc(sizeof(char) * i + 1);
+	i = 0;
 	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
 		var[vlen++] = str[i++];
 	var[vlen] = '\0';
@@ -30,6 +35,7 @@ char	*expand_dollar(const char *str)
 		value = ""; // if var doesn't exist
 	// join value + rest of string after var
 	result = ft_strdup(value);
+	free(var);
 	return (result);
 }
 
