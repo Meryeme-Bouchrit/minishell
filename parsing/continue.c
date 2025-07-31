@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   continue_p.c                                       :+:      :+:    :+:   */
+/*   continue.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 13:48:26 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/28 19:46:54 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/31 10:19:59 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ char	*grep_dq(int end, int *start, const char *line)
 			(*start)++;
 		result = my_strjoin(result, ft_substr(line, j, (*start) - j));
 	}
+	(*start)++;
 	return (result);
 }
 

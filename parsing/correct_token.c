@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   correct_tokenp.c                                   :+:      :+:    :+:   */
+/*   correct_token.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 10:05:47 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/28 19:03:59 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/31 10:19:25 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,7 @@ char	*token_next_string(const char *line, int *i)
 	while (start < end)
 	{
 		if (line[start] == '\"')
-		{
 			result = my_strjoin(result, grep_dq(end, &start, line));
-			start++;
-		}
 		else if (line[start] == '\'')
 			result = my_strjoin(result, grep_sq(end, &start, line));
 		else
@@ -56,18 +53,17 @@ t_token	*make_tokens(const char *line)
 			i++;
 		if (is_special(line[i]))
 		{
-			if (line[i] == line[i + 1])
+			if ((line[i] == '<' && line[i + 1] == '<')
+				|| (line[i] == '>' && line[i + 1] == '>'))
 				token_value = ft_substr(line, i++, 2);
 			else
 				token_value = ft_substr(line, i, 1);
 			i++;
 		}
 		else
-		{
 			token_value = token_next_string(line, &i);
-			if (!token_value)
-				break ;
-		}
+		if (!token_value || token_value[0] == '\0')
+			break ;
 		add_token(&tokens, ft_strdup(token_value), get_type(token_value));
 	}
 	return (tokens);
