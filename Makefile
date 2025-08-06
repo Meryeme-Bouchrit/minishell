@@ -20,11 +20,11 @@ SRC = 		\
 			execution/builtin_utils_3.c \
 			execution/builtin_utils_4.c \
 			parsing/parser.c \
-			parsing/a_get_type.c \
+			parsing/get_type.c \
 			parsing/array_to_tokens.c \
-			parsing/a_token_list.c \
+			parsing/token_list.c \
 			parsing/libft.c \
-			parsing/a_utils_1.c \
+			parsing/utils.c \
 			parsing/expansion.c \
 			parsing/correct_token.c \
 			parsing/continue.c \
