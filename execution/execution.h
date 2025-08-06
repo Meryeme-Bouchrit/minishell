@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 05:57:10 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/30 13:14:16 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/06 04:05:31 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,6 @@
 # include "../libft/libft.h"
 # include "minishell.h" // ✅ Shared structs
 
-typedef struct s_env
-{
-	char			*key;
-	char			*value;
-	struct s_env	*next;
-}	t_env;
 
 /* ========== EXECUTION ========== */
 

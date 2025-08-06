@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:41:18 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/31 15:06:45 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/06 04:06:55 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,19 +39,8 @@ int main(int argc, char **argv, char **envp)
         else
         {
             add_history(line);
-            tokens = make_tokens(line);
-	    if (!tokens)
-		    printf("!TOKENS\n");
-        /*     printf(".........................MAIN.C........................\n");
-        while (tokens)
-        {
-               // printf("TOKEN: %-10s TYPE: %d\n", tokens->value, tokens->type);
-                tokens = tokens->next;
-        }
-*/
+            tokens = tokenize(line, env);
 	    cmds = parse_commands(tokens);
-	    if (!cmds)
-		    printf("!CMDS\n");
             if (cmds && cmds->args && cmds->args[0])
             {
                 if (is_builtin(cmds->args[0]))
@@ -77,7 +66,6 @@ int main(int argc, char **argv, char **envp)
                     }
                     else
                     {
-			    printf("i went here 1\n");
                         run_builtin(cmds->args, &env, &exit_status);
                         free_token_list(tokens);
                         free_cmds(&cmds);
@@ -86,7 +74,6 @@ int main(int argc, char **argv, char **envp)
                 }
                 else
                 {
-			printf("i went here 1\n");
                     exit_status = ft_execute_cmd(cmds, envp);
                     free_token_list(tokens);
                     free_cmds(&cmds);
@@ -95,7 +82,6 @@ int main(int argc, char **argv, char **envp)
             }
             else
             {
-		    printf("i went here 3\n");
                 free_token_list(tokens);
                 free_cmds(&cmds);
                 free(line);
