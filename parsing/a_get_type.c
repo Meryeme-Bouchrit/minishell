@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:24:13 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/31 12:24:17 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/06 03:12:22 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,16 @@
 t_token_type	get_type(char *s)
 {
 	if (my_strcmp(s, "|") == 0)
-		return (free(s), PIPE);
+		return (PIPE);
 	if (my_strcmp(s, "<") == 0)
-		return (free(s), REDIR_IN);
+		return (REDIR_IN);
 	if (my_strcmp(s, ">") == 0)
-		return (free(s), REDIR_OUT);
+		return (REDIR_OUT);
 	if (my_strcmp(s, ">>") == 0)
-		return (free(s), APPEND);
+		return (APPEND);
 	if (my_strcmp(s, "<<") == 0)
-		return (free(s), HEREDOC);
-	return (free(s), WORD);
+		return (HEREDOC);
+	return (WORD);
 }
 
 bool	is_redirection(char *s)

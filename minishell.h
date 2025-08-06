@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:34:42 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/27 10:13:48 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/06 02:32:22 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,13 @@ typedef struct s_cmd
 	bool				pipe_output;
 	struct s_cmd		*next;
 }	t_cmd;
+
+typedef struct s_env
+{
+        char                    *key;
+        char                    *value;
+        struct s_env    *next;
+}       t_env;
 
 # include "execution/execution.h"
 # include "parsing/parsing.h"

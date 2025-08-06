@@ -6,7 +6,7 @@
 /*   By: zhassna <zhassna@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 22:47:00 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/31 12:14:50 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/05 01:40:57 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ char	*my_strjoin(char *s1, char *s2)
 		s1len = ft_strlen(s1);
 	if (s2)
 		s2len = ft_strlen(s2);
-	str = (char *) malloc(((s1len + s2len) * sizeof(char)) + 1);
+	str = (char *)malloc(((s1len + s2len) * sizeof(char)) + 1);
 	if (!str)
 		return (NULL);
 	str = join_str(s1, s2, str);

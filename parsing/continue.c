@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 13:48:26 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/31 10:19:59 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/06 03:49:46 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ int	end_len(const char *line, int i)
 	end = i;
 	while (line[end] && line[end] != ' ' && !is_special(line[end]))
 	{
+		if (line[end] == '#')
+			break ;
 		if (line[end] == '\"' || line[end] == '\'')
 		{
 			quote = line[end++];
@@ -27,7 +29,7 @@ int	end_len(const char *line, int i)
 				end++;
 			if (line[end] == '\0')
 			{
-				printf("ERROR!\nquotes are not closed!\n\n");
+				printf("ERROR!\nquotes are not closed!\n");
 				return (0);
 			}
 			end++;
@@ -38,12 +40,14 @@ int	end_len(const char *line, int i)
 	return (end);
 }
 
-char	*grep_dq(int end, int *start, const char *line)
+char	*grep_doubleq(t_token *tokens, int end, int *start, const char *line,
+		t_env *env)
 {
 	char	*tmp;
 	char	*result;
 	int		j;
 
+	(void)tokens;
 	tmp = NULL;
 	result = NULL;
 	(*start)++;
@@ -51,12 +55,8 @@ char	*grep_dq(int end, int *start, const char *line)
 	{
 		if (line[(*start)] == '$')
 		{
-			(*start)++;
-			tmp = expand_dollar(line + (*start));
+			tmp = secnd_expand_dollar(start, (line + (*start)), env);
 			result = my_strjoin(result, tmp);
-			while ((*start) < end && (ft_isalnum(line[(*start)])
-					|| line[(*start)] == '_'))
-				(*start)++;
 		}
 		j = (*start);
 		while ((*start) < end && line[(*start)] && line[(*start)] != '\"'
@@ -68,7 +68,7 @@ char	*grep_dq(int end, int *start, const char *line)
 	return (result);
 }
 
-char	*grep_sq(int end, int *start, const char *line)
+char	*grep_singleq(int end, int *start, const char *line)
 {
 	int		j;
 	char	*result;
@@ -84,23 +84,21 @@ char	*grep_sq(int end, int *start, const char *line)
 	return (result);
 }
 
-char	*grep_no_quotes(int end, int *start, const char *line)
+char	*grep_no_quotes(t_token *tokens, int end, int *start, const char *line,
+		t_env *env)
 {
 	char	*result;
 	char	*tmp;
 	int		j;
 
+	(void)tokens;
 	j = 0;
 	result = NULL;
 	tmp = NULL;
 	if (line[(*start)] == '$')
 	{
-		(*start)++;
-		tmp = expand_dollar(line + (*start));
+		tmp = secnd_expand_dollar(start, (line + (*start)), env);
 		result = my_strjoin(result, tmp);
-		while ((*start) < end && line[(*start)] && line[(*start)] != ' '
-			&& (ft_isalnum(line[(*start)]) || line[(*start)] == '_'))
-			(*start)++;
 	}
 	j = (*start);
 	while ((*start) < end && line[(*start)] && line[(*start)] != '\"'

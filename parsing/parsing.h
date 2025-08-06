@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:24:44 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/31 12:15:56 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/06 03:02:55 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,17 +79,23 @@ t_cmd				*parse_commands(t_token *token);
 void				secnd_free_token_list(t_token **list);
 
 /* ===== Added prototypes needed by main.c ===== */
-t_token				*tokenize(const char *line);
+// t_token				*tokenize(const char *line);
 void				free_cmds(t_cmd **cmds);
 
 char				*expand_if_needed(char *token_value, char quote_type);
 char				*expand_dollar(const char *str);
-t_token				*make_tokens(const char *line);
-char				*grep_dq(int end, int *start, const char *line);
-char				*grep_sq(int end, int *start, const char *line);
-char				*grep_no_quotes(int end, int *start, const char *line);
+t_token				*tokenize(const char *line, t_env *env);
+char				*grep_doubleq(t_token *tokens, int end, int *start,
+						const char *line, t_env *env);
+char				*grep_singleq(int end, int *start, const char *line);
+char				*grep_no_quotes(t_token *tokens, int end, int *start,
+						const char *line, t_env *env);
 int					end_len(const char *line, int i);
 
 char				*my_strjoin(char *s1, char *s2);
+char				*secnd_expand_dollar(int *start, const char *str,
+						t_env *env);
+
+int					check_for_syntax_error(t_token *token);
 
 #endif

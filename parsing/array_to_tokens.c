@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:04:44 by zhassna           #+#    #+#             */
-/*   Updated: 2025/07/31 12:24:36 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/05 18:38:45 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,24 +28,33 @@ void	handle_pipe(t_cmd **head, t_cmd **current, t_token **temp_args)
 		tmp->next = *current;
 	}
 	*current = new_cmd();
-	secnd_free_token_list(temp_args);
+	free_token_list(*temp_args);
 	*temp_args = NULL;
 }
 
 t_cmd	*parse_commands(t_token *tokens)
 {
+	int		flag;
 	t_cmd	*head;
 	t_cmd	*current;
 	t_token	*temp_args;
 	t_cmd	*tmp;
 
+	flag = 0;
 	head = NULL;
 	current = new_cmd();
 	temp_args = NULL;
 	while (tokens)
 	{
 		if (my_strcmp(tokens->value, "|") == 0)
+		{
+			if (flag == 0)
+			{
+				printf("ERROR! syntax error near unexpected token `|'\n");
+				return (NULL);
+			}
 			handle_pipe(&head, &current, &temp_args);
+		}
 		else if (is_redirection(tokens->value))
 		{
 			if (tokens->next->value)
@@ -57,14 +66,15 @@ t_cmd	*parse_commands(t_token *tokens)
 		}
 		else
 		{
-			add_token(&temp_args, tokens->value, WORD);
+			add_token(&temp_args, ft_strdup(tokens->value), WORD);
 		}
+		flag = 1;
 		tokens = tokens->next;
 	}
 	if (temp_args)
 	{
 		current->args = token_list_to_array(temp_args);
-		secnd_free_token_list(&temp_args);
+		free_token_list(temp_args);
 	}
 	if (!head)
 		head = current;

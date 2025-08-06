@@ -1,7 +1,7 @@
 NAME		= minishell
 
 CC			= cc
-CFLAGS		= -Wall -Wextra -Werror
+CFLAGS		= -Wall -Wextra -Werror -g
 LDFLAGS		= -lreadline
 RM			= rm -f
 
@@ -29,6 +29,7 @@ SRC = 		\
 			parsing/correct_token.c \
 			parsing/continue.c \
 			parsing/my_strjoin.c \
+			parsing/error_syntax.c \
 			main.c
 
 OBJ			= $(SRC:.c=.o)
