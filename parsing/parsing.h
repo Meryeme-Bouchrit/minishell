@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:24:44 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/06 03:02:55 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/08 02:30:31 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,5 +97,7 @@ char				*secnd_expand_dollar(int *start, const char *str,
 						t_env *env);
 
 int					check_for_syntax_error(t_token *token);
+char	*expand_variables(const char *line, t_env *env);
+
 
 #endif

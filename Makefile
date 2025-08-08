@@ -30,6 +30,7 @@ SRC = 		\
 			parsing/continue.c \
 			parsing/my_strjoin.c \
 			parsing/error_syntax.c \
+			parsing/continue_herdoc.c \
 			main.c
 
 OBJ			= $(SRC:.c=.o)
