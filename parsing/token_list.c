@@ -89,13 +89,14 @@ t_cmd	*new_cmd(void)
 	return (cmd);
 }
 
-void	add_redirection(t_cmd *cmd, t_redirections type, const char *filename)
+void	add_redirection(t_cmd *cmd, t_redirections type, const char *filename, bool expand)
 {
 	t_in_out_fds	*redir;
 	t_in_out_fds	*tmp;
 
 	redir = malloc(sizeof(t_in_out_fds));
 	redir->type = type;
+	redir->expand = expand;
 	redir->filename = ft_strdup(filename);
 	redir->next = NULL;
 	if (!cmd->io_fds)

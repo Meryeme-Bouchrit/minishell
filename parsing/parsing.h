@@ -38,7 +38,7 @@ typedef struct s_token
 {
 	char			*value;
 	t_token_type	type;
-	bool			freed;
+	bool			expand;
 	struct s_token	*next;
 }					t_token;
 
@@ -56,7 +56,7 @@ t_redirections		get_redirect_type(char *s);
 
 //////////////////////helper_func_2_1.c////////////////////////////
 void				add_redirection(t_cmd *cmd, t_redirections type,
-						const char *filename);
+						const char *filename, bool expand);
 t_cmd				*new_cmd(void);
 void				free_token_list(t_token *list);
 char				**token_list_to_array(t_token *list);

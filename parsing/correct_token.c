@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 10:05:47 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/08 04:30:31 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/08 15:51:32 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ char	*token_next_string(t_token *tokens, const char *line, int *i,
 	int		end;
 	char	*result;
 	t_token	*tmp;
+	int t = 0;
 
 	start = (*i);
 	//	end = end_len(line, (*i));
@@ -35,7 +36,18 @@ char	*token_next_string(t_token *tokens, const char *line, int *i,
 	while (tmp)
 	{
 		if (tmp && tmp->type == HEREDOC && tmp->next == NULL)
+		{
 			env->heredoc = true;
+			while (line[t])
+			{
+				if (line[t] == '\'' || line[t] == '\"')
+				{
+					tmp->type =true;
+					break ;
+				}
+				t++;
+			}
+		}
 		tmp = tmp->next;
 	}
 	end = end_len(line, (*i), env->heredoc);
@@ -54,7 +66,7 @@ char	*token_next_string(t_token *tokens, const char *line, int *i,
 			result = my_strjoin(result, grep_no_quotes(i, end, &start, line,
 						env));
 	}
-	printf("Current token: %s\n", result);
+	//printf("Current token: %s\n", result);
 	env->heredoc = false;
 	(*i) = start;
 	return (result);
@@ -95,6 +107,7 @@ t_token	*tokenize(const char *line, t_env *env)
 		add_token(&tokens, ft_strdup(token_value), get_type(token_value, i[1]));
 		free(token_value);
 		token_value = NULL;
+	//	printf("->>line[%d]\n", i[0]);
 	}
 	// check_for_error_syntax(t_token *token);
 	if (check_for_syntax_error(tokens))

@@ -31,7 +31,7 @@ t_token	*new_token(char *value, t_token_type type)
 		return (NULL);
 	token->value = value;
 	token->type = type;
-	token->freed = false;
+	token->expand = false;
 	token->next = NULL;
 	return (token);
 }

@@ -27,6 +27,7 @@ typedef struct s_in_out_fds
 {
 	t_redirections		type;
 	char				*filename;
+	bool				expand;
 	struct s_in_out_fds	*next;
 }	t_in_out_fds;
 

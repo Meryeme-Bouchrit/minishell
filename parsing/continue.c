@@ -20,6 +20,7 @@ int	end_len(const char *line, int i, bool heredoc)
 	end = i;
 	while (line[end] && line[end] != ' ' && !is_special(line[end]))
 	{
+		
 		if (line[end] == '#')
 			break ;
 		if (line[end] == '\"' || line[end] == '\'')

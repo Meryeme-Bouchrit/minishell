@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:04:44 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/05 18:38:45 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/08 15:59:40 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ t_cmd	*parse_commands(t_token *tokens)
 			if (tokens->next->value)
 			{
 				add_redirection(current, get_redirect_type(tokens->value),
-					tokens->next->value);
+					tokens->next->value, tokens->expand);
 				tokens = tokens->next;
 			}
 		}
