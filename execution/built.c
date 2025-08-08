@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 20:47:33 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/27 10:02:09 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/08 18:24:30 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,33 +64,63 @@ int	run_builtin(char **args, t_env **env, int *exit_status)
 		return (0);
 	return (1);
 }
-
-int	exec_builtin_with_redir(t_cmd *cmd, t_env **env, int *exit_status)
+int exec_builtin_with_redir(t_cmd *cmd, t_env **env, int *exit_status)
 {
-	int				in_backup;
-	int				out_backup;
-	t_in_out_fds	*redir;
-	int				result;
+    int in_backup = dup(0);
+    int out_backup = dup(1);
+    t_in_out_fds *redir = cmd->io_fds;
+    int result = 0;
 
-	in_backup = dup(STDIN_FILENO);
-	out_backup = dup(STDOUT_FILENO);
-	redir = cmd->io_fds;
-	while (redir)
-	{
-		if (redir->type == T_REDIR_IN)
-			redir_in(redir->filename);
-		else if (redir->type == T_REDIR_OUT)
-			redir_out(redir->filename);
-		else if (redir->type == REDIR_APPEND)
-			redir_app(redir->filename);
-		else if (redir->type == REDIR_HEREDOC)
-			redir_heredoc(redir->filename);
-		redir = redir->next;
-	}
-	result = run_builtin(cmd->args, env, exit_status);
-	dup2(in_backup, STDIN_FILENO);
-	dup2(out_backup, STDOUT_FILENO);
-	close(in_backup);
-	close(out_backup);
-	return (result);
+    if (in_backup == -1 || out_backup == -1)
+    {
+        perror("dup");
+        return (1);
+    }
+
+    while (redir)
+    {
+        if (redir->type == T_REDIR_IN)
+            redir_in(redir->filename);
+        else if (redir->type == T_REDIR_OUT)
+            redir_out(redir->filename);
+        else if (redir->type == REDIR_APPEND)
+            redir_app(redir->filename);
+        else if (redir->type == REDIR_HEREDOC)
+        {
+            int fd = redir_heredoc(redir->filename, *env, redir->expand);
+            if (fd == -1)
+            {
+                perror("redir_heredoc");
+                dup2(in_backup, 0);
+                dup2(out_backup, 1);
+                close(in_backup);
+                close(out_backup);
+                return (1);
+            }
+            if (dup2(fd, 0) == -1)
+            {
+                perror("dup2");
+                close(fd);
+                dup2(in_backup, 0);
+                dup2(out_backup, 1);
+                close(in_backup);
+                close(out_backup);
+                return (1);
+            }
+            close(fd);
+        }
+        redir = redir->next;
+    }
+
+    result = run_builtin(cmd->args, env, exit_status);
+
+    if (dup2(in_backup, 0) == -1)
+        perror("dup2");
+    if (dup2(out_backup, 1) == -1)
+        perror("dup2");
+
+    close(in_backup);
+    close(out_backup);
+
+    return (result);
 }

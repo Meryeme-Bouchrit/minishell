@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 09:19:29 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/29 12:11:48 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/07 03:00:46 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,28 +81,27 @@ void	unset_env_var(t_env **env, char *key)
 }
 
 // Adds a new key=value to the environment list
-void add_env(t_env **env, char *key, char *value)
+void	add_env(t_env **env, char *key, char *value)
 {
-    t_env *new;
-    t_env *cur;
+	t_env	*new;
+	t_env	*cur;
 
-    new = malloc(sizeof(t_env));
-    if (!new)
-        return;
-    new->key = ft_strdup(key);
-    new->value = ft_strdup(value);
-    new->next = NULL;
+	new = malloc(sizeof(t_env));
+	if (!new)
+		return;
 
-    if (!*env)
-    {
-        *env = new;
-        return;
-    }
-    cur = *env;
-    while (cur->next)
-        cur = cur->next;
-    cur->next = new;
+	new->key = key;         // key already duplicated outside
+	new->value = value;     // value already duplicated outside
+	new->next = NULL;
+
+	if (!*env)
+	{
+		*env = new;
+		return;
+	}
+
+	cur = *env;
+	while (cur->next)
+		cur = cur->next;
+	cur->next = new;
 }
-
-
-

@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:41:18 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/06 04:06:55 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/08 23:18:45 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int main(int argc, char **argv, char **envp)
         {
             add_history(line);
             tokens = tokenize(line, env);
-	    cmds = parse_commands(tokens);
+            cmds = parse_commands(tokens);
             if (cmds && cmds->args && cmds->args[0])
             {
                 if (is_builtin(cmds->args[0]))
@@ -74,7 +74,10 @@ int main(int argc, char **argv, char **envp)
                 }
                 else
                 {
-                    exit_status = ft_execute_cmd(cmds, envp);
+                    if (cmds->next)
+                        exit_status = ft_execute_pipeline(cmds, env);
+                    else
+                        exit_status = ft_execute_cmd(cmds, env);
                     free_token_list(tokens);
                     free_cmds(&cmds);
                     free(line);
@@ -91,4 +94,3 @@ int main(int argc, char **argv, char **envp)
     free_env_list(env);
     return (exit_status);
 }
-

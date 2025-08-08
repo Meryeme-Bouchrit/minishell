@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 05:57:10 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/06 04:05:31 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/08 23:02:37 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,37 +26,33 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "../libft/libft.h"
-# include "minishell.h" // ✅ Shared structs
-
+# include "minishell.h"
 
 /* ========== EXECUTION ========== */
 
-int		ft_execute_cmd(t_cmd *cmd, char **envp);
-void	ft_child_process(t_cmd *cmd, char *cmd_path, char **envp);
-char	*ft_get_command_path(char *cmd, char **envp);
-char	*get_path(char **envp);
+int	    ft_execute_cmd(t_cmd *cmd, t_env *env);
+void	ft_child_process(t_cmd *cmd, char *cmd_path, t_env *env);
+int     ft_execute_pipeline(t_cmd *cmd, t_env *env);
+
+/* ========== COMMAND PATH ========== */
+
+char	*ft_get_command_path_envp(char *cmd, char **envp);
+char	*get_path_envp(char **envp);
+char	*get_path(t_env *env);
 char	*find_bin(char *cmd, char **paths);
-
-/* ====== Added prototypes needed by main.c ====== */
-int		only_spaces(const char *str);
-
-int		is_builtin(char *cmd);
-int		run_builtin(char **args, t_env **env, int *exit_status);
-int		exec_builtin_with_redir(t_cmd *cmd, t_env **env, int *exit_status);
 
 /* ========== REDIRECTION ========== */
 
 void	redir_in(char *filename);
 void	redir_out(char *filename);
 void	redir_app(char *filename);
-void	redir_heredoc(char *limiter);
-
-/* ========== PIPE ========== */
-
-int		ft_execute_pipeline(t_cmd *cmd, char **envp);
+int		redir_heredoc(char *limiter, t_env *env, bool expand);
 
 /* ========== BUILTINS ========== */
 
+int		is_builtin(char *cmd);
+int		run_builtin(char **args, t_env **env, int *exit_status);
+int		exec_builtin_with_redir(t_cmd *cmd, t_env **env, int *exit_status);
 int		ft_cd(char **args, t_env **env);
 int		ft_pwd(void);
 int		ft_env(t_env *env);
@@ -86,9 +82,10 @@ void	parse_export_arg(char *arg, char **key, char **value);
 /* ========== UTILS ========== */
 
 int		ft_strcmp(const char *s1, const char *s2);
+int		ft_is_numeric(const char *str);
 void	free_split(char **split);
 char	*ft_remove_quotes(char *str);
-int		ft_is_numeric(const char *str);
-void	print_echo_args(char **args, int i);
+char	**env_to_envp(t_env *env);
+int		only_spaces(const char *str);
 
 #endif

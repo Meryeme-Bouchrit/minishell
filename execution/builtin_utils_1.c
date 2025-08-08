@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 19:24:24 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/07/27 09:32:32 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/07 03:02:08 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,9 @@ void	set_env_var(t_env **env, const char *key, const char *value)
 		}
 		cur = cur->next;
 	}
-	add_env(env, (char *)key, (char *)value);
+	add_env(env, ft_strdup(key), ft_strdup(value));
 }
+
 
 // Checks whether a key already exists in the environment
 int	env_has_key(t_env *env, char *key)
