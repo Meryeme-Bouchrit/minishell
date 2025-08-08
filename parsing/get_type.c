@@ -1,19 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   a_get_type.c                                       :+:      :+:    :+:   */
+/*   get_type.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:24:13 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/06 03:12:22 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/08 03:58:22 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-t_token_type	get_type(char *s)
+t_token_type	get_type(char *s, int a)
 {
+	if (a)
+		return (SPLIT);
 	if (my_strcmp(s, "|") == 0)
 		return (PIPE);
 	if (my_strcmp(s, "<") == 0)

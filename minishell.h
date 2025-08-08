@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:34:42 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/06 02:32:22 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/08 03:36:20 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ typedef struct s_env
 {
         char                    *key;
         char                    *value;
-        struct s_env    *next;
+        bool			heredoc;
+	struct s_env    *next;
 }       t_env;
 
 # include "execution/execution.h"
