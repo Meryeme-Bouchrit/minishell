@@ -3,52 +3,66 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: mbouchri <mbouchri@student.1337.ma>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 05:57:10 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/08 23:02:37 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/11 05:00:00 by mbouchri          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EXECUTION_H
 # define EXECUTION_H
 
+/* Standard Libraries */
 # include <stdio.h>
 # include <stdlib.h>
-# include <stdbool.h>
-# include <string.h>
 # include <unistd.h>
 # include <fcntl.h>
 # include <errno.h>
+# include <stdbool.h>
+# include <string.h>
 # include <ctype.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+
+/* Readline */
 # include <readline/readline.h>
 # include <readline/history.h>
+
+/* Project headers */
 # include "../libft/libft.h"
 # include "minishell.h"
 
-/* ========== EXECUTION ========== */
+/* ===================== EXECUTION CORE ===================== */
 
-int	    ft_execute_cmd(t_cmd *cmd, t_env *env);
-void	ft_child_process(t_cmd *cmd, char *cmd_path, t_env *env);
-int     ft_execute_pipeline(t_cmd *cmd, t_env *env);
+/* exec_cmd.c */
+int		exec_cmd(t_cmd *cmd, t_env *env);
+int		fork_and_wait(t_cmd *cmd, char *cmd_path, t_env *env);
+void	child_process_single(t_cmd *cmd, char *cmd_path, t_env *env);
 
-/* ========== COMMAND PATH ========== */
+/* exec_pipe.c */
+int		exec_pipeline(t_cmd *cmds, t_env *env);
 
-char	*ft_get_command_path_envp(char *cmd, char **envp);
+/* exec_env.c */
+char	**env_to_envp(t_env *env);
+
+/* exec_path.c */
+char	*find_cmd_path(char *cmd, char **envp);
 char	*get_path_envp(char **envp);
-char	*get_path(t_env *env);
+char	*get_path_env(t_env *env);
 char	*find_bin(char *cmd, char **paths);
 
-/* ========== REDIRECTION ========== */
-
-void	redir_in(char *filename);
-void	redir_out(char *filename);
-void	redir_app(char *filename);
+/* exec_redirs.c */
+int		redir_in(char *filename);
+int		redir_out(char *filename);
+int		redir_app(char *filename);
 int		redir_heredoc(char *limiter, t_env *env, bool expand);
+void	ft_handle_redirs(t_in_out_fds *redir, t_env *env);
 
-/* ========== BUILTINS ========== */
+/* heredoc helper from exec_redirs.c */
+int		write_heredoc(int fd, char *limiter, t_env *env, bool expand);
+
+/* ===================== BUILTINS ===================== */
 
 int		is_builtin(char *cmd);
 int		run_builtin(char **args, t_env **env, int *exit_status);
@@ -60,8 +74,9 @@ int		ft_echo(char **args);
 int		ft_exit(char **args, int *exit_status);
 int		ft_unset(char **args, t_env **env);
 int		ft_export(char **args, t_env **env);
+int		exec_builtin_in_child(t_cmd *cmd, t_env **env);
 
-/* ========== ENV UTILS ========== */
+/* ===================== ENVIRONMENT UTILS ===================== */
 
 t_env	*copy_env(char **envp);
 void	free_env_list(t_env *env);
@@ -79,13 +94,16 @@ void	add_node_back(t_env **env, t_env *new);
 void	set_env_var(t_env **env, const char *key, const char *value);
 void	parse_export_arg(char *arg, char **key, char **value);
 
-/* ========== UTILS ========== */
+/* ===================== UTILS ===================== */
 
 int		ft_strcmp(const char *s1, const char *s2);
 int		ft_is_numeric(const char *str);
 void	free_split(char **split);
 char	*ft_remove_quotes(char *str);
-char	**env_to_envp(t_env *env);
 int		only_spaces(const char *str);
+
+/* ===================== MAIN EXECUTION HELPERS ===================== */
+
+void	execute_and_free(char *line, t_env **env, int *exit_status);
 
 #endif

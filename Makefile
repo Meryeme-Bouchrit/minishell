@@ -10,8 +10,11 @@ PARSING_DIR	= parsing
 
 SRC = 		\
 			execution/built.c \
-			execution/execution_1.c \
-			execution/execution_utils1.c \
+			execution/exec_cmd.c \
+			execution/exec_path.c \
+			execution/exec_redirs.c \
+			execution/exec_pipe.c \
+			execution/exec_env.c \
 			execution/builtin_1.c \
 			execution/builtin_2.c \
 			execution/builtin_3.c \

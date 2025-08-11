@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 20:47:33 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/08 18:24:30 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/11 03:28:52 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,4 +123,16 @@ int exec_builtin_with_redir(t_cmd *cmd, t_env **env, int *exit_status)
     close(out_backup);
 
     return (result);
+}
+int	exec_builtin_in_child(t_cmd *cmd, t_env **env)
+{
+	int	exit_code;
+
+	/* Apply redirections for this command (child already has pipe setup) */
+	ft_handle_redirs(cmd->io_fds, *env);
+
+	exit_code = 0;
+	run_builtin(cmd->args, env, &exit_code);
+
+	return (exit_code);
 }
