@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   a_utils_1.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 08:53:30 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/08 04:04:31 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/31 12:25:25 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ t_token	*new_token(char *value, t_token_type type)
 		return (NULL);
 	token->value = value;
 	token->type = type;
-	token->expand = false;
+	token->freed = false;
 	token->next = NULL;
 	return (token);
 }
@@ -40,46 +40,16 @@ void	add_token(t_token **head, char *val, t_token_type type)
 {
 	t_token	*new;
 	t_token	*temp;
-	char	**arg;
-	char	**arg_tmp;
 
 	new = new_token(val, type);
-	if (type == SPLIT)
-	{
-		arg = NULL;
-		arg = ft_split(val, ' ');
-		arg_tmp = arg;
-		while (arg && *arg)
-		{
-			if (!*head)
-			{
-				new = new_token(ft_strdup(*arg), WORD);
-				*head = new;
-			}
-			else
-			{
-				temp = *head;
-				while (temp->next)
-					temp = temp->next;
-				temp->next = new_token(ft_strdup(*arg), WORD);
-			}
-			arg++;
-		}
-		free_split(arg_tmp);
-		// this free might be a problem
-		free(val);
-	}
+	if (!*head)
+		*head = new;
 	else
 	{
-		if (!*head)
-			*head = new;
-		else
-		{
-			temp = *head;
-			while (temp->next)
-				temp = temp->next;
-			temp->next = new;
-		}
+		temp = *head;
+		while (temp->next)
+			temp = temp->next;
+		temp->next = new;
 	}
 }
 

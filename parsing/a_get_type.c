@@ -1,32 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_type.c                                         :+:      :+:    :+:   */
+/*   a_get_type.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:24:13 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/08 03:58:22 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/31 12:24:17 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-t_token_type	get_type(char *s, int a)
+t_token_type	get_type(char *s)
 {
-	if (a)
-		return (SPLIT);
 	if (my_strcmp(s, "|") == 0)
-		return (PIPE);
+		return (free(s), PIPE);
 	if (my_strcmp(s, "<") == 0)
-		return (REDIR_IN);
+		return (free(s), REDIR_IN);
 	if (my_strcmp(s, ">") == 0)
-		return (REDIR_OUT);
+		return (free(s), REDIR_OUT);
 	if (my_strcmp(s, ">>") == 0)
-		return (APPEND);
+		return (free(s), APPEND);
 	if (my_strcmp(s, "<<") == 0)
-		return (HEREDOC);
-	return (WORD);
+		return (free(s), HEREDOC);
+	return (free(s), WORD);
 }
 
 bool	is_redirection(char *s)

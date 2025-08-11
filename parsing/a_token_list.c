@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:04:18 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/05 01:17:57 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/07/27 10:12:55 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ void	secnd_free_token_list(t_token **list)
 {
 	t_token	*tmp;
 
-	printf("THIS IS SECND_fREE_TOKEN_LIST\n");
 	if (!list || !*list)
 		return ;
 	while (*list)
@@ -89,14 +88,13 @@ t_cmd	*new_cmd(void)
 	return (cmd);
 }
 
-void	add_redirection(t_cmd *cmd, t_redirections type, const char *filename, bool expand)
+void	add_redirection(t_cmd *cmd, t_redirections type, const char *filename)
 {
 	t_in_out_fds	*redir;
 	t_in_out_fds	*tmp;
 
 	redir = malloc(sizeof(t_in_out_fds));
 	redir->type = type;
-	redir->expand = expand;
 	redir->filename = ft_strdup(filename);
 	redir->next = NULL;
 	if (!cmd->io_fds)
