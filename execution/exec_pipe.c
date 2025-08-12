@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:22:44 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/12 16:03:40 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/12 16:11:53 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ void	child_process_pipeline(t_cmd *cmd, t_env *env,
 	free_split(envp_arr);
 	exit(127);
 }
-
 int exec_pipeline(t_cmd *cmds, t_env *env)
 {
     int n;
@@ -121,12 +120,17 @@ int exec_pipeline(t_cmd *cmds, t_env *env)
     }
     close_pipes(pipes, n - 1);
     i = -1;
-    while (++i < n)
-    {
-        waitpid(pids[i], &status, 0);
-        if (i == n - 1)
-            last_exit_code = status >> 8;
-    }
+	while (++i < n)
+	{
+		waitpid(pids[i], &status, 0);
+		if (i == n - 1)
+		{
+			if ((status & 0x7f) == 0)
+				last_exit_code = (status >> 8) & 0xff;
+			else
+				last_exit_code = 128 + (status & 0x7f);
+		}
+	}
     free(pids);
     return (last_exit_code);
 }
