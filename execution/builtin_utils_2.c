@@ -6,13 +6,12 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 12:22:14 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/07 02:57:12 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/12 15:25:02 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-// Splits "key=value" into separate key and value strings
 void	parse_export_arg(char *arg, char **key, char **value)
 {
 	char	*equal;
@@ -30,7 +29,6 @@ void	parse_export_arg(char *arg, char **key, char **value)
 	}
 }
 
-// Creates a new "key=value" string (used internally if needed)
 char	*create_env_var(const char *key, const char *value)
 {
 	char	*tmp;
@@ -44,8 +42,6 @@ char	*create_env_var(const char *key, const char *value)
 	return (full);
 }
 
-
-// Verifies that a variable key name is valid (alphanum + underscore)
 int	is_valid_key(char *key)
 {
 	int	i;
@@ -57,6 +53,8 @@ int	is_valid_key(char *key)
 	i = 1;
 	while (key[i])
 	{
+		if (key[i] == '=')
+			return (0);
 		if (!ft_isalnum(key[i]) && key[i] != '_')
 			return (0);
 		i++;
@@ -64,20 +62,19 @@ int	is_valid_key(char *key)
 	return (1);
 }
 
-
-// Checks if the string is a valid numeric argument (with optional sign)
-int ft_is_numeric(const char *str)
+int	ft_is_numeric(const char *str)
 {
-	int i = 0;
-	char sign = 0;
+	int		i;
+	char	sign;
 
+	i = 0;
+	sign = 0;
 	if (!str || !str[0])
 		return (0);
-
 	while (str[i] == '+' || str[i] == '-')
 	{
 		if (sign && str[i] != sign)
-			return (0); 
+			return (0);
 		sign = str[i];
 		i++;
 	}
@@ -91,7 +88,7 @@ int ft_is_numeric(const char *str)
 	}
 	return (1);
 }
-// Prints environment variables in export format with quotes
+
 void	print_export_env(t_env *env)
 {
 	while (env)

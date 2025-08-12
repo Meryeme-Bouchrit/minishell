@@ -36,74 +36,73 @@
 /* ===================== EXECUTION CORE ===================== */
 
 /* exec_cmd.c */
-int		exec_cmd(t_cmd *cmd, t_env *env);
-int		fork_and_wait(t_cmd *cmd, char *cmd_path, t_env *env);
-void	child_process_single(t_cmd *cmd, char *cmd_path, t_env *env);
+int     exec_cmd(t_cmd *cmd, t_env *env, int *exit_status);
+void    child_process_single(t_cmd *cmd, char *path, t_env *env);
 
 /* exec_pipe.c */
-int		exec_pipeline(t_cmd *cmds, t_env *env);
+char    **collect_heredocs(t_cmd *cmds, t_env *env);
+int     exec_pipeline(t_cmd *cmds, t_env *env);
 
 /* exec_env.c */
-char	**env_to_envp(t_env *env);
+char    **env_to_envp(t_env *env);
 
 /* exec_path.c */
-char	*find_cmd_path(char *cmd, char **envp);
-char	*get_path_envp(char **envp);
-char	*get_path_env(t_env *env);
-char	*find_bin(char *cmd, char **paths);
+char    *find_cmd_path(char *cmd, char **envp);
+char    *get_path_envp(char **envp);
+char    *get_path_env(t_env *env);
+char    *find_bin(char *cmd, char **paths);
 
 /* exec_redirs.c */
-int		redir_in(char *filename);
-int		redir_out(char *filename);
-int		redir_app(char *filename);
-int		redir_heredoc(char *limiter, t_env *env, bool expand);
-void	ft_handle_redirs(t_in_out_fds *redir, t_env *env);
-
-/* heredoc helper from exec_redirs.c */
-int		write_heredoc(int fd, char *limiter, t_env *env, bool expand);
+int     redir_in(char *filename);
+int     redir_out(char *filename);
+int     redir_app(char *filename);
+char    *redir_heredoc(char *limiter, t_env *env, bool expand);
+void    ft_handle_redirs(t_in_out_fds *redir, t_env *env);
+int     write_heredoc_to_pipe(int fd, char *limiter, t_env *env, bool expand);
 
 /* ===================== BUILTINS ===================== */
 
-int		is_builtin(char *cmd);
-int		run_builtin(char **args, t_env **env, int *exit_status);
-int		exec_builtin_with_redir(t_cmd *cmd, t_env **env, int *exit_status);
-int		ft_cd(char **args, t_env **env);
-int		ft_pwd(void);
-int		ft_env(t_env *env);
-int		ft_echo(char **args);
-int		ft_exit(char **args, int *exit_status);
-int		ft_unset(char **args, t_env **env);
-int		ft_export(char **args, t_env **env);
-int		exec_builtin_in_child(t_cmd *cmd, t_env **env);
+int     is_builtin(char *cmd);
+int     run_builtin(char **args, t_env **env, int *exit_status);
+int     exec_builtin_with_redir(t_cmd *cmd, t_env **env, int *exit_status);
+int     ft_cd(char **args, t_env **env);
+int     ft_pwd(void);
+int     ft_env(t_env *env);
+int     ft_echo(char **args);
+int     ft_exit(char **args, int *exit_status);
+int     ft_unset(char **args, t_env **env);
+int     ft_export(char **args, t_env **env);
+int     exec_builtin_in_child(t_cmd *cmd, t_env **env);
 
 /* ===================== ENVIRONMENT UTILS ===================== */
 
-t_env	*copy_env(char **envp);
-void	free_env_list(t_env *env);
-void	add_env(t_env **env, char *key, char *value);
-void	unset_env_var(t_env **env, char *key);
-t_env	*find_env_node(t_env *env, const char *key);
-int		env_has_key(t_env *env, char *key);
-char	*get_env_value(t_env *env, const char *key);
-void	replace_env(t_env **env, char *key, char *value);
-void	handle_env_update(t_env **env, char *key, char *value);
-void	print_export_env(t_env *env);
-int		is_valid_key(char *key);
-char	*create_env_var(const char *key, const char *value);
-void	add_node_back(t_env **env, t_env *new);
-void	set_env_var(t_env **env, const char *key, const char *value);
-void	parse_export_arg(char *arg, char **key, char **value);
+t_env   *copy_env(char **envp);
+void    free_env_list(t_env *env);
+void    add_env(t_env **env, char *key, char *value);
+void    unset_env_var(t_env **env, char *key);
+t_env   *find_env_node(t_env *env, const char *key);
+int     env_has_key(t_env *env, char *key);
+char    *get_env_value(t_env *env, const char *key);
+void    replace_env(t_env **env, char *key, char *value);
+void    handle_env_update(t_env **env, char *key, char *value);
+void    print_export_env(t_env *env);
+int     is_valid_key(char *key);
+char    *create_env_var(const char *key, const char *value);
+void    add_node_back(t_env **env, t_env *new);
+void    set_env_var(t_env **env, const char *key, const char *value);
+void    parse_export_arg(char *arg, char **key, char **value);
+t_env   *add_env_node(char *key, char *value); /* <--- ADD THIS */
 
 /* ===================== UTILS ===================== */
 
-int		ft_strcmp(const char *s1, const char *s2);
-int		ft_is_numeric(const char *str);
-void	free_split(char **split);
-char	*ft_remove_quotes(char *str);
-int		only_spaces(const char *str);
+int     ft_strcmp(const char *s1, const char *s2);
+int     ft_is_numeric(const char *str);
+void    free_split(char **split);
+char    *ft_remove_quotes(char *str);
+int     only_spaces(const char *str);
 
 /* ===================== MAIN EXECUTION HELPERS ===================== */
 
-void	execute_and_free(char *line, t_env **env, int *exit_status);
+void    execute_and_free(char *line, t_env **env, int *exit_status);
 
 #endif

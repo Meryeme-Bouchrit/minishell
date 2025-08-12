@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:41:18 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/12 06:22:48 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/12 10:33:20 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void execute_and_free(char *line, t_env **env, int *exit_status)
                 run_builtin(cmds->args, env, exit_status);
         }
         else
-            *exit_status = exec_cmd(cmds, *env);
+            exec_cmd(cmds, *env, exit_status); // ✅ fixed: now passing the 3rd argument
     }
     else
         *exit_status = 2; // General error for failed parsing
@@ -62,6 +62,7 @@ void execute_and_free(char *line, t_env **env, int *exit_status)
     free_cmds(&cmds);
     free(line);
 }
+
 
 int main(int argc, char **argv, char **envp)
 {
