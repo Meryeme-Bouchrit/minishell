@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 08:53:30 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/12 06:17:25 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/12 18:16:34 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,30 +86,4 @@ void	add_token(t_token **head, char *val, t_token_type type)
 			temp->next = new;
 		}
 	}
-}
-
-char	*extract_quoted(const char *str, int *i, char quote)
-{
-	int		start;
-	int		len;
-	char	*result;
-
-	start = *i;
-	(*i)++;
-	while (str[*i] && str[*i] != quote)
-		(*i)++;
-	if (str[*i] != quote)
-	{
-		write(2, "Error: quote not closed\n", 25);
-		exit(1);
-	}
-	len = *i - start - 1;
-	result = malloc(len + 1);
-	if (!result)
-		return (NULL);
-	ft_strncpy(result, str + start + 1, len);
-	result[len] = '\0';
-	if (str[*i] == quote)
-		(*i)++;
-	return (result);
 }

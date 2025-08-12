@@ -53,7 +53,7 @@ char	*grep_doubleq(int end, int *start, const char *line, t_env *env)
 	{
 		if ((line[(*start)] == '$') && !env->heredoc)
 		{
-			tmp = secnd_expand_dollar(start, (line + (*start)), env);
+			tmp = secnd_expand_dollar(start, end - 1, (line + (*start)), env);
 			result = my_strjoin(result, tmp);
 		}
 		j = (*start);
@@ -108,7 +108,7 @@ char	*grep_no_quotes(int *i, int end, int *start, const char *line,
 	tmp = NULL;
 	if ((line[(*start)] == '$') && !env->heredoc)
 	{
-		tmp = secnd_expand_dollar(start, (line + (*start)), env);
+		tmp = secnd_expand_dollar(start, end, (line + (*start)), env);
 		result = my_strjoin(result, tmp);
 		if (check_for_espace(result))
 			i[1] = 1;

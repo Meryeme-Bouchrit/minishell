@@ -55,8 +55,7 @@ char	*token_next_string(t_token *tokens, const char *line, int *i,
 	if (end == 0)
 	{
 		free_token_list(tokens);
-		if (result)
-			free(result);
+		free(result);
 		return (NULL);
 	}
 	while (start < end)

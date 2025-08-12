@@ -23,7 +23,7 @@ char	*expand_str(int end, int *start, const char *line, t_env *env)
 	tmp = NULL;
 	if (line[(*start)] == '$')
 	{
-		tmp = secnd_expand_dollar(start, (line + (*start)), env);
+		tmp = secnd_expand_dollar(start, end, (line + (*start)), env);
 		result = my_strjoin(result, tmp);
 	}
 	j = (*start);

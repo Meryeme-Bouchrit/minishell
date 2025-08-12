@@ -92,7 +92,7 @@ char				*grep_no_quotes(int *i, int end, int *start,
 int					end_len(const char *line, int i, bool heredoc);
 
 char				*my_strjoin(char *s1, char *s2);
-char				*secnd_expand_dollar(int *start, const char *str,
+char				*secnd_expand_dollar(int *start, int end, const char *str,
 						t_env *env);
 
 int					check_for_syntax_error(t_token *token);
