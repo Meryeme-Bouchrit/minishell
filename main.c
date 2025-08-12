@@ -6,11 +6,13 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:41:18 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/11 04:09:18 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/12 06:22:48 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int exit_status;
 
 void execute_and_free(char *line, t_env **env, int *exit_status)
 {

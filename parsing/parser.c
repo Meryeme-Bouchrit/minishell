@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 01:50:36 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/06 03:14:46 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/12 06:14:59 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,33 +21,59 @@ void	print_tokens(t_token *tokens)
 	}
 }
 
+// void	free_cmds(t_cmd **cmds, int i)
+// {
+// 	t_in_out_fds	*redir;
+// 	t_in_out_fds *tmp_redir;
+// 	t_cmd			*tmp;
+
+// 	while (*cmds)
+// 	{
+// 		if ((*cmds)->args)
+// 		{
+// 			while ((*cmds)->args[i])
+// 				free((*cmds)->args[i++]);
+// 			free((*cmds)->args);
+// 		}
+// 		if ((*cmds)->io_fds)
+// 		{
+// 			redir = (*cmds)->io_fds;
+// 			while (redir)
+// 			{
+// 				tmp_redir = redir;
+// 				free(redir->filename);
+// 				redir = redir->next;
+// 				free(tmp_redir);
+// 			}
+// 			//free((*cmds)->io_fds);
+// 		}
+// 		tmp = (*cmds);
+// 		(*cmds) = (*cmds)->next;
+// 		free(tmp);
+// 	}
+// }
+
 void	free_cmds(t_cmd **cmds)
 {
-	int				i;
 	t_in_out_fds	*redir;
 	t_cmd			*tmp;
+	int				i;
 
 	while (*cmds)
 	{
-		if ((*cmds)->args)
-		{
-			i = 0;
-			while ((*cmds)->args[i])
-				free((*cmds)->args[i++]);
-			free((*cmds)->args);
-		}
-		if ((*cmds)->io_fds)
+		i = 0;
+		while ((*cmds)->args && (*cmds)->args[i])
+			free((*cmds)->args[i++]);
+		free((*cmds)->args);
+		while ((*cmds)->io_fds)
 		{
 			redir = (*cmds)->io_fds;
-			while (redir)
-			{
-				free(redir->filename);
-				redir = redir->next;
-			}
-			free((*cmds)->io_fds);
+			(*cmds)->io_fds = redir->next;
+			free(redir->filename);
+			free(redir);
 		}
-		tmp = (*cmds);
-		(*cmds) = (*cmds)->next;
+		tmp = *cmds;
+		*cmds = (*cmds)->next;
 		free(tmp);
 	}
 }

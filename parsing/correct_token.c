@@ -6,11 +6,35 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 10:05:47 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/08 15:51:32 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/12 06:19:04 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
+
+void	is_heredoc(t_token *tokens, const char *line, t_env *env)
+{
+	int	t;
+
+	t = 0;
+	while (tokens)
+	{
+		if (tokens && tokens->type == HEREDOC && tokens->next == NULL)
+		{
+			env->heredoc = true;
+			while (line[t])
+			{
+				if (line[t] == '\'' || line[t] == '\"')
+				{
+					tokens->expand = true;
+					break ;
+				}
+				t++;
+			}
+		}
+		tokens = tokens->next;
+	}
+}
 
 char	*token_next_string(t_token *tokens, const char *line, int *i,
 		t_env *env)
@@ -19,41 +43,20 @@ char	*token_next_string(t_token *tokens, const char *line, int *i,
 	int		end;
 	char	*result;
 	t_token	*tmp;
-	int t = 0;
 
 	start = (*i);
-	//	end = end_len(line, (*i));
 	tmp = tokens;
-	//	if (end == 0)
-	//	{
-	//		free_token_list(tokens);
-	//		return (NULL);
-	//	}
 	result = ft_calloc(1, sizeof(char));
 	if (!result)
 		return (NULL);
 	env->heredoc = false;
-	while (tmp)
-	{
-		if (tmp && tmp->type == HEREDOC && tmp->next == NULL)
-		{
-			env->heredoc = true;
-			while (line[t])
-			{
-				if (line[t] == '\'' || line[t] == '\"')
-				{
-					tmp->type =true;
-					break ;
-				}
-				t++;
-			}
-		}
-		tmp = tmp->next;
-	}
+	is_heredoc(tmp, line, env);
 	end = end_len(line, (*i), env->heredoc);
 	if (end == 0)
 	{
 		free_token_list(tokens);
+		if (result)
+			free(result);
 		return (NULL);
 	}
 	while (start < end)
@@ -66,7 +69,6 @@ char	*token_next_string(t_token *tokens, const char *line, int *i,
 			result = my_strjoin(result, grep_no_quotes(i, end, &start, line,
 						env));
 	}
-	//printf("Current token: %s\n", result);
 	env->heredoc = false;
 	(*i) = start;
 	return (result);
@@ -83,6 +85,7 @@ t_token	*tokenize(const char *line, t_env *env)
 	tokens = NULL;
 	while (line[i[0]])
 	{
+		i[1] = 0;
 		if (line[i[0]] == '#')
 			break ;
 		while (ft_isspace(line[i[0]]))
@@ -100,6 +103,7 @@ t_token	*tokenize(const char *line, t_env *env)
 		{
 			if (!line[i[0]])
 				break ;
+			i[1] = 2;
 			token_value = token_next_string(tokens, line, i, env);
 		}
 		if (!token_value)
@@ -107,12 +111,17 @@ t_token	*tokenize(const char *line, t_env *env)
 		add_token(&tokens, ft_strdup(token_value), get_type(token_value, i[1]));
 		free(token_value);
 		token_value = NULL;
-	//	printf("->>line[%d]\n", i[0]);
+		if (tokens->type == PIPE)
+		{
+			write(2, "minishell: syntax error near unexpected token `|'\n", 51);
+			free_token_list(tokens);
+			return (NULL);
+		}
 	}
-	// check_for_error_syntax(t_token *token);
 	if (check_for_syntax_error(tokens))
+	{
+		free_token_list(tokens);
 		return (NULL);
-	// zhassna@c4r7p1:~/Desktop/a_minishell_team/mini_v2$ >>>
-	// bash: syntax error near unexpected token `>'
+	}
 	return (tokens);
 }

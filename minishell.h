@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:34:42 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/11 04:02:46 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/12 06:23:18 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ typedef struct s_env
         bool			heredoc;
 	struct s_env    *next;
 }       t_env;
+
+extern int exit_status;
 
 # include "execution/execution.h"
 # include "parsing/parsing.h"

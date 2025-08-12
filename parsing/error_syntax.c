@@ -15,10 +15,19 @@
 int	check_for_syntax_error(t_token *token)
 {
 	while (token->next)
+	{
+		if (token->type != WORD && (token->type == token->next->type))
+		{
+			write(2, "Error! syntax error near unexpected token `newline'\n",
+				53);
+			// exit_status = 127;
+			return (1);
+		}
 		token = token->next;
+	}
 	if (token->type != WORD)
 	{
-		printf("Error! syntax error near unexpected token `newline'\n");
+		write(2, "Error! syntax error near unexpected token `newline'\n", 53);
 		return (1);
 	}
 	return (0);

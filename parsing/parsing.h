@@ -59,7 +59,6 @@ void				add_redirection(t_cmd *cmd, t_redirections type,
 						const char *filename, bool expand);
 t_cmd				*new_cmd(void);
 void				free_token_list(t_token *list);
-char				**token_list_to_array(t_token *list);
 int					token_list_size(t_token *list);
 
 ////////////////////helper_func_3.c///////////////
@@ -77,7 +76,6 @@ char				*ft_strncpy(char *dest, const char *src, size_t n);
 /////////////////////utils_1.c///////////////////
 int					ft_isspace(char c);
 t_cmd				*parse_commands(t_token *token);
-void				secnd_free_token_list(t_token **list);
 
 /* ===== Added prototypes needed by main.c ===== */
 // t_token				*tokenize(const char *line);

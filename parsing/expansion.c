@@ -27,8 +27,8 @@ int	empty_check(char *s)
 	if (len == 2 && ((s[0] == '\"' && s[len - 1] == '\"') || (s[0] == '\''
 				&& s[len - 1] == '\'')))
 		return (1);
-	else if ((s[0] == '\"' && s[len - 1] == '\"') || (s[0] == '\''
-			&& s[len - 1] == '\''))
+	else if ((s[0] == '\"' && s[len - 1] == '\"') || (s[0] == '\'' && s[len
+			- 1] == '\''))
 	{
 		s++;
 		len -= 2;
@@ -56,11 +56,13 @@ char	*secnd_expand_dollar(int *start, const char *str, t_env *env)
 			|| empty_check((char *)str + 1)))
 	{
 		if (empty_check((char *)str + 1))
-			return (ft_substr("", 0, 1));
+			return (++(*start), ft_substr("", 0, 1));
 		else
-			return (ft_substr(str, 0, 1));
+			return (++(*start), ft_substr(str, 0, 1));
 	}
 	i++;
+	if (str[i] == '?')
+		return (++(*start), ++(*start), ft_strdup(ft_itoa(exit_status)));
 	if (str[i] == '?' || (str[i] >= '0' && str[i] <= '9'))
 		i++;
 	else

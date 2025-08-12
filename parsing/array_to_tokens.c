@@ -34,41 +34,40 @@ void	handle_pipe(t_cmd **head, t_cmd **current, t_token **temp_args)
 
 t_cmd	*parse_commands(t_token *tokens)
 {
-	int		flag;
 	t_cmd	*head;
 	t_cmd	*current;
 	t_token	*temp_args;
 	t_cmd	*tmp;
 
-	flag = 0;
 	head = NULL;
 	current = new_cmd();
 	temp_args = NULL;
 	while (tokens)
 	{
 		if (my_strcmp(tokens->value, "|") == 0)
-		{
-			if (flag == 0)
-			{
-				printf("ERROR! syntax error near unexpected token `|'\n");
-				return (NULL);
-			}
 			handle_pipe(&head, &current, &temp_args);
-		}
 		else if (is_redirection(tokens->value))
 		{
-			if (tokens->next->value)
+			if (tokens->next->value && tokens->next->type == WORD)
 			{
 				add_redirection(current, get_redirect_type(tokens->value),
 					tokens->next->value, tokens->expand);
 				tokens = tokens->next;
+			}
+			else
+			{
+				free_cmds(&current);
+				free_cmds(&head);
+				write(2, "ERROR! syntax error near unexpected token `|'\n", 47);
+				if (temp_args)
+					free_token_list(temp_args);
+				return (NULL);
 			}
 		}
 		else
 		{
 			add_token(&temp_args, ft_strdup(tokens->value), WORD);
 		}
-		flag = 1;
 		tokens = tokens->next;
 	}
 	if (temp_args)

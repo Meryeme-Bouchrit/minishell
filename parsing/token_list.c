@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   a_token_list.c                                     :+:      :+:    :+:   */
+/*   token_list.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:04:18 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/05 01:17:57 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/12 06:16:39 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,23 +43,6 @@ char	**token_list_to_array(t_token *list)
 	return (array);
 }
 
-void	secnd_free_token_list(t_token **list)
-{
-	t_token	*tmp;
-
-	printf("THIS IS SECND_fREE_TOKEN_LIST\n");
-	if (!list || !*list)
-		return ;
-	while (*list)
-	{
-		tmp = (*list)->next;
-		//	free((*list)->value);
-		free((*list));
-		*list = tmp;
-	}
-	*list = NULL;
-}
-
 void	free_token_list(t_token *list)
 {
 	t_token	*tmp;
@@ -89,7 +72,8 @@ t_cmd	*new_cmd(void)
 	return (cmd);
 }
 
-void	add_redirection(t_cmd *cmd, t_redirections type, const char *filename, bool expand)
+void	add_redirection(t_cmd *cmd, t_redirections type,
+	const char *filename, bool expand)
 {
 	t_in_out_fds	*redir;
 	t_in_out_fds	*tmp;
