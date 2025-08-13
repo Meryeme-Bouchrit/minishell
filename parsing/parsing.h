@@ -97,5 +97,7 @@ char				*secnd_expand_dollar(int *start, int end, const char *str,
 
 int					check_for_syntax_error(t_token *token);
 char				*expand_variables(const char *line, t_env *env);
+bool	redirection(t_token_type type);
+
 
 #endif

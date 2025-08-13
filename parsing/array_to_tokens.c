@@ -44,9 +44,9 @@ t_cmd	*parse_commands(t_token *tokens)
 	temp_args = NULL;
 	while (tokens)
 	{
-		if (my_strcmp(tokens->value, "|") == 0)
+		if (tokens->type == PIPE)
 			handle_pipe(&head, &current, &temp_args);
-		else if (is_redirection(tokens->value))
+		else if (redirection(tokens->type))
 		{
 			if (tokens->next->value && tokens->next->type == WORD)
 			{
@@ -66,7 +66,7 @@ t_cmd	*parse_commands(t_token *tokens)
 		}
 		else
 		{
-			add_token(&temp_args, ft_strdup(tokens->value), WORD);
+			add_token(&temp_args, ft_strdup(tokens->value), tokens->type);
 		}
 		tokens = tokens->next;
 	}
