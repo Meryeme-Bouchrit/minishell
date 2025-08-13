@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:21:37 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/12 10:21:06 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/12 20:16:25 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,3 @@ char	*find_cmd_path(char *cmd, char **envp)
 	free_split(paths);
 	return (full);
 }
-

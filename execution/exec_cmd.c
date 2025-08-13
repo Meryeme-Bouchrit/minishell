@@ -6,21 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:21:01 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/12 16:17:25 by mbouchri         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "execution.h"
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   exec_cmd.c                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/11 03:21:01 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/12 10:20:51 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/12 20:17:59 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +16,8 @@ void child_process_single(t_cmd *cmd, char *path, t_env *env)
 {
     char    **envp_arr;
 
-    ft_handle_redirs(cmd->io_fds, env);
+    if (ft_handle_redirs(cmd->io_fds))
+        exit(1);
     envp_arr = env_to_envp(env);
     if (!envp_arr)
     {

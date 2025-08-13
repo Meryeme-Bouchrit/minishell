@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:22:44 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/12 16:11:53 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/12 20:17:03 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,40 +51,42 @@ int	create_pipes(int **pipes, int n)
 	return (0);
 }
 
-void	child_process_pipeline(t_cmd *cmd, t_env *env,
-			int **pipes, int i, int total)
+void    child_process_pipeline(t_cmd *cmd, t_env *env, int **pipes, int i, int total)
 {
-	int		exit_code;
-	char	**envp_arr;
-	char	*path;
+    int     exit_code;
+    char    **envp_arr;
+    char    *path;
 
-	exit_code = 0;
-	if (i > 0)
-		dup2(pipes[i - 1][0], 0);
-	if (i < total - 1)
-		dup2(pipes[i][1], 1);
-	close_pipes(pipes, total - 1);
-	ft_handle_redirs(cmd->io_fds, env);
-	if (is_builtin(cmd->args[0]))
-	{
-		run_builtin(cmd->args, &env, &exit_code);
-		exit(exit_code);
-	}
-	envp_arr = env_to_envp(env);
-	path = find_cmd_path(cmd->args[0], envp_arr);
-	if (!path)
-	{
-		write(2, cmd->args[0], ft_strlen(cmd->args[0]));
-		write(2, ": command not found\n", 20);
-		free_split(envp_arr);
-		exit(127);
-	}
-	execve(path, cmd->args, envp_arr);
-	perror(cmd->args[0]);
-	free(path);
-	free_split(envp_arr);
-	exit(127);
+    exit_code = 0;
+    if (i > 0)
+        dup2(pipes[i - 1][0], 0);
+    if (i < total - 1)
+        dup2(pipes[i][1], 1);
+    close_pipes(pipes, total - 1);
+    if (ft_handle_redirs(cmd->io_fds))
+        exit(1);
+
+    if (is_builtin(cmd->args[0]))
+    {
+        run_builtin(cmd->args, &env, &exit_code);
+        exit(exit_code);
+    }
+    envp_arr = env_to_envp(env);
+    path = find_cmd_path(cmd->args[0], envp_arr);
+    if (!path)
+    {
+        write(2, cmd->args[0], ft_strlen(cmd->args[0]));
+        write(2, ": command not found\n", 20);
+        free_split(envp_arr);
+        exit(127);
+    }
+    execve(path, cmd->args, envp_arr);
+    perror(cmd->args[0]);
+    free(path);
+    free_split(envp_arr);
+    exit(127);
 }
+
 int exec_pipeline(t_cmd *cmds, t_env *env)
 {
     int n;

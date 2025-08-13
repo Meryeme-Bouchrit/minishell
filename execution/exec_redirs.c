@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:22:10 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/12 16:26:07 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/12 20:17:24 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,12 +74,11 @@ char *redir_heredoc(char *limiter, t_env *env, bool expand)
     return (tmp_filename);
 }
 
-// Redirection for input from a file descriptor
 static int redir_in_fd(int fd)
 {
     if (fd < 0)
         return (1);
-    if (dup2(fd, 0) == -1)  // 0 is stdin
+    if (dup2(fd, 0) == -1)
     {
         perror("dup2");
         close(fd);
@@ -112,7 +111,7 @@ int redir_out(char *filename)
         perror(filename);
         return (1);
     }
-    if (dup2(fd, 1) == -1)  // 1 is stdout
+    if (dup2(fd, 1) == -1) 
     {
         perror("dup2");
         close(fd);
@@ -142,40 +141,22 @@ int redir_app(char *filename)
     return (0);
 }
 
-// IMPORTANT:
-// This function must be called in the child process before execve.
-// It handles all redirections including heredocs.
-// For heredoc, it opens the temporary file and redirects stdin to it.
-void ft_handle_redirs(t_in_out_fds *redir, t_env *env)
+int ft_handle_redirs(t_in_out_fds *redir)
 {
-    int     fd;
-
-    (void)env; // env needed only for heredoc variable expansion, which was done before
-
     while (redir)
     {
         if (redir->type == REDIR_HEREDOC)
         {
-            // heredoc filename stores the tmp file path returned by redir_heredoc()
-            fd = open(redir->filename, O_RDONLY);
-            if (redir_in_fd(fd))
-                exit(1);
-        }
-        else if (redir->type == T_REDIR_IN)
-        {
             if (redir_in(redir->filename))
-                exit(1);
+                return (1);
         }
-        else if (redir->type == T_REDIR_OUT)
-        {
-            if (redir_out(redir->filename))
-                exit(1);
-        }
-        else if (redir->type == REDIR_APPEND)
-        {
-            if (redir_app(redir->filename))
-                exit(1);
-        }
+        else if (redir->type == T_REDIR_IN && redir_in(redir->filename))
+            return (1);
+        else if (redir->type == T_REDIR_OUT && redir_out(redir->filename))
+            return (1);
+        else if (redir->type == REDIR_APPEND && redir_app(redir->filename))
+            return (1);
         redir = redir->next;
     }
+    return (0);
 }

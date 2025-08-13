@@ -57,7 +57,7 @@ int     redir_in(char *filename);
 int     redir_out(char *filename);
 int     redir_app(char *filename);
 char    *redir_heredoc(char *limiter, t_env *env, bool expand);
-void    ft_handle_redirs(t_in_out_fds *redir, t_env *env);
+int     ft_handle_redirs(t_in_out_fds *redir);
 int     write_heredoc_to_pipe(int fd, char *limiter, t_env *env, bool expand);
 
 /* ===================== BUILTINS ===================== */
