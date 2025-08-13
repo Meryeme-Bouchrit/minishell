@@ -102,7 +102,7 @@ void	print_commands(t_cmd *cmds)
 			i = 0;
 			while (cmds->args[i])
 			{
-				printf("Arg[%d]: %s\n", i, cmds->args[i]);
+				printf("Arg[%d]: [%s]\n", i, cmds->args[i]);
 				i++;
 			}
 		}

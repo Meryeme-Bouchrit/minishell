@@ -107,15 +107,18 @@ t_token	*tokenize(const char *line, t_env *env)
 		}
 		if (!token_value)
 			return (NULL);
-		add_token(&tokens, ft_strdup(token_value), get_type(token_value, i[1]));
+		if (token_value[0])
+		{
+			add_token(&tokens, ft_strdup(token_value), get_type(token_value, i[1]));		
+			if (tokens->type == PIPE)
+			{
+				write(2, "minishell: syntax error near unexpected token `|'\n", 51);
+				free_token_list(tokens);
+				return (NULL);
+			}
+		}
 		free(token_value);
 		token_value = NULL;
-		if (tokens->type == PIPE)
-		{
-			write(2, "minishell: syntax error near unexpected token `|'\n", 51);
-			free_token_list(tokens);
-			return (NULL);
-		}
 	}
 	if (check_for_syntax_error(tokens))
 	{
