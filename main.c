@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:41:18 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/13 20:17:58 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/13 20:24:08 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,6 @@ static void	handle_exit_builtin(t_cmd *cmds, t_env **env)
 	}
 }
 
-static int	should_run_builtin_in_main(t_cmd *cmds)
-{
-	if (!cmds->next && !cmds->io_fds)
-		return (1);
-	return (0);
-}
-
 int	main(int argc, char **argv, char **envp)
 {
 	t_env	*env;
@@ -40,6 +33,7 @@ int	main(int argc, char **argv, char **envp)
 	t_cmd	*cmds;
 	char	*line;
 	int		skip_execution;
+	int		run;
 
 	(void)argc;
 	(void)argv;
@@ -67,9 +61,11 @@ int	main(int argc, char **argv, char **envp)
 
 			if (cmds && cmds->args && cmds->args[0])
 			{
+				run = (!cmds->next && !cmds->io_fds);
+
 				if (ft_strcmp(cmds->args[0], "exit") == 0)
 					handle_exit_builtin(cmds, &env);
-				else if (is_builtin(cmds->args[0]) && should_run_builtin_in_main(cmds))
+				else if (is_builtin(cmds->args[0]) && run)
 					run_builtin(cmds->args, &env, &exit_status);
 				else if (cmds->next || cmds->io_fds)
 					exit_status = exec_pipeline(cmds, env);
