@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:22:10 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/14 12:35:32 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/14 13:59:20 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,17 +92,20 @@ int redir_in(char *filename)
     int fd = open(filename, O_RDONLY);
     if (fd == -1)
     {
+        write(2, "minishell: ", 12);
         perror(filename);
         return (1);
     }
     return (redir_in_fd(fd));
 }
 
+
 int redir_out(char *filename)
 {
     int fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (fd == -1)
     {
+        write(2, "minishell: ", 12);
         perror(filename);
         return (1);
     }
@@ -121,6 +124,7 @@ int redir_app(char *filename)
     int fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
     if (fd == -1)
     {
+        write(2, "minishell: ", 12);
         perror(filename);
         return (1);
     }

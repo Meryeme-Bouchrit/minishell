@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   continue_herdoc.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 23:37:06 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/08 00:33:05 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/14 13:33:24 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,6 @@ char	*expand_variables(const char *line, t_env *env)
 	{
 		result = my_strjoin(result, expand_str(end, &start, line, env));
 	}
-	printf("result=[%s]", result);
+	// printf("result=[%s]", result);
 	return (result);
 }
