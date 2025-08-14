@@ -6,49 +6,49 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:22:44 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/14 09:18:04 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/14 13:15:42 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-void	close_pipes(int **pipes, int n)
+void    close_pipes(int **pipes, int n)
 {
-	int	i;
+    int i;
 
-	i = 0;
-	while (i < n)
-	{
-		close(pipes[i][0]);
-		close(pipes[i][1]);
-		free(pipes[i]);
-		i++;
-	}
-	free(pipes);
+    i = 0;
+    while (i < n)
+    {
+        close(pipes[i][0]);
+        close(pipes[i][1]);
+        free(pipes[i]);
+        i++;
+    }
+    free(pipes);
 }
 
-int	create_pipes(int **pipes, int n)
+int create_pipes(int **pipes, int n)
 {
-	int	i;
+    int i;
 
-	i = 0;
-	while (i < n)
-	{
-		pipes[i] = malloc(sizeof(int) * 2);
-		if (!pipes[i] || pipe(pipes[i]) == -1)
-		{
-			perror("pipe");
-			while (--i >= 0)
-			{
-				close(pipes[i][0]);
-				close(pipes[i][1]);
-				free(pipes[i]);
-			}
-			return (1);
-		}
-		i++;
-	}
-	return (0);
+    i = 0;
+    while (i < n)
+    {
+        pipes[i] = malloc(sizeof(int) * 2);
+        if (!pipes[i] || pipe(pipes[i]) == -1)
+        {
+            perror("pipe");
+            while (--i >= 0)
+            {
+                close(pipes[i][0]);
+                close(pipes[i][1]);
+                free(pipes[i]);
+            }
+            return (1);
+        }
+        i++;
+    }
+    return (0);
 }
 
 void child_process_pipeline(t_cmd *cmd, t_env *env, int **pipes, int i, int total)
@@ -64,9 +64,7 @@ void child_process_pipeline(t_cmd *cmd, t_env *env, int **pipes, int i, int tota
     if (i < total - 1)
         dup2(pipes[i][1], 1);
     close_pipes(pipes, total - 1);
-    if (ft_handle_redirs(cmd->io_fds))
-        exit(1);
-
+    ft_handle_redirs(cmd->io_fds);
     if (is_builtin(cmd->args[0]))
     {
         run_builtin(cmd->args, &env, &exit_code);
@@ -117,7 +115,6 @@ void child_process_pipeline(t_cmd *cmd, t_env *env, int **pipes, int i, int tota
     exit(127);
 }
 
-
 int exec_pipeline(t_cmd *cmds, t_env *env)
 {
     int n;
@@ -127,43 +124,78 @@ int exec_pipeline(t_cmd *cmds, t_env *env)
     int i;
     int status;
     int last_exit_code;
+    int ret_code;
 
     n = 0;
+    pipes = NULL;
+    pids = NULL;
+    ret_code = 0;
+    last_exit_code = 0;
+
+    if (ft_preprocess_heredocs(cmds, env) != 0)
+    {
+        return (1);
+    }
     cur = cmds;
     while (cur && ++n)
         cur = cur->next;
+
     if (n == 0)
         return (0);
-    pipes = malloc(sizeof(int *) * (n - 1));
-    if (!pipes || create_pipes(pipes, n - 1))
-        return (free(pipes), 1);
+    if (n > 1)
+    {
+        pipes = malloc(sizeof(int *) * (n - 1));
+        if (!pipes || create_pipes(pipes, n - 1))
+        {
+            if (pipes)
+                free(pipes);
+            return (1);
+        }
+    }
     pids = malloc(sizeof(pid_t) * n);
     if (!pids)
-        return (close_pipes(pipes, n - 1), 1);
+    {
+        if (pipes)
+            close_pipes(pipes, n - 1);
+        return (1);
+    }
     cur = cmds;
     i = -1;
     while (++i < n)
     {
         pids[i] = fork();
         if (pids[i] == -1)
-            return (perror("fork"), close_pipes(pipes, n - 1), free(pids), 1);
+        {
+            perror("fork");
+            ret_code = 1;
+            break;
+        }
         if (pids[i] == 0)
             child_process_pipeline(cur, env, pipes, i, n);
         cur = cur->next;
     }
-    close_pipes(pipes, n - 1);
+    if (pipes)
+        close_pipes(pipes, n - 1);
+    
     i = -1;
-	while (++i < n)
-	{
-		waitpid(pids[i], &status, 0);
-		if (i == n - 1)
-		{
-			if ((status & 0x7f) == 0)
-				last_exit_code = (status >> 8) & 0xff;
-			else
-				last_exit_code = 128 + (status & 0x7f);
-		}
-	}
+    while (++i < n)
+    {
+        if (pids[i] > 0)
+        {
+            waitpid(pids[i], &status, 0);
+            if (i == n - 1)
+            {
+                if ((status & 0x7f) == 0)
+                    last_exit_code = (status >> 8) & 0xff;
+                else
+                    last_exit_code = 128 + (status & 0x7f);
+            }
+        }
+    }
+
     free(pids);
-    return (last_exit_code);
+    if (ret_code == 0)
+        return (last_exit_code);
+    return (ret_code);
 }
+

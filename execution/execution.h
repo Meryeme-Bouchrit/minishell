@@ -57,7 +57,7 @@ int     redir_in(char *filename);
 int     redir_out(char *filename);
 int     redir_app(char *filename);
 char    *redir_heredoc(char *limiter, t_env *env, bool expand);
-int     ft_handle_redirs(t_in_out_fds *redir);
+void    ft_handle_redirs(t_in_out_fds *redir);
 int     write_heredoc_to_pipe(int fd, char *limiter, t_env *env, bool expand);
 
 /* ===================== BUILTINS ===================== */
@@ -104,5 +104,5 @@ int     only_spaces(const char *str);
 /* ===================== MAIN EXECUTION HELPERS ===================== */
 
 void    execute_and_free(char *line, t_env **env, int *exit_status);
-
+int ft_preprocess_heredocs(t_cmd *cmds, t_env *env);
 #endif

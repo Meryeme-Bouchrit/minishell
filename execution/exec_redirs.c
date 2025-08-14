@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:22:10 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/14 10:19:56 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/14 12:35:32 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ static int redir_in_fd(int fd)
 {
     if (fd < 0)
         return (1);
-    if (dup2(fd, STDIN_FILENO) == -1)
+    if (dup2(fd, 0) == -1)
     {
         perror("dup2");
         close(fd);
@@ -106,7 +106,7 @@ int redir_out(char *filename)
         perror(filename);
         return (1);
     }
-    if (dup2(fd, STDOUT_FILENO) == -1)
+    if (dup2(fd, 1) == -1)
     {
         perror("dup2");
         close(fd);
@@ -124,7 +124,7 @@ int redir_app(char *filename)
         perror(filename);
         return (1);
     }
-    if (dup2(fd, STDOUT_FILENO) == -1)
+    if (dup2(fd, 1) == -1)
     {
         perror("dup2");
         close(fd);
@@ -134,31 +134,57 @@ int redir_app(char *filename)
     return (0);
 }
 
-int ft_handle_redirs(t_in_out_fds *redir)
+void ft_handle_redirs(t_in_out_fds *redir)
 {
+    int      fd;
+
     while (redir)
     {
         if (redir->type == REDIR_HEREDOC)
         {
-            if (redir_in(redir->filename))
-                return (1);
+            fd = open(redir->filename, O_RDONLY);
+            if (redir_in_fd(fd))
+                exit(1);
         }
         else if (redir->type == T_REDIR_IN)
         {
             if (redir_in(redir->filename))
-                return (1);
+                exit(1);
         }
         else if (redir->type == T_REDIR_OUT)
         {
             if (redir_out(redir->filename))
-                return (1);
+                exit(1);
         }
         else if (redir->type == REDIR_APPEND)
         {
             if (redir_app(redir->filename))
-                return (1);
+                exit(1);
         }
         redir = redir->next;
+    }
+}
+
+int ft_preprocess_heredocs(t_cmd *cmds, t_env *env)
+{
+    t_cmd *cur_cmd;
+    t_in_out_fds *cur_redir;
+
+    cur_cmd = cmds;
+    while (cur_cmd)
+    {
+        cur_redir = cur_cmd->io_fds;
+        while (cur_redir)
+        {
+            if (cur_redir->type == REDIR_HEREDOC)
+            {
+                cur_redir->filename = redir_heredoc(cur_redir->filename, env, true);
+                if (!cur_redir->filename)
+                    return (1);
+            }
+            cur_redir = cur_redir->next;
+        }
+        cur_cmd = cur_cmd->next;
     }
     return (0);
 }

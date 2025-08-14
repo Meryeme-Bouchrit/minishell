@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:21:01 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/14 09:47:26 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/14 13:16:25 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,8 @@
 void child_process_single(t_cmd *cmd, char *path, t_env *env)
 {
     char    **envp_arr;
-
-    if (ft_handle_redirs(cmd->io_fds))
-        exit(1);
+    
+    ft_handle_redirs(cmd->io_fds);
     envp_arr = env_to_envp(env);
     if (!envp_arr)
     {
@@ -64,6 +63,12 @@ int exec_cmd(t_cmd *cmd, t_env *env, int *exit_status)
     char **envp;
     int fd;
 
+    if (ft_preprocess_heredocs(cmd, env))
+    {
+        *exit_status = 1;
+        return (1);
+    }
+
     if (!cmd->args[0] || cmd->args[0][0] == '\0')
     {
        *exit_status = 0;
@@ -71,11 +76,7 @@ int exec_cmd(t_cmd *cmd, t_env *env, int *exit_status)
     }
     if (is_builtin(cmd->args[0]))
         return (run_builtin(cmd->args, &env, exit_status));
-    if (!cmd->args[0] || cmd->args[0][0] == '\0')
-    {
-        *exit_status = 0;
-        return (0);
-    }
+    
     if (ft_strchr(cmd->args[0], '/'))
     {
         fd = open(cmd->args[0], O_DIRECTORY);
@@ -88,7 +89,6 @@ int exec_cmd(t_cmd *cmd, t_env *env, int *exit_status)
             return (126);
         }
     }
-
     if (ft_strchr(cmd->args[0], '/') &&
         access(cmd->args[0], F_OK) == 0 &&
         access(cmd->args[0], X_OK) != 0)
@@ -98,7 +98,6 @@ int exec_cmd(t_cmd *cmd, t_env *env, int *exit_status)
         *exit_status = 126;
         return (126);
     }
-
     if (ft_strchr(cmd->args[0], '/') &&
         access(cmd->args[0], F_OK) != 0)
     {
@@ -107,7 +106,7 @@ int exec_cmd(t_cmd *cmd, t_env *env, int *exit_status)
         *exit_status = 127;
         return (127);
     }
-
+    
     envp = env_to_envp(env);
     if (!envp)
     {
@@ -115,7 +114,6 @@ int exec_cmd(t_cmd *cmd, t_env *env, int *exit_status)
         *exit_status = 1;
         return (1);
     }
-
     path = find_cmd_path(cmd->args[0], envp);
     if (!path)
     {
