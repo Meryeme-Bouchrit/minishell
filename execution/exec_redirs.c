@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:22:10 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/12 20:17:24 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/14 10:19:56 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,8 @@ char *redir_heredoc(char *limiter, t_env *env, bool expand)
 
     tmp_filename = generate_temp_filename();
     if (!tmp_filename)
-    {
-        perror("malloc");
         return (NULL);
-    }
+
     fd = open(tmp_filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
     if (fd == -1)
     {
@@ -46,6 +44,7 @@ char *redir_heredoc(char *limiter, t_env *env, bool expand)
         free(tmp_filename);
         return (NULL);
     }
+
     while (1)
     {
         line = readline("> ");
@@ -78,7 +77,7 @@ static int redir_in_fd(int fd)
 {
     if (fd < 0)
         return (1);
-    if (dup2(fd, 0) == -1)
+    if (dup2(fd, STDIN_FILENO) == -1)
     {
         perror("dup2");
         close(fd);
@@ -90,9 +89,7 @@ static int redir_in_fd(int fd)
 
 int redir_in(char *filename)
 {
-    int fd;
-
-    fd = open(filename, O_RDONLY);
+    int fd = open(filename, O_RDONLY);
     if (fd == -1)
     {
         perror(filename);
@@ -103,15 +100,13 @@ int redir_in(char *filename)
 
 int redir_out(char *filename)
 {
-    int fd;
-
-    fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    int fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (fd == -1)
     {
         perror(filename);
         return (1);
     }
-    if (dup2(fd, 1) == -1) 
+    if (dup2(fd, STDOUT_FILENO) == -1)
     {
         perror("dup2");
         close(fd);
@@ -123,15 +118,13 @@ int redir_out(char *filename)
 
 int redir_app(char *filename)
 {
-    int fd;
-
-    fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+    int fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
     if (fd == -1)
     {
         perror(filename);
         return (1);
     }
-    if (dup2(fd, 1) == -1)
+    if (dup2(fd, STDOUT_FILENO) == -1)
     {
         perror("dup2");
         close(fd);
@@ -150,12 +143,21 @@ int ft_handle_redirs(t_in_out_fds *redir)
             if (redir_in(redir->filename))
                 return (1);
         }
-        else if (redir->type == T_REDIR_IN && redir_in(redir->filename))
-            return (1);
-        else if (redir->type == T_REDIR_OUT && redir_out(redir->filename))
-            return (1);
-        else if (redir->type == REDIR_APPEND && redir_app(redir->filename))
-            return (1);
+        else if (redir->type == T_REDIR_IN)
+        {
+            if (redir_in(redir->filename))
+                return (1);
+        }
+        else if (redir->type == T_REDIR_OUT)
+        {
+            if (redir_out(redir->filename))
+                return (1);
+        }
+        else if (redir->type == REDIR_APPEND)
+        {
+            if (redir_app(redir->filename))
+                return (1);
+        }
         redir = redir->next;
     }
     return (0);
