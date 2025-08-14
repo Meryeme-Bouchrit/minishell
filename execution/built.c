@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 20:47:33 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/12 19:58:52 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/14 08:54:39 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ int exec_builtin_with_redir(t_cmd *cmd, t_env **env, int *exit_status)
         perror("dup");
         return (1);
     }
-
     while (redir)
     {
         if (redir->type == REDIR_HEREDOC)
@@ -117,23 +116,18 @@ int exec_builtin_with_redir(t_cmd *cmd, t_env **env, int *exit_status)
         }
         redir = redir->next;
     }
-
     if (result == 0)
         result = run_builtin(cmd->args, env, exit_status);
-
     if (dup2(in_backup, 0) == -1)
         perror("dup2");
     if (dup2(out_backup, 1) == -1)
         perror("dup2");
-
     close(in_backup);
     close(out_backup);
-
     if (heredoc_tmpfile)
     {
         unlink(heredoc_tmpfile);
         free(heredoc_tmpfile);
     }
-
     return (result);
 }

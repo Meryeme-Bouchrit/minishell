@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:21:01 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/12 20:17:59 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/14 09:47:26 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,51 @@ int exec_cmd(t_cmd *cmd, t_env *env, int *exit_status)
 {
     char *path;
     char **envp;
+    int fd;
 
+    if (!cmd->args[0] || cmd->args[0][0] == '\0')
+    {
+       *exit_status = 0;
+       return (0);
+    }
     if (is_builtin(cmd->args[0]))
         return (run_builtin(cmd->args, &env, exit_status));
+    if (!cmd->args[0] || cmd->args[0][0] == '\0')
+    {
+        *exit_status = 0;
+        return (0);
+    }
+    if (ft_strchr(cmd->args[0], '/'))
+    {
+        fd = open(cmd->args[0], O_DIRECTORY);
+        if (fd != -1)
+        {
+            close(fd);
+            write(2, cmd->args[0], ft_strlen(cmd->args[0]));
+            write(2, ": Is a directory\n", 17);
+            *exit_status = 126;
+            return (126);
+        }
+    }
+
+    if (ft_strchr(cmd->args[0], '/') &&
+        access(cmd->args[0], F_OK) == 0 &&
+        access(cmd->args[0], X_OK) != 0)
+    {
+        write(2, cmd->args[0], ft_strlen(cmd->args[0]));
+        write(2, ": Permission denied\n", 20);
+        *exit_status = 126;
+        return (126);
+    }
+
+    if (ft_strchr(cmd->args[0], '/') &&
+        access(cmd->args[0], F_OK) != 0)
+    {
+        write(2, cmd->args[0], ft_strlen(cmd->args[0]));
+        write(2, ": No such file or directory\n", 28);
+        *exit_status = 127;
+        return (127);
+    }
 
     envp = env_to_envp(env);
     if (!envp)
@@ -73,6 +115,7 @@ int exec_cmd(t_cmd *cmd, t_env *env, int *exit_status)
         *exit_status = 1;
         return (1);
     }
+
     path = find_cmd_path(cmd->args[0], envp);
     if (!path)
     {

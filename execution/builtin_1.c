@@ -6,26 +6,23 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 20:31:35 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/12 11:16:32 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/14 08:54:15 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-// Changes the current working directory and updates PWD and OLDPWD
 int ft_cd(char **args, t_env **env)
 {
     char *old_directory;
     char *new_directory;
     char *path;
 
-    /* If more than 2 arguments, error */
     if (args[1] && args[2])
     {
         write(2, "minishell: cd: too many arguments\n", 34);
         return (1);
     }
-    
     path = args[1];
     if (!path || ft_strcmp(path, "~") == 0)
     {
@@ -47,14 +44,12 @@ int ft_cd(char **args, t_env **env)
         write(1, path, ft_strlen(path));
         write(1, "\n", 1);
     }
-
     old_directory = getcwd(NULL, 0);
     if (!old_directory)
     {
         perror("minishell: cd");
         return (1);
     }
-    
     if (chdir(path) != 0)
     {
         write(2, "minishell: cd: ", 15);
@@ -62,9 +57,8 @@ int ft_cd(char **args, t_env **env)
         write(2, ": ", 2);
         perror("");
         free(old_directory);
-        return (1); // Return 1 on failure
+        return (1);
     }
-    
     new_directory = getcwd(NULL, 0);
     if (!new_directory)
     {
@@ -72,15 +66,13 @@ int ft_cd(char **args, t_env **env)
         free(old_directory);
         return (1);
     }
-    
     set_env_var(env, "OLDPWD", old_directory);
     set_env_var(env, "PWD", new_directory);
     free(old_directory);
     free(new_directory);
-    return (0); // Return 0 on success
+    return (0);
 }
 
-// Prints the current working directory to stdout
 int	ft_pwd(void)
 {
 	char	*dir;
@@ -97,7 +89,6 @@ int	ft_pwd(void)
 	return (0);
 }
 
-// Displays all environment variables that have a value
 int	ft_env(t_env *env)
 {
 	while (env)

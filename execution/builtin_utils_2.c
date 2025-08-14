@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 12:22:14 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/12 15:25:02 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/14 08:55:05 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,20 +64,13 @@ int	is_valid_key(char *key)
 
 int	ft_is_numeric(const char *str)
 {
-	int		i;
-	char	sign;
+	int	i;
 
-	i = 0;
-	sign = 0;
 	if (!str || !str[0])
 		return (0);
-	while (str[i] == '+' || str[i] == '-')
-	{
-		if (sign && str[i] != sign)
-			return (0);
-		sign = str[i];
+	i = 0;
+	if (str[i] == '+' || str[i] == '-')
 		i++;
-	}
 	if (!str[i])
 		return (0);
 	while (str[i])
@@ -88,6 +81,7 @@ int	ft_is_numeric(const char *str)
 	}
 	return (1);
 }
+
 
 void	print_export_env(t_env *env)
 {

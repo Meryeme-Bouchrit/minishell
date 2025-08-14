@@ -14,6 +14,8 @@
 
 int	check_for_syntax_error(t_token *token)
 {
+	if (!token)
+		return (0);
 	while (token->next)
 	{
 		if (token->type != WORD && (token->type == token->next->type))

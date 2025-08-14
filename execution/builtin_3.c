@@ -6,14 +6,12 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 18:06:32 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/12 11:25:27 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/14 08:53:33 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-
-// Handles echo builtin with support for -n flag (no newline)
 int	ft_echo(char **args)
 {
 	int	i;

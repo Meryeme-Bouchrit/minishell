@@ -40,7 +40,7 @@ int     exec_cmd(t_cmd *cmd, t_env *env, int *exit_status);
 void    child_process_single(t_cmd *cmd, char *path, t_env *env);
 
 /* exec_pipe.c */
-char    **collect_heredocs(t_cmd *cmds, t_env *env);
+// char    **collect_heredocs(t_cmd *cmds, t_env *env);
 int     exec_pipeline(t_cmd *cmds, t_env *env);
 
 /* exec_env.c */

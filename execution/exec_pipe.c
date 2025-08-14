@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:22:44 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/12 20:17:03 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/14 09:18:04 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,12 @@ int	create_pipes(int **pipes, int n)
 	return (0);
 }
 
-void    child_process_pipeline(t_cmd *cmd, t_env *env, int **pipes, int i, int total)
+void child_process_pipeline(t_cmd *cmd, t_env *env, int **pipes, int i, int total)
 {
     int     exit_code;
     char    **envp_arr;
     char    *path;
+    int     fd;
 
     exit_code = 0;
     if (i > 0)
@@ -70,6 +71,35 @@ void    child_process_pipeline(t_cmd *cmd, t_env *env, int **pipes, int i, int t
     {
         run_builtin(cmd->args, &env, &exit_code);
         exit(exit_code);
+    }
+
+    if (!cmd->args[0] || cmd->args[0][0] == '\0')
+        exit(0);
+    if (ft_strchr(cmd->args[0], '/'))
+    {
+        fd = open(cmd->args[0], O_DIRECTORY);
+        if (fd != -1)
+        {
+            close(fd);
+            write(2, cmd->args[0], ft_strlen(cmd->args[0]));
+            write(2, ": Is a directory\n", 17);
+            exit(126);
+        }
+    }
+    if (ft_strchr(cmd->args[0], '/') &&
+        access(cmd->args[0], F_OK) == 0 &&
+        access(cmd->args[0], X_OK) != 0)
+    {
+        write(2, cmd->args[0], ft_strlen(cmd->args[0]));
+        write(2, ": Permission denied\n", 20);
+        exit(126);
+    }
+    if (ft_strchr(cmd->args[0], '/') &&
+        access(cmd->args[0], F_OK) != 0)
+    {
+        write(2, cmd->args[0], ft_strlen(cmd->args[0]));
+        write(2, ": No such file or directory\n", 28);
+        exit(127);
     }
     envp_arr = env_to_envp(env);
     path = find_cmd_path(cmd->args[0], envp_arr);
@@ -86,6 +116,7 @@ void    child_process_pipeline(t_cmd *cmd, t_env *env, int **pipes, int i, int t
     free_split(envp_arr);
     exit(127);
 }
+
 
 int exec_pipeline(t_cmd *cmds, t_env *env)
 {
