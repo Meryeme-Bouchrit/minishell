@@ -6,13 +6,13 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 19:24:24 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/12 15:24:30 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/16 15:09:39 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-static t_env	*create_env_node(char *envp_entry, t_env **head)
+t_env	*create_env_node(char *envp_entry, t_env **head)
 {
 	t_env	*node;
 	char	*equal;

@@ -6,13 +6,13 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:22:10 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/16 14:54:23 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/16 15:08:27 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-static int redir_in_fd(int fd)
+int redir_in_fd(int fd)
 {
     if (fd < 0)
         return (1);
@@ -108,7 +108,7 @@ void ft_handle_redirs(t_in_out_fds *redir)
     }
 }
 
-static int heredoc_child_loop(int out_fd, char *limiter, t_env *env, bool expand)
+int heredoc_child_loop(int out_fd, char *limiter, t_env *env, bool expand)
 {
     char *line = NULL;
     char *tmp2 = NULL;
@@ -142,8 +142,7 @@ static int heredoc_child_loop(int out_fd, char *limiter, t_env *env, bool expand
     return 0;
 }
 
-
-static char *generate_temp_filename(void)
+char *generate_temp_filename(void)
 {
     static int counter = 0;
     char *counter_str;

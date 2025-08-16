@@ -6,14 +6,14 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 05:57:10 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/11 05:00:00 by mbouchri          ###   ########.fr       */
+/*   Updated: 2025/08/16 13:45:00 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EXECUTION_H
 # define EXECUTION_H
 
-/* Standard Libraries */
+/* ===================== STANDARD LIBRARIES ===================== */
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
@@ -26,19 +26,19 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 
-/* Readline */
+/* ===================== READLINE ===================== */
 # include <readline/readline.h>
 # include <readline/history.h>
 
-/* Project headers */
+/* ===================== PROJECT HEADERS ===================== */
 # include "../libft/libft.h"
 # include "minishell.h"
 
-#ifndef O_DIRECTORY
-# define O_DIRECTORY 0
-#endif
+# ifndef O_DIRECTORY
+#  define O_DIRECTORY 0
+# endif
 
-/* ===================== EXECUTION CORE ===================== */
+/* ===================== EXECUTION CORE ======================== */
 
 /* exec_cmd.c */
 int     exec_cmd(t_cmd *cmd, t_env *env, int *exit_status);
@@ -60,14 +60,16 @@ char    *find_bin(char *cmd, char **paths);
 int     redir_in(char *filename);
 int     redir_out(char *filename);
 int     redir_app(char *filename);
-char    *redir_heredoc(char *limiter, t_env *env, bool expand);
 void    ft_handle_redirs(t_in_out_fds *redir);
+char    *redir_heredoc(char *limiter, t_env *env, bool expand);
+int     ft_preprocess_heredocs(t_cmd *cmds, t_env *env);
 
-/* ===================== BUILTINS ===================== */
+/* ======================= BUILTINS ============================ */
 
 int     is_builtin(char *cmd);
 int     run_builtin(char **args, t_env **env, int *exit_status);
 int     exec_builtin_with_redir(t_cmd *cmd, t_env **env, int *exit_status);
+
 int     ft_cd(char **args, t_env **env);
 int     ft_pwd(void);
 int     ft_env(t_env *env);
@@ -76,7 +78,7 @@ int     ft_exit(char **args, int *exit_status);
 int     ft_unset(char **args, t_env **env);
 int     ft_export(char **args, t_env **env);
 
-/* ===================== ENVIRONMENT UTILS ===================== */
+/* ==================== ENVIRONMENT UTILS ====================== */
 
 t_env   *copy_env(char **envp);
 void    free_env_list(t_env *env);
@@ -88,14 +90,23 @@ char    *get_env_value(t_env *env, const char *key);
 void    replace_env(t_env **env, char *key, char *value);
 void    handle_env_update(t_env **env, char *key, char *value);
 void    print_export_env(t_env *env);
+
 int     is_valid_key(char *key);
 char    *create_env_var(const char *key, const char *value);
 void    add_node_back(t_env **env, t_env *new);
 void    set_env_var(t_env **env, const char *key, const char *value);
 void    parse_export_arg(char *arg, char **key, char **value);
-t_env   *add_env_node(char *key, char *value); /* <--- ADD THIS */
 
-/* ===================== UTILS ===================== */
+t_env   *add_env_node(char *key, char *value);
+t_env   *create_env_node(char *envp_entry, t_env **head);
+
+/* ======================== SIGNALS ============================ */
+
+void    sigquit_prompt(int sig);
+void    sigint_prompt(int sig);
+void    sigint_handler_heredoc(int sig);
+
+/* ========================= UTILS ============================= */
 
 int     ft_strcmp(const char *s1, const char *s2);
 int     ft_is_numeric(const char *str);
@@ -103,12 +114,10 @@ void    free_split(char **split);
 char    *ft_remove_quotes(char *str);
 int     only_spaces(const char *str);
 
-/* ===================== MAIN EXECUTION HELPERS ===================== */
-
-int     ft_preprocess_heredocs(t_cmd *cmds, t_env *env);
-
-void    sigquit_prompt(int sig);
-void    sigint_prompt(int sig);
-void    sigint_handler_heredoc(int sig);
+int     heredoc_child_loop(int out_fd, char *limiter, t_env *env, bool expand);
+char    *generate_temp_filename(void);
+int     redir_in_fd(int fd);
+int     fork_and_wait(t_cmd *cmd, char *path, t_env *env);
+void    handle_exit(t_cmd *cmds, t_env **env);
 
 #endif

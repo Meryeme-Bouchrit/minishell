@@ -6,13 +6,13 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:41:18 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/16 14:56:09 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/16 15:10:15 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void handle_exit(t_cmd *cmds, t_env **env)
+void handle_exit(t_cmd *cmds, t_env **env)
 {
     int ret;
 

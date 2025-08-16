@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:21:01 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/14 13:55:37 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/16 15:08:58 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void child_process_single(t_cmd *cmd, char *path, t_env *env)
     exit(127);
 }
 
-static int fork_and_wait(t_cmd *cmd, char *path, t_env *env)
+int fork_and_wait(t_cmd *cmd, char *path, t_env *env)
 {
     pid_t   pid;
     int     status;
