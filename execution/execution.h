@@ -45,7 +45,6 @@ int     exec_cmd(t_cmd *cmd, t_env *env, int *exit_status);
 void    child_process_single(t_cmd *cmd, char *path, t_env *env);
 
 /* exec_pipe.c */
-// char    **collect_heredocs(t_cmd *cmds, t_env *env);
 int     exec_pipeline(t_cmd *cmds, t_env *env);
 
 /* exec_env.c */
@@ -63,7 +62,6 @@ int     redir_out(char *filename);
 int     redir_app(char *filename);
 char    *redir_heredoc(char *limiter, t_env *env, bool expand);
 void    ft_handle_redirs(t_in_out_fds *redir);
-// int     write_heredoc_to_pipe(int fd, char *limiter, t_env *env, bool expand);
 
 /* ===================== BUILTINS ===================== */
 
@@ -77,7 +75,6 @@ int     ft_echo(char **args);
 int     ft_exit(char **args, int *exit_status);
 int     ft_unset(char **args, t_env **env);
 int     ft_export(char **args, t_env **env);
-// int     exec_builtin_in_child(t_cmd *cmd, t_env **env);
 
 /* ===================== ENVIRONMENT UTILS ===================== */
 
@@ -108,11 +105,10 @@ int     only_spaces(const char *str);
 
 /* ===================== MAIN EXECUTION HELPERS ===================== */
 
-// void    execute_and_free(char *line, t_env **env, int *exit_status);
-int ft_preprocess_heredocs(t_cmd *cmds, t_env *env);
+int     ft_preprocess_heredocs(t_cmd *cmds, t_env *env);
 
 void    sigquit_prompt(int sig);
 void    sigint_prompt(int sig);
-void    sigint_heredoc(int sig);
+void    sigint_handler_heredoc(int sig);
 
 #endif

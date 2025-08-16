@@ -6,13 +6,13 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:41:18 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/16 02:11:38 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/16 14:56:09 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void handle_exit_builtin(t_cmd *cmds, t_env **env)
+static void handle_exit(t_cmd *cmds, t_env **env)
 {
     int ret;
 
@@ -27,11 +27,12 @@ static void handle_exit_builtin(t_cmd *cmds, t_env **env)
 int main(int argc, char **argv, char **envp)
 {
     t_env   *env;
-    t_token *tokens;
-    t_cmd   *cmds;
+    t_token *tok;
+    t_cmd   *cmd;
     char    *line;
-    int     skip_execution;
+    int     skip;
     int     run;
+    int     skip_cmd;
 
     (void)argc;
     (void)argv;
@@ -48,33 +49,35 @@ int main(int argc, char **argv, char **envp)
             write(1, "exit\n", 5);
             break;
         }
-
-        skip_execution = 0;
-        if (only_spaces(line))
-            skip_execution = 1;
-
-        if (!skip_execution)
+        skip = only_spaces(line);
+        skip_cmd = 0;
+        if (!skip)
         {
             add_history(line);
-            tokens = tokenize(line, env);
-            cmds = parse_commands(tokens);
-
-            if (cmds && cmds->args && cmds->args[0])
+            tok = tokenize(line, env);
+            cmd = parse_commands(tok);
+            if (cmd)
             {
-                run = (!cmds->next && !cmds->io_fds);
+                if (ft_preprocess_heredocs(cmd, env) != 0)
+                {
+                    skip_cmd = 1;
+                }
+                if (!skip_cmd && cmd->args && cmd->args[0])
+                {
+                    run = (!cmd->next && !cmd->io_fds);
 
-                if (ft_strcmp(cmds->args[0], "exit") == 0)
-                    handle_exit_builtin(cmds, &env);
-                else if (is_builtin(cmds->args[0]) && run)
-                    run_builtin(cmds->args, &env, &g_exit);
-                else if (cmds->next || cmds->io_fds)
-                    g_exit = exec_pipeline(cmds, env);
-                else
-                    exec_cmd(cmds, env, &g_exit);
+                    if (ft_strcmp(cmd->args[0], "exit") == 0)
+                        handle_exit(cmd, &env);
+                    else if (is_builtin(cmd->args[0]) && run)
+                        run_builtin(cmd->args, &env, &g_exit);
+                    else if (cmd->next || cmd->io_fds)
+                        g_exit = exec_pipeline(cmd, env);
+                    else
+                        exec_cmd(cmd, env, &g_exit);
+                }
             }
-
-            free_token_list(tokens);
-            free_cmds(&cmds);
+            free_token_list(tok);
+            free_cmds(&cmd);
         }
         free(line);
     }

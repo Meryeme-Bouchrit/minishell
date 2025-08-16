@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 02:11:00 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/16 09:23:58 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/16 14:55:54 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,13 +136,6 @@ int exec_pipeline(t_cmd *cmds, t_env *env)
     pids = NULL;
     ret_code = 0;
     last_exit_code = 0;
-
-    if (ft_preprocess_heredocs(cmds, env) != 0)
-    {
-        signal(SIGINT, sigint_prompt);
-        signal(SIGQUIT, SIG_IGN);
-        return (g_exit);
-    }
 
     signal(SIGINT, sigint_prompt);
     signal(SIGQUIT, SIG_IGN);

@@ -6,88 +6,11 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:22:10 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/16 09:41:47 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/16 14:54:23 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
-
-static char *generate_temp_filename(void)
-{
-    static int  counter = 0;
-    char        *num_str;
-    char        *filename;
-
-    num_str = ft_itoa(counter++);
-    if (!num_str)
-        return (NULL);
-    filename = ft_strjoin("/tmp/minishell_heredoc_", num_str);
-    free(num_str);
-    return (filename);
-}
-
-char *redir_heredoc(char *limiter, t_env *env, bool expand)
-{
-    char    *tmp_filename;
-    int     fd;
-    char    *line;
-    char    *processed_line;
-
-    tmp_filename = generate_temp_filename();
-    if (!tmp_filename)
-        return (NULL);
-    fd = open(tmp_filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
-    if (fd == -1)
-    {
-        perror("open");
-        free(tmp_filename);
-        return (NULL);
-    }
-    while (1)
-    {
-        line = readline("> ");
-
-        if (g_exit == 130) 
-        {
-            if (line)
-                free(line);
-            close(fd);
-            unlink(tmp_filename);
-            free(tmp_filename);
-            return (NULL);
-        }
-
-        if (!line) 
-        {
-            write(2, "minishell: warning: here-document delimited by end-of-file (wanted `", 69);
-            write(2, limiter, ft_strlen(limiter));
-            write(2, "')\n", 3);
-            break;
-        }
-
-        if (ft_strcmp(line, limiter) == 0)
-        {
-            free(line);
-            break;
-        }
-
-        if (expand)
-        {
-            processed_line = expand_variables(line, env);
-            if (processed_line)
-            {
-                ft_putstr_fd(processed_line, fd);
-                free(processed_line);
-            }
-        }
-        else
-            ft_putstr_fd(line, fd);
-        ft_putstr_fd("\n", fd);
-        free(line);
-    }
-    close(fd);
-    return (tmp_filename);
-}
 
 static int redir_in_fd(int fd)
 {
@@ -185,16 +108,128 @@ void ft_handle_redirs(t_in_out_fds *redir)
     }
 }
 
+static int heredoc_child_loop(int out_fd, char *limiter, t_env *env, bool expand)
+{
+    char *line = NULL;
+    char *tmp2 = NULL;
+    while (1)
+    {
+        line = readline("> ");
+        if (!line)
+            break;
+        if (ft_strcmp(line, limiter) == 0)
+        {
+            free(line);
+            break;
+        }
+        if (expand)
+        {
+            tmp2 = expand_variables(line, env);
+            if (tmp2)
+            {
+                ft_putstr_fd(tmp2, out_fd);
+                ft_putstr_fd("\n", out_fd);
+                free(tmp2);
+            }
+        }
+        else
+        {
+            ft_putstr_fd(line, out_fd);
+            ft_putstr_fd("\n", out_fd);
+        }
+        free(line);
+    }
+    return 0;
+}
+
+
+static char *generate_temp_filename(void)
+{
+    static int counter = 0;
+    char *counter_str;
+    char *filename;
+
+    counter_str = ft_itoa(counter++);
+    if (!counter_str)
+        return (NULL);
+    filename = ft_strjoin("/tmp/minishell_heredoc_", counter_str);
+    free(counter_str);
+    return (filename);
+}
+
+char *redir_heredoc(char *limiter, t_env *env, bool expand)
+{
+    char  *path;
+    int   fd;
+    pid_t pid;
+    int   status;
+    void  (*old_int)(int);
+    void  (*old_quit)(int);
+
+    path = generate_temp_filename();
+    if (!path)
+        return (NULL);
+    while (1)
+    {
+        fd = open(path, O_RDWR | O_CREAT | O_EXCL, 0600);
+        if (fd != -1)
+            break;
+        free(path);
+        path = generate_temp_filename();
+        if (!path)
+            return (NULL);
+    }
+    old_int = signal(SIGINT, SIG_IGN);
+    old_quit = signal(SIGQUIT, SIG_IGN);
+    pid = fork();
+    if (pid < 0)
+    {
+        close(fd);
+        unlink(path);
+        free(path);
+        signal(SIGINT, old_int);
+        signal(SIGQUIT, old_quit);
+        return (NULL);
+    }
+    if (pid == 0)
+    {
+        signal(SIGINT, sigint_handler_heredoc);
+        signal(SIGQUIT, SIG_IGN);
+        heredoc_child_loop(fd, limiter, env, expand);
+        close(fd);
+        exit(0);
+    }
+    waitpid(pid, &status, 0);
+    signal(SIGINT, old_int);
+    signal(SIGQUIT, old_quit);
+    close(fd);
+    if ((status & 0x7f) != 0)
+    {
+        if ((status & 0x7f) == 2)
+        {
+            g_exit = 130;
+            unlink(path);
+            free(path);
+            return (NULL);
+        }
+    }
+    else if (((status >> 8) & 0xff) != 0)
+    {
+        g_exit = (status >> 8) & 0xff;
+        unlink(path);
+        free(path);
+        return (NULL);
+    }
+    g_exit = 0;
+    return (path);
+}
+
 int ft_preprocess_heredocs(t_cmd *cmds, t_env *env)
 {
-    t_cmd *cur_cmd;
+    t_cmd *cur_cmd = cmds;
     t_in_out_fds *cur_redir;
     char *heredoc_filename;
 
-    signal(SIGINT, sigint_heredoc);
-    signal(SIGQUIT, SIG_IGN);
-
-    cur_cmd = cmds;
     while (cur_cmd)
     {
         cur_redir = cur_cmd->io_fds;
@@ -205,18 +240,30 @@ int ft_preprocess_heredocs(t_cmd *cmds, t_env *env)
                 heredoc_filename = redir_heredoc(cur_redir->filename, env, cur_redir->expand);
                 if (!heredoc_filename)
                 {
-                    signal(SIGINT, sigint_prompt);
-                    signal(SIGQUIT, sigquit_prompt);
-                    return (1);
+                    return 1;
                 }
+                free(cur_redir->filename);
                 cur_redir->filename = heredoc_filename;
             }
             cur_redir = cur_redir->next;
         }
+
+        if (!cur_cmd->args || !cur_cmd->args[0])
+        {
+            cur_redir = cur_cmd->io_fds;
+            while (cur_redir)
+            {
+                if (cur_redir->type == REDIR_HEREDOC && cur_redir->filename)
+                {
+                    unlink(cur_redir->filename);
+                    free(cur_redir->filename);
+                    cur_redir->filename = NULL;
+                }
+                cur_redir = cur_redir->next;
+            }
+        }
+
         cur_cmd = cur_cmd->next;
     }
-
-    signal(SIGINT, sigint_prompt);
-    signal(SIGQUIT, sigquit_prompt);
-    return (0);
+    return 0;
 }
