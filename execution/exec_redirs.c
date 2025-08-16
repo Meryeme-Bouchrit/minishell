@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:22:10 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/14 13:59:20 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/16 09:41:47 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ char *redir_heredoc(char *limiter, t_env *env, bool expand)
     tmp_filename = generate_temp_filename();
     if (!tmp_filename)
         return (NULL);
-
     fd = open(tmp_filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
     if (fd == -1)
     {
@@ -44,17 +43,34 @@ char *redir_heredoc(char *limiter, t_env *env, bool expand)
         free(tmp_filename);
         return (NULL);
     }
-
     while (1)
     {
         line = readline("> ");
-        if (!line)
+
+        if (g_exit == 130) 
+        {
+            if (line)
+                free(line);
+            close(fd);
+            unlink(tmp_filename);
+            free(tmp_filename);
+            return (NULL);
+        }
+
+        if (!line) 
+        {
+            write(2, "minishell: warning: here-document delimited by end-of-file (wanted `", 69);
+            write(2, limiter, ft_strlen(limiter));
+            write(2, "')\n", 3);
             break;
+        }
+
         if (ft_strcmp(line, limiter) == 0)
         {
             free(line);
             break;
         }
+
         if (expand)
         {
             processed_line = expand_variables(line, env);
@@ -140,7 +156,7 @@ int redir_app(char *filename)
 
 void ft_handle_redirs(t_in_out_fds *redir)
 {
-    int      fd;
+    int     fd;
 
     while (redir)
     {
@@ -173,6 +189,10 @@ int ft_preprocess_heredocs(t_cmd *cmds, t_env *env)
 {
     t_cmd *cur_cmd;
     t_in_out_fds *cur_redir;
+    char *heredoc_filename;
+
+    signal(SIGINT, sigint_heredoc);
+    signal(SIGQUIT, SIG_IGN);
 
     cur_cmd = cmds;
     while (cur_cmd)
@@ -182,13 +202,21 @@ int ft_preprocess_heredocs(t_cmd *cmds, t_env *env)
         {
             if (cur_redir->type == REDIR_HEREDOC)
             {
-                cur_redir->filename = redir_heredoc(cur_redir->filename, env, true);
-                if (!cur_redir->filename)
+                heredoc_filename = redir_heredoc(cur_redir->filename, env, cur_redir->expand);
+                if (!heredoc_filename)
+                {
+                    signal(SIGINT, sigint_prompt);
+                    signal(SIGQUIT, sigquit_prompt);
                     return (1);
+                }
+                cur_redir->filename = heredoc_filename;
             }
             cur_redir = cur_redir->next;
         }
         cur_cmd = cur_cmd->next;
     }
+
+    signal(SIGINT, sigint_prompt);
+    signal(SIGQUIT, sigquit_prompt);
     return (0);
 }

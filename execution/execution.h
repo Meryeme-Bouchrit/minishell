@@ -22,6 +22,7 @@
 # include <stdbool.h>
 # include <string.h>
 # include <ctype.h>
+# include <signal.h>
 # include <sys/types.h>
 # include <sys/wait.h>
 
@@ -32,6 +33,10 @@
 /* Project headers */
 # include "../libft/libft.h"
 # include "minishell.h"
+
+#ifndef O_DIRECTORY
+# define O_DIRECTORY 0
+#endif
 
 /* ===================== EXECUTION CORE ===================== */
 
@@ -58,7 +63,7 @@ int     redir_out(char *filename);
 int     redir_app(char *filename);
 char    *redir_heredoc(char *limiter, t_env *env, bool expand);
 void    ft_handle_redirs(t_in_out_fds *redir);
-int     write_heredoc_to_pipe(int fd, char *limiter, t_env *env, bool expand);
+// int     write_heredoc_to_pipe(int fd, char *limiter, t_env *env, bool expand);
 
 /* ===================== BUILTINS ===================== */
 
@@ -72,7 +77,7 @@ int     ft_echo(char **args);
 int     ft_exit(char **args, int *exit_status);
 int     ft_unset(char **args, t_env **env);
 int     ft_export(char **args, t_env **env);
-int     exec_builtin_in_child(t_cmd *cmd, t_env **env);
+// int     exec_builtin_in_child(t_cmd *cmd, t_env **env);
 
 /* ===================== ENVIRONMENT UTILS ===================== */
 
@@ -103,6 +108,11 @@ int     only_spaces(const char *str);
 
 /* ===================== MAIN EXECUTION HELPERS ===================== */
 
-void    execute_and_free(char *line, t_env **env, int *exit_status);
+// void    execute_and_free(char *line, t_env **env, int *exit_status);
 int ft_preprocess_heredocs(t_cmd *cmds, t_env *env);
+
+void    sigquit_prompt(int sig);
+void    sigint_prompt(int sig);
+void    sigint_heredoc(int sig);
+
 #endif

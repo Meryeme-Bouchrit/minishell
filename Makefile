@@ -9,6 +9,7 @@ EXEC_DIR	= execution
 PARSING_DIR	= parsing
 
 SRC = 		\
+			execution/signals.c \
 			execution/built.c \
 			execution/exec_cmd.c \
 			execution/exec_path.c \

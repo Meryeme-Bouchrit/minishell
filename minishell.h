@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:34:42 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/12 10:21:43 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/16 02:10:26 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define MINISHELL_H
 
 # include <stdbool.h>
+
+extern int	g_exit;
 
 typedef enum e_redirections
 {
@@ -23,8 +25,8 @@ typedef enum e_redirections
 	REDIR_HEREDOC
 }	t_redirections;
 
-typedef struct s_in_out_fds
-{
+typedef struct s_in_out_fds 
+ {
 	t_redirections		type;
 	char				*filename;
 	bool				expand;
@@ -47,7 +49,6 @@ typedef struct s_env
 	struct s_env    *next;
 }       t_env;
 
-extern int exit_status;
 
 # include "execution/execution.h"
 # include "parsing/parsing.h"
