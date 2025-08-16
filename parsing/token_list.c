@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:04:18 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/12 06:16:39 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/16 01:01:24 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,8 @@ t_cmd	*new_cmd(void)
 	return (cmd);
 }
 
-void	add_redirection(t_cmd *cmd, t_redirections type,
-	const char *filename, bool expand)
+void	add_redirection(t_cmd *cmd, t_redirections type, const char *filename,
+		bool expand)
 {
 	t_in_out_fds	*redir;
 	t_in_out_fds	*tmp;

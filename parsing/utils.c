@@ -14,7 +14,8 @@
 
 int	ft_isspace(char c)
 {
-	return (c == ' ');
+	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f'
+		|| c == '\r');
 }
 
 int	is_special(char c)
@@ -31,7 +32,7 @@ t_token	*new_token(char *value, t_token_type type)
 		return (NULL);
 	token->value = value;
 	token->type = type;
-	token->expand = false;
+	token->expand = true;
 	token->next = NULL;
 	return (token);
 }

@@ -22,7 +22,6 @@ int	check_for_syntax_error(t_token *token)
 		{
 			write(2, "Error! syntax error near unexpected token `newline'\n",
 				53);
-			// exit_status = 127;
 			return (1);
 		}
 		token = token->next;

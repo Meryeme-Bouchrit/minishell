@@ -18,7 +18,7 @@ int	end_len(const char *line, int i, bool heredoc)
 	char	quote;
 
 	end = i;
-	while (line[end] && line[end] != ' ' && !is_special(line[end]))
+	while (line[end] && !ft_isspace(line[end]) && !is_special(line[end]))
 	{
 		if (line[end] == '#')
 			break ;
@@ -40,7 +40,7 @@ int	end_len(const char *line, int i, bool heredoc)
 	return (end);
 }
 
-char	*grep_doubleq(int end, int *start, const char *line, t_env *env)
+char	*grep_doubleq(t_ctx *ctx, t_env *env)
 {
 	char	*tmp;
 	char	*result;
@@ -48,37 +48,40 @@ char	*grep_doubleq(int end, int *start, const char *line, t_env *env)
 
 	tmp = NULL;
 	result = NULL;
-	(*start)++;
-	while ((*start) < end && line[(*start)] && line[(*start)] != '"')
+	ctx->start++;
+	while (ctx->start < ctx->end && ctx->line[ctx->start]
+		&& ctx->line[ctx->start] != '"')
 	{
-		if ((line[(*start)] == '$') && !env->heredoc)
+		if ((ctx->line[ctx->start] == '$') && !env->heredoc)
 		{
-			tmp = secnd_expand_dollar(start, end - 1, (line + (*start)), env);
+			tmp = secnd_expand_dollar(ctx, ctx->end - 1, (ctx->line
+						+ ctx->start), env);
 			result = my_strjoin(result, tmp);
 		}
-		j = (*start);
-		while ((*start) < end && line[(*start)] && line[(*start)] != '\"'
-			&& ((line[(*start)] != '$') || env->heredoc))
-			(*start)++;
-		result = my_strjoin(result, ft_substr(line, j, (*start) - j));
+		j = ctx->start;
+		while (ctx->start < ctx->end && ctx->line[ctx->start]
+			&& ctx->line[ctx->start] != '\"' && ((ctx->line[ctx->start] != '$')
+				|| env->heredoc))
+			ctx->start++;
+		result = my_strjoin(result, ft_substr(ctx->line, j, ctx->start - j));
 	}
-	(*start)++;
+	ctx->start++;
 	return (result);
 }
 
-char	*grep_singleq(int end, int *start, const char *line)
+char	*grep_singleq(t_ctx *ctx)
 {
 	int		j;
 	char	*result;
 
 	j = 0;
 	result = NULL;
-	(*start)++;
-	j = (*start);
-	while ((*start) < end && line[(*start)] != '\'')
-		(*start)++;
-	result = my_strjoin(result, ft_substr(line, j, (*start) - j));
-	(*start)++;
+	ctx->start++;
+	j = ctx->start;
+	while (ctx->start < ctx->end && ctx->line[ctx->start] != '\'')
+		ctx->start++;
+	result = my_strjoin(result, ft_substr(ctx->line, j, ctx->start - j));
+	ctx->start++;
 	return (result);
 }
 
@@ -96,8 +99,7 @@ bool	check_for_espace(char *res)
 	return (0);
 }
 
-char	*grep_no_quotes(int *i, int end, int *start, const char *line,
-		t_env *env)
+char	*grep_no_quotes(int *i, t_ctx *ctx, t_env *env)
 {
 	char	*result;
 	char	*tmp;
@@ -106,17 +108,18 @@ char	*grep_no_quotes(int *i, int end, int *start, const char *line,
 	j = 0;
 	result = NULL;
 	tmp = NULL;
-	if ((line[(*start)] == '$') && !env->heredoc)
+	if ((ctx->line[ctx->start] == '$') && !env->heredoc)
 	{
-		tmp = secnd_expand_dollar(start, end, (line + (*start)), env);
+		tmp = secnd_expand_dollar(ctx, ctx->end, (ctx->line + ctx->start), env);
 		result = my_strjoin(result, tmp);
 		if (check_for_espace(result))
 			i[1] = 1;
 	}
-	j = (*start);
-	while ((*start) < end && line[(*start)] && line[(*start)] != '\"'
-		&& line[(*start)] != '\'' && ((line[(*start)] != '$') || env->heredoc))
-		(*start)++;
-	result = my_strjoin(result, ft_substr(line, j, (*start) - j));
+	j = ctx->start;
+	while (ctx->start < ctx->end && ctx->line[ctx->start]
+		&& ctx->line[ctx->start] != '\"' && ctx->line[ctx->start] != '\''
+		&& ((ctx->line[ctx->start] != '$') || env->heredoc))
+		ctx->start++;
+	result = my_strjoin(result, ft_substr(ctx->line, j, ctx->start - j));
 	return (result);
 }

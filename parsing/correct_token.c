@@ -26,7 +26,7 @@ void	is_heredoc(t_token *tokens, const char *line, t_env *env)
 			{
 				if (line[t] == '\'' || line[t] == '\"')
 				{
-					tokens->expand = true;
+					tokens->expand = false;
 					break ;
 				}
 				t++;
@@ -36,40 +36,36 @@ void	is_heredoc(t_token *tokens, const char *line, t_env *env)
 	}
 }
 
-char	*token_next_string(t_token *tokens, const char *line, int *i,
-		t_env *env)
+char	*token_next_string(t_token *tokens, t_ctx *ctx, int *i, t_env *env)
 {
-	int		start;
-	int		end;
 	char	*result;
 	t_token	*tmp;
 
-	start = (*i);
+	ctx->start = (*i);
 	tmp = tokens;
 	result = ft_calloc(1, sizeof(char));
 	if (!result)
 		return (NULL);
 	env->heredoc = false;
-	is_heredoc(tmp, line, env);
-	end = end_len(line, (*i), env->heredoc);
-	if (end == 0)
+	is_heredoc(tmp, ctx->line, env);
+	ctx->end = end_len(ctx->line, (*i), env->heredoc);
+	if (ctx->end == 0)
 	{
 		free_token_list(tokens);
 		free(result);
 		return (NULL);
 	}
-	while (start < end)
+	while (ctx->start < ctx->end)
 	{
-		if (line[start] == '\"')
-			result = my_strjoin(result, grep_doubleq(end, &start, line, env));
-		else if (line[start] == '\'')
-			result = my_strjoin(result, grep_singleq(end, &start, line));
+		if (ctx->line[ctx->start] == '\"')
+			result = my_strjoin(result, grep_doubleq(ctx, env));
+		else if (ctx->line[ctx->start] == '\'')
+			result = my_strjoin(result, grep_singleq(ctx));
 		else
-			result = my_strjoin(result, grep_no_quotes(i, end, &start, line,
-						env));
+			result = my_strjoin(result, grep_no_quotes(i, ctx, env));
 	}
 	env->heredoc = false;
-	(*i) = start;
+	(*i) = ctx->start;
 	return (result);
 }
 
@@ -78,10 +74,12 @@ t_token	*tokenize(const char *line, t_env *env)
 	int		i[2];
 	char	*token_value;
 	t_token	*tokens;
+	t_ctx	ctx;
 
 	i[0] = 0;
 	i[1] = 0;
 	tokens = NULL;
+	ctx.line = line;
 	while (line[i[0]])
 	{
 		i[1] = 0;
@@ -103,16 +101,18 @@ t_token	*tokenize(const char *line, t_env *env)
 			if (!line[i[0]])
 				break ;
 			i[1] = 2;
-			token_value = token_next_string(tokens, line, i, env);
+			token_value = token_next_string(tokens, &ctx, i, env);
 		}
 		if (!token_value)
 			return (NULL);
 		if (token_value[0])
 		{
-			add_token(&tokens, ft_strdup(token_value), get_type(token_value, i[1]));		
+			add_token(&tokens, ft_strdup(token_value), get_type(token_value,
+					i[1]));
 			if (tokens->type == PIPE)
 			{
-				write(2, "minishell: syntax error near unexpected token `|'\n", 51);
+				write(2, "minishell: syntax error near unexpected token `|'\n",
+					51);
 				free_token_list(tokens);
 				return (NULL);
 			}

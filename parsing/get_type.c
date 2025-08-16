@@ -30,10 +30,13 @@ t_token_type	get_type(char *s, int a)
 		return (HEREDOC);
 	return (WORD);
 }
+
 bool	redirection(t_token_type type)
 {
-	return (type == REDIR_IN || type == REDIR_OUT || type == APPEND || type == HEREDOC);
+	return (type == REDIR_IN || type == REDIR_OUT || type == APPEND
+		|| type == HEREDOC);
 }
+
 bool	is_redirection(char *s)
 {
 	if (my_strcmp(s, "<") == 0)

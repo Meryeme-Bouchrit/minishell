@@ -42,62 +42,67 @@ typedef struct s_token
 	struct s_token	*next;
 }					t_token;
 
-//////////////////////helper_func_1.c///////////////////////////////
-char				*extract_quoted(const char *str, int *i, char quote);
+typedef struct s_ctx
+{
+	int				end;
+	int				start;
+	const char		*line;
+}					t_ctx;
 
 ////////////////////helper_func_2.c//////////////////
-void				print_commands(t_cmd *cmds);
+
+// int					token_list_size(t_token *list);
+
+// void				add_token(t_token **head, char *val, t_token_type type);
+//////////////////////token_list.c////////////////////////////
 int					token_list_size(t_token *list);
 char				**token_list_to_array(t_token *list);
-void				add_token(t_token **head, char *val, t_token_type type);
-
-bool				is_redirection(char *s);
-t_redirections		get_redirect_type(char *s);
-
-//////////////////////helper_func_2_1.c////////////////////////////
+void				free_token_list(t_token *list);
+t_cmd				*new_cmd(void);
 void				add_redirection(t_cmd *cmd, t_redirections type,
 						const char *filename, bool expand);
-t_cmd				*new_cmd(void);
-void				free_token_list(t_token *list);
-int					token_list_size(t_token *list);
-
-////////////////////helper_func_3.c///////////////
-void				add_token(t_token **head, char *val, t_token_type type);
-t_token_type		get_type(char *s, int a);
-t_token				*new_token(char *value, t_token_type type);
-int					is_special(char c);
+////////////////////correct_token.c///////////////
+t_token				*tokenize(const char *line, t_env *env);
 
 ////////////////////////libft////////////////////////////////
 int					my_strcmp(const char *s1, const char *s2);
-int					ft_strncmp(const char *s1, const char *s2, size_t n);
-char				*ft_strdup(const char *s1);
+// int					ft_strncmp(const char *s1, const char *s2, size_t n);
+// char				*ft_strdup(const char *s1);
 char				*ft_strncpy(char *dest, const char *src, size_t n);
 
 /////////////////////utils_1.c///////////////////
 int					ft_isspace(char c);
+int					is_special(char c);
+t_token				*new_token(char *value, t_token_type type);
+void				add_token(t_token **head, char *val, t_token_type type);
+
+//////////////////////parser.c//////////////////////////
 t_cmd				*parse_commands(t_token *token);
+void				print_commands(t_cmd *cmds);
 
-/* ===== Added prototypes needed by main.c ===== */
-// t_token				*tokenize(const char *line);
-void				free_cmds(t_cmd **cmds);
-
-char				*expand_if_needed(char *token_value, char quote_type);
-char				*expand_dollar(const char *str);
-t_token				*tokenize(const char *line, t_env *env);
-char				*grep_doubleq(int end, int *start, const char *line,
-						t_env *env);
-char				*grep_singleq(int end, int *start, const char *line);
-char				*grep_no_quotes(int *i, int end, int *start,
-						const char *line, t_env *env);
-int					end_len(const char *line, int i, bool heredoc);
-
-char				*my_strjoin(char *s1, char *s2);
-char				*secnd_expand_dollar(int *start, int end, const char *str,
-						t_env *env);
-
-int					check_for_syntax_error(t_token *token);
+//////////////////////continue_heredoc.c////////////////
 char				*expand_variables(const char *line, t_env *env);
-bool	redirection(t_token_type type);
-
+/////////////////////get_type.c/////////////////////////
+t_token_type		get_type(char *s, int a);
+bool				redirection(t_token_type type);
+bool				is_redirection(char *s);
+t_redirections		get_redirect_type(char *s);
+/////////////////////free_cmds.c//////////////////////
+void				free_cmds(t_cmd **cmds);
+// char				*expand_if_needed(char *token_value, char quote_type);
+// char				*expand_dollar(const char *str);
+////////////////////my_strjoin.c///////////////////////
+char				*my_strjoin(char *s1, char *s2);
+int					check_for_syntax_error(t_token *token);
+////////////////expansion.c///////////////////////////
+int					empty_check(char *s);
+char				*secnd_expand_dollar(t_ctx *ctx, int end, const char *str,
+						t_env *env);
+////////////////continue.c/////////////////////////////
+int					end_len(const char *line, int i, bool heredoc);
+char				*grep_doubleq(t_ctx *ctx, t_env *env);
+char				*grep_singleq(t_ctx *ctx);
+bool				check_for_espace(char *res);
+char				*grep_no_quotes(int *i, t_ctx *ctx, t_env *env);
 
 #endif

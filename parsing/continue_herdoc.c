@@ -6,11 +6,40 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 23:37:06 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/14 13:33:24 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/16 13:09:20 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
+
+char	*heredoc_expand_dollar(int *start, int end, const char *str, t_env *env)
+{
+	int		i;
+	char	*var;
+	char	*value;
+	char	*result;
+
+	i = 0;
+	if (str[i] == '$' && (str[i + 1] == '\0' || str[i + 1] == ' ' || (*start
+				+ 1) == end || empty_check((char *)str + i + 1)))
+	{
+		if (empty_check((char *)str + i + 1))
+			return (++(*start), ft_substr("", 0, 1));
+		else
+			return (++(*start), ft_substr(str, 0, 1));
+	}
+	if (str[++i] == '?')
+		return (++(*start), ++(*start), ft_itoa(g_exit));
+	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
+		i++;
+	var = ft_substr(str, 1, i - 1);
+	value = get_env_value(env, var);
+	if (!value)
+		value = "";
+	result = ft_strdup(value);
+	(*start) += i;
+	return (free(var), result);
+}
 
 char	*expand_str(int end, int *start, const char *line, t_env *env)
 {
@@ -18,12 +47,13 @@ char	*expand_str(int end, int *start, const char *line, t_env *env)
 	char	*tmp;
 	int		j;
 
+	(void)env;
 	j = 0;
 	result = NULL;
 	tmp = NULL;
 	if (line[(*start)] == '$')
 	{
-		tmp = secnd_expand_dollar(start, end, (line + (*start)), env);
+		tmp = heredoc_expand_dollar(start, end, (line + (*start)), env);
 		result = my_strjoin(result, tmp);
 	}
 	j = (*start);
@@ -50,6 +80,5 @@ char	*expand_variables(const char *line, t_env *env)
 	{
 		result = my_strjoin(result, expand_str(end, &start, line, env));
 	}
-	// printf("result=[%s]", result);
 	return (result);
 }

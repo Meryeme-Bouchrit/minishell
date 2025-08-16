@@ -1,79 +1,101 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   array_to_tokens.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/14 01:50:36 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/12 06:14:59 by zhassna          ###   ########.fr       */
+/*   Created: 2025/07/14 02:04:44 by zhassna           #+#    #+#             */
+/*   Updated: 2025/08/08 15:59:40 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parsing.h"
 
-void	print_tokens(t_token *tokens)
+void	handle_pipe(t_cmd **head, t_cmd **current, t_token **temp_args)
 {
-	while (tokens)
+	t_cmd	*tmp;
+
+	(*current)->args = token_list_to_array(*temp_args);
+	(*current)->pipe_output = true;
+	if (!*head)
+		*head = *current;
+	else
 	{
-		printf("TOKEN: %-10s TYPE: %d\n", tokens->value, tokens->type);
-		tokens = tokens->next;
+		tmp = *head;
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = *current;
+	}
+	*current = new_cmd();
+	free_token_list(*temp_args);
+	*temp_args = NULL;
+}
+
+int	parsing_redir(t_token **tokens, t_cmd **head, t_cmd **current,
+		t_token **temp_args)
+{
+	if ((*tokens)->next->value && (*tokens)->next->type == WORD)
+	{
+		add_redirection(*current, get_redirect_type((*tokens)->value),
+			(*tokens)->next->value, (*tokens)->expand);
+		*tokens = (*tokens)->next;
+	}
+	else
+	{
+		free_cmds(current);
+		free_cmds(head);
+		write(2, "ERROR! syntax error near unexpected token `|'\n", 47);
+		if (*temp_args)
+			free_token_list(*temp_args);
+		return (1);
+	}
+	return (0);
+}
+
+void	parsing_last(t_cmd **tmp, t_cmd **head, t_cmd **current,
+		t_token **temp_args)
+{
+	if (*temp_args)
+	{
+		(*current)->args = token_list_to_array(*temp_args);
+		free_token_list(*temp_args);
+	}
+	if (!(*head))
+		*head = *current;
+	else
+	{
+		*tmp = *head;
+		while ((*tmp)->next)
+			*tmp = (*tmp)->next;
+		(*tmp)->next = *current;
 	}
 }
 
-// void	free_cmds(t_cmd **cmds, int i)
-// {
-// 	t_in_out_fds	*redir;
-// 	t_in_out_fds *tmp_redir;
-// 	t_cmd			*tmp;
-
-// 	while (*cmds)
-// 	{
-// 		if ((*cmds)->args)
-// 		{
-// 			while ((*cmds)->args[i])
-// 				free((*cmds)->args[i++]);
-// 			free((*cmds)->args);
-// 		}
-// 		if ((*cmds)->io_fds)
-// 		{
-// 			redir = (*cmds)->io_fds;
-// 			while (redir)
-// 			{
-// 				tmp_redir = redir;
-// 				free(redir->filename);
-// 				redir = redir->next;
-// 				free(tmp_redir);
-// 			}
-// 			//free((*cmds)->io_fds);
-// 		}
-// 		tmp = (*cmds);
-// 		(*cmds) = (*cmds)->next;
-// 		free(tmp);
-// 	}
-// }
-
-void	free_cmds(t_cmd **cmds)
+t_cmd	*parse_commands(t_token *tokens)
 {
-	t_in_out_fds	*redir;
-	t_cmd			*tmp;
-	int				i;
+	t_cmd	*head;
+	t_cmd	*current;
+	t_token	*temp_args;
+	t_cmd	*tmp;
 
-	while (*cmds)
+	head = NULL;
+	tmp = NULL;
+	current = new_cmd();
+	temp_args = NULL;
+	while (tokens)
 	{
-		i = 0;
-		while ((*cmds)->args && (*cmds)->args[i])
-			free((*cmds)->args[i++]);
-		free((*cmds)->args);
-		while ((*cmds)->io_fds)
+		if (tokens->type == PIPE)
+			handle_pipe(&head, &current, &temp_args);
+		else if (redirection(tokens->type))
 		{
-			redir = (*cmds)->io_fds;
-			(*cmds)->io_fds = redir->next;
-			free(redir->filename);
-			free(redir);
+			if (parsing_redir(&tokens, &head, &current, &temp_args))
+				return (NULL);
 		}
-		tmp = *cmds;
-		*cmds = (*cmds)->next;
-		free(tmp);
+		else
+			add_token(&temp_args, ft_strdup(tokens->value), tokens->type);
+		tokens = tokens->next;
 	}
+	parsing_last(&tmp, &head, &current, &temp_args);
+	return (head);
 }

@@ -25,7 +25,7 @@ SRC = 		\
 			execution/builtin_utils_4.c \
 			parsing/parser.c \
 			parsing/get_type.c \
-			parsing/array_to_tokens.c \
+			parsing/free_cmds.c \
 			parsing/token_list.c \
 			parsing/libft.c \
 			parsing/utils.c \
