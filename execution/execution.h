@@ -118,7 +118,7 @@ int     heredoc_child_loop(int out_fd, char *limiter, t_env *env, bool expand);
 char    *generate_temp_filename(void);
 int     redir_in_fd(int fd);
 int     fork_and_wait(t_cmd *cmd, char *path, t_env *env);
-void    handle_exit(t_cmd *cmds, t_env **env);
+// void    handle_exit(t_cmd *cmds, t_env **env);
 void cleanup_heredocs(t_cmd *cmds);
 
 #endif
