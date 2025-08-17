@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:41:18 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/16 15:10:15 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/17 23:56:18 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ int main(int argc, char **argv, char **envp)
                 }
             }
             free_token_list(tok);
+            cleanup_heredocs(cmd);
             free_cmds(&cmd);
         }
         free(line);

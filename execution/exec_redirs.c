@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:22:10 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/16 15:08:27 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/17 23:49:50 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -265,4 +265,20 @@ int ft_preprocess_heredocs(t_cmd *cmds, t_env *env)
         cur_cmd = cur_cmd->next;
     }
     return 0;
+}
+void cleanup_heredocs(t_cmd *cmds)
+{
+    t_cmd *c = cmds;
+    while (c) {
+        t_in_out_fds *r = c->io_fds;
+        while (r) 
+        {
+            if (r->type == REDIR_HEREDOC && r->filename) 
+            {
+                unlink(r->filename);
+            }
+            r = r->next;
+        }
+        c = c->next;
+    }
 }
