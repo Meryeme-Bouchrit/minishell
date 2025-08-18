@@ -104,7 +104,7 @@ t_env   *create_env_node(char *envp_entry, t_env **head);
 
 void    sigquit_prompt(int sig);
 void    sigint_prompt(int sig);
-void    sigint_handler_heredoc(int sig);
+void    sigint_heredoc(int sig);
 
 /* ========================= UTILS ============================= */
 

@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 10:05:04 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/18 00:43:17 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/18 06:58:08 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void sigquit_prompt(int sig)
     (void)sig;
 }
 
-void sigint_handler_heredoc(int sig)
+void sigint_heredoc(int sig)
 {
     (void)sig;
     write(1, "\n", 1);

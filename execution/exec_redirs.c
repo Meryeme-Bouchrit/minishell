@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:22:10 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/18 00:43:22 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/18 06:57:55 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,7 @@ char *redir_heredoc(char *limiter, t_env *env, bool expand)
     }
     if (pid == 0)
     {
-        signal(SIGINT, sigint_handler_heredoc);
+        signal(SIGINT, sigint_heredoc);
         signal(SIGQUIT, SIG_IGN);
         heredoc_child_loop(fd, limiter, env, expand);
         close(fd);
@@ -225,10 +225,14 @@ char *redir_heredoc(char *limiter, t_env *env, bool expand)
 
 int ft_preprocess_heredocs(t_cmd *cmds, t_env *env)
 {
-    t_cmd *cur_cmd = cmds;
+    t_cmd *cur_cmd;
     t_in_out_fds *cur_redir;
     char *heredoc_filename;
 
+    signal(SIGINT, sigint_heredoc);
+    signal(SIGQUIT, SIG_IGN);
+
+    cur_cmd = cmds;
     while (cur_cmd)
     {
         cur_redir = cur_cmd->io_fds;
@@ -239,32 +243,21 @@ int ft_preprocess_heredocs(t_cmd *cmds, t_env *env)
                 heredoc_filename = redir_heredoc(cur_redir->filename, env, cur_redir->expand);
                 if (!heredoc_filename)
                 {
-                    return 1;
+                    signal(SIGINT, sigint_prompt);
+                    signal(SIGQUIT, sigquit_prompt);
+                    return (1);
                 }
                 free(cur_redir->filename);
                 cur_redir->filename = heredoc_filename;
             }
             cur_redir = cur_redir->next;
         }
-
-        if (!cur_cmd->args || !cur_cmd->args[0])
-        {
-            cur_redir = cur_cmd->io_fds;
-            while (cur_redir)
-            {
-                if (cur_redir->type == REDIR_HEREDOC && cur_redir->filename)
-                {
-                    unlink(cur_redir->filename);
-                    free(cur_redir->filename);
-                    cur_redir->filename = NULL;
-                }
-                cur_redir = cur_redir->next;
-            }
-        }
-
         cur_cmd = cur_cmd->next;
     }
-    return 0;
+
+    signal(SIGINT, sigint_prompt);
+    signal(SIGQUIT, sigquit_prompt);
+    return (0);
 }
 void cleanup_heredocs(t_cmd *cmds)
 {
