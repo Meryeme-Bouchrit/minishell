@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 04:53:27 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/08 04:53:31 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/18 10:33:34 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,28 @@ int	check_for_syntax_error(t_token *token)
 		return (1);
 	}
 	return (0);
+}
+
+void	is_heredoc(t_token *tokens, const char *line, t_env *env)
+{
+	int	t;
+
+	t = 0;
+	while (tokens)
+	{
+		if (tokens && tokens->type == HEREDOC && tokens->next == NULL)
+		{
+			env->heredoc = true;
+			while (line[t])
+			{
+				if (line[t] == '\'' || line[t] == '\"')
+				{
+					tokens->expand = false;
+					break ;
+				}
+				t++;
+			}
+		}
+		tokens = tokens->next;
+	}
 }
