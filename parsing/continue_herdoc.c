@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 23:37:06 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/17 17:17:09 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/18 09:14:23 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	*heredoc_expand_dollar(int *start, int end, const char *str, t_env *env)
 	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
 		i++;
 	var = ft_substr(str, 1, i - 1);
-	value = get_env_value(env, var);
+	value = env_get(env, var);
 	if (!value)
 		value = "";
 	result = ft_strdup(value);

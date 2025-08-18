@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 02:24:44 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/18 10:35:33 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/08 04:31:16 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,11 @@ typedef struct s_ctx
 	const char		*line;
 }					t_ctx;
 
+////////////////////helper_func_2.c//////////////////
+
+// int					token_list_size(t_token *list);
+
+// void				add_token(t_token **head, char *val, t_token_type type);
 //////////////////////token_list.c////////////////////////////
 int					token_list_size(t_token *list);
 char				**token_list_to_array(t_token *list);
@@ -61,6 +66,8 @@ t_token				*tokenize(const char *line, t_env *env);
 
 ////////////////////////libft////////////////////////////////
 int					my_strcmp(const char *s1, const char *s2);
+// int					ft_strncmp(const char *s1, const char *s2, size_t n);
+// char				*ft_strdup(const char *s1);
 char				*ft_strncpy(char *dest, const char *src, size_t n);
 
 /////////////////////utils_1.c///////////////////
@@ -82,10 +89,11 @@ bool				is_redirection(char *s);
 t_redirections		get_redirect_type(char *s);
 /////////////////////free_cmds.c//////////////////////
 void				free_cmds(t_cmd **cmds);
+// char				*expand_if_needed(char *token_value, char quote_type);
+// char				*expand_dollar(const char *str);
 ////////////////////my_strjoin.c///////////////////////
 char				*my_strjoin(char *s1, char *s2);
 int					check_for_syntax_error(t_token *token);
-void				is_heredoc(t_token *tokens, const char *line, t_env *env);
 ////////////////expansion.c///////////////////////////
 int					empty_check(char *s);
 char				*secnd_expand_dollar(t_ctx *ctx, int end, const char *str,

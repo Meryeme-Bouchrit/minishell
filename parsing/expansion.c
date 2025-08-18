@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 12:27:51 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/16 13:07:23 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/18 09:14:27 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ char	*secnd_expand_dollar(t_ctx *ctx, int end, const char *str, t_env *env)
 	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
 		i++;
 	var = ft_substr(str, 1, i - 1);
-	value = get_env_value(env, var);
+	value = env_get(env, var);
 	if (!value)
 		value = "";
 	result = ft_strdup(value);

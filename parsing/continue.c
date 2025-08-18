@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 13:48:26 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/18 10:42:39 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/08 04:36:48 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	end_len(const char *line, int i, bool heredoc)
 	end = i;
 	while (line[end] && !ft_isspace(line[end]) && !is_special(line[end]))
 	{
-		if (line[end] == '#' && ((!line[end]) || (line[end - 1] == ' ' )))
+		if (line[end] == '#')
 			break ;
 		if (line[end] == '\"' || line[end] == '\'')
 		{
