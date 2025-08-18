@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 12:22:14 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/14 08:55:05 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/18 09:29:57 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 void	parse_export_arg(char *arg, char **key, char **value)
 {
-	char	*equal;
+	char	*eq;
 
-	equal = ft_strchr(arg, '=');
-	if (equal)
+	eq = ft_strchr(arg, '=');
+	if (eq)
 	{
-		*key = ft_substr(arg, 0, equal - arg);
-		*value = ft_strdup(equal + 1);
+		*key = ft_substr(arg, 0, eq - arg);
+		*value = ft_strdup(eq + 1);
 	}
 	else
 	{
@@ -81,7 +81,6 @@ int	ft_is_numeric(const char *str)
 	}
 	return (1);
 }
-
 
 void	print_export_env(t_env *env)
 {

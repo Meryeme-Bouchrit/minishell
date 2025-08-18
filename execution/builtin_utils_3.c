@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 09:19:29 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/12 15:25:24 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/18 09:27:27 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,19 +80,19 @@ void	unset_env_var(t_env **env, char *key)
 
 void	add_env(t_env **env, char *key, char *value)
 {
-	t_env	*node;
+	t_env	*n;
 	t_env	*cur;
 
-	node = add_env_node(key, value);
-	if (!node)
+	n = env_new(key, value);
+	if (!n)
 		return ;
 	if (!*env)
 	{
-		*env = node;
+		*env = n;
 		return ;
 	}
 	cur = *env;
 	while (cur->next)
 		cur = cur->next;
-	cur->next = node;
+	cur->next = n;
 }

@@ -41,8 +41,8 @@
 /* ===================== EXECUTION CORE ======================== */
 
 /* exec_cmd.c */
-int     exec_cmd(t_cmd *cmd, t_env *env, int *exit_status);
-void    child_process_single(t_cmd *cmd, char *path, t_env *env);
+int     exec_cmd(t_cmd *cmd, t_env *env, int *status);
+void    child_exec(t_cmd *cmd, char *path, t_env *env);
 
 /* exec_pipe.c */
 int     exec_pipeline(t_cmd *cmds, t_env *env);
@@ -67,38 +67,36 @@ int     ft_preprocess_heredocs(t_cmd *cmds, t_env *env);
 /* ======================= BUILTINS ============================ */
 
 int     is_builtin(char *cmd);
-int     run_builtin(char **args, t_env **env, int *exit_status);
-int     exec_builtin_with_redir(t_cmd *cmd, t_env **env, int *exit_status);
-
+int     run_builtin(char **args, t_env **env, int *status);
 int     ft_cd(char **args, t_env **env);
 int     ft_pwd(void);
 int     ft_env(t_env *env);
 int     ft_echo(char **args);
-int     ft_exit(char **args, int *exit_status);
+int     ft_exit(char **args, int *status);
 int     ft_unset(char **args, t_env **env);
 int     ft_export(char **args, t_env **env);
 
 /* ==================== ENVIRONMENT UTILS ====================== */
 
-t_env   *copy_env(char **envp);
+t_env   *dup_env(char **envp);
 void    free_env_list(t_env *env);
 void    add_env(t_env **env, char *key, char *value);
 void    unset_env_var(t_env **env, char *key);
 t_env   *find_env_node(t_env *env, const char *key);
 int     env_has_key(t_env *env, char *key);
-char    *get_env_value(t_env *env, const char *key);
-void    replace_env(t_env **env, char *key, char *value);
-void    handle_env_update(t_env **env, char *key, char *value);
+char    *env_get(t_env *env, const char *key);
+void    env_replace(t_env **env, char *key, char *value);
+void    env_update(t_env **env, char *key, char *value);
 void    print_export_env(t_env *env);
 
 int     is_valid_key(char *key);
 char    *create_env_var(const char *key, const char *value);
 void    add_node_back(t_env **env, t_env *new);
-void    set_env_var(t_env **env, const char *key, const char *value);
+void    env_set(t_env **env, const char *key, const char *value);
 void    parse_export_arg(char *arg, char **key, char **value);
 
-t_env   *add_env_node(char *key, char *value);
-t_env   *create_env_node(char *envp_entry, t_env **head);
+t_env   *env_new(char *key, char *value);
+t_env   *new_env(char *envp_entry, t_env **env);
 
 /* ======================== SIGNALS ============================ */
 

@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 20:47:33 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/15 13:33:31 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/18 10:47:33 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,90 +44,28 @@ int is_builtin(char *cmd)
     return (0);
 }
 
-int run_builtin(char **args, t_env **env, int *exit_status)
+int run_builtin(char **args, t_env **env, int *st)
 {
     if (!args || !args[0])
         return (0);
-    if (ft_strcmp(args[0], "exit") == 0)
+    if (!ft_strcmp(args[0], "exit"))
     {
-        ft_exit(args, exit_status);
+        ft_exit(args, st);
         return (-1);
     }
-    else if (ft_strcmp(args[0], "cd") == 0)
-        *exit_status = ft_cd(args, env);
-    else if (ft_strcmp(args[0], "export") == 0)
-        *exit_status = ft_export(args, env);
-    else if (ft_strcmp(args[0], "unset") == 0)
-        *exit_status = ft_unset(args, env);
-    else if (ft_strcmp(args[0], "echo") == 0)
-        *exit_status = ft_echo(args);
-    else if (ft_strcmp(args[0], "pwd") == 0)
-        *exit_status = ft_pwd();
-    else if (ft_strcmp(args[0], "env") == 0)
-        *exit_status = ft_env(*env);
+    else if (!ft_strcmp(args[0], "cd"))
+        *st = ft_cd(args, env);
+    else if (!ft_strcmp(args[0], "export"))
+        *st = ft_export(args, env);
+    else if (!ft_strcmp(args[0], "unset"))
+        *st = ft_unset(args, env);
+    else if (!ft_strcmp(args[0], "echo"))
+        *st = ft_echo(args);
+    else if (!ft_strcmp(args[0], "pwd"))
+        *st = ft_pwd();
+    else if (!ft_strcmp(args[0], "env"))
+        *st = ft_env(*env);
     else
         return (0);
-    return (1); 
-}
-
-int exec_builtin_with_redir(t_cmd *cmd, t_env **env, int *exit_status)
-{
-    int in_backup = dup(0);
-    int out_backup = dup(1);
-    t_in_out_fds *redir = cmd->io_fds;
-    char *heredoc_tmpfile = NULL;
-    int result = 0;
-
-    if (in_backup == -1 || out_backup == -1)
-    {
-        perror("dup");
-        return (1);
-    }
-    while (redir)
-    {
-        if (redir->type == REDIR_HEREDOC)
-        {
-            heredoc_tmpfile = redir_heredoc(redir->filename, *env, redir->expand);
-            if (!heredoc_tmpfile)
-            {
-                result = 1;
-                break;
-            }
-            if (redir_in(heredoc_tmpfile) != 0)
-            {
-                result = 1;
-                break;
-            }
-        }
-        else if (redir->type == T_REDIR_IN && redir_in(redir->filename) != 0)
-        {
-            result = 1;
-            break;
-        }
-        else if (redir->type == T_REDIR_OUT && redir_out(redir->filename) != 0)
-        {
-            result = 1;
-            break;
-        }
-        else if (redir->type == REDIR_APPEND && redir_app(redir->filename) != 0)
-        {
-            result = 1;
-            break;
-        }
-        redir = redir->next;
-    }
-    if (result == 0)
-        result = run_builtin(cmd->args, env, exit_status);
-    if (dup2(in_backup, 0) == -1)
-        perror("dup2");
-    if (dup2(out_backup, 1) == -1)
-        perror("dup2");
-    close(in_backup);
-    close(out_backup);
-    if (heredoc_tmpfile)
-    {
-        unlink(heredoc_tmpfile);
-        free(heredoc_tmpfile);
-    }
-    return (result);
+    return (1);
 }

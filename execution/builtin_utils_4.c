@@ -47,8 +47,8 @@ char	*ft_remove_quotes(char *str)
 	if (!str)
 		return (NULL);
 	len = ft_strlen(str);
-	if (len >= 2 && ((str[0] == '"' && str[len - 1] == '"')
-			|| (str[0] == '\'' && str[len - 1] == '\'')))
+	if (len >= 2 && ((str[0] == '"' && str[len - 1] == '"') || (str[0] == '\''
+				&& str[len - 1] == '\'')))
 	{
 		new = ft_substr(str, 1, len - 2);
 		return (new);

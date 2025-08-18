@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:21:01 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/18 08:18:36 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/18 10:39:32 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int fork_and_wait(t_cmd *cmd, char *path, t_env *env)
     return (1);
 }
 
-int exec_cmd(t_cmd *cmd, t_env *env, int *exit_status)
+int exec_cmd(t_cmd *cmd, t_env *env, int *status)
 {
     char *path;
     char **envp;
@@ -65,11 +65,11 @@ int exec_cmd(t_cmd *cmd, t_env *env, int *exit_status)
 
     if (!cmd->args[0] || cmd->args[0][0] == '\0')
     {
-       *exit_status = 0;
+       *status = 0;
        return (0);
     }
     if (is_builtin(cmd->args[0]))
-        return (run_builtin(cmd->args, &env, exit_status));
+        return (run_builtin(cmd->args, &env, status));
     
     if (ft_strchr(cmd->args[0], '/'))
     {
@@ -79,7 +79,7 @@ int exec_cmd(t_cmd *cmd, t_env *env, int *exit_status)
             close(fd);
             write(2, cmd->args[0], ft_strlen(cmd->args[0]));
             write(2, ": Is a directory\n", 17);
-            *exit_status = 126;
+            *status = 126;
             return (126);
         }
     }
@@ -89,7 +89,7 @@ int exec_cmd(t_cmd *cmd, t_env *env, int *exit_status)
     {
         write(2, cmd->args[0], ft_strlen(cmd->args[0]));
         write(2, ": Permission denied\n", 20);
-        *exit_status = 126;
+        *status = 126;
         return (126);
     }
     if (ft_strchr(cmd->args[0], '/') &&
@@ -97,7 +97,7 @@ int exec_cmd(t_cmd *cmd, t_env *env, int *exit_status)
     {
         write(2, cmd->args[0], ft_strlen(cmd->args[0]));
         write(2, ": No such file or directory\n", 28);
-        *exit_status = 127;
+        *status = 127;
         return (127);
     }
     
@@ -105,7 +105,7 @@ int exec_cmd(t_cmd *cmd, t_env *env, int *exit_status)
     if (!envp)
     {
         perror("env_to_envp");
-        *exit_status = 1;
+        *status = 1;
         return (1);
     }
     path = find_cmd_path(cmd->args[0], envp);
@@ -114,10 +114,10 @@ int exec_cmd(t_cmd *cmd, t_env *env, int *exit_status)
         write(2, cmd->args[0], ft_strlen(cmd->args[0]));
         write(2, ": command not found\n", 20);
         free_split(envp);
-        *exit_status = 127;
+        *status = 127;
         return (127);
     }
-    *exit_status = fork_and_wait(cmd, path, env);
+    *status = fork_and_wait(cmd, path, env);
     free_split(envp);
     free(path);
     return (0);

@@ -12,25 +12,25 @@
 
 #include "execution.h"
 
-int g_exit = 0;
+int		g_exit = 0;
 
-void sigint_prompt(int sig)
+void	sigint_prompt(int sig)
 {
-    (void)sig;
-    write(1, "\n", 1);
-    rl_replace_line("", 0);
-    rl_on_new_line();
-    g_exit = 130;
+	(void)sig;
+	write(1, "\n", 1);
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	g_exit = 130;
 }
 
-void sigquit_prompt(int sig)
+void	sigquit_prompt(int sig)
 {
-    (void)sig;
+	(void)sig;
 }
 
-void sigint_heredoc(int sig)
+void	sigint_heredoc(int sig)
 {
-    (void)sig;
-    write(1, "\n", 1);
-    exit(130);
+	(void)sig;
+	write(1, "\n", 1);
+	exit(130);
 }

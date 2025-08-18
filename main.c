@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:41:18 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/18 00:53:19 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/18 09:13:16 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int main(int argc, char **argv, char **envp)
 
     (void)argc;
     (void)argv;
-    env = copy_env(envp);
+    env = dup_env(envp);
     g_exit = 0;
 
     signal(SIGINT, sigint_prompt);

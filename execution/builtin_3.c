@@ -6,27 +6,35 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 18:06:32 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/14 08:53:33 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/18 09:11:08 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
+static int	check_n_flag(char *arg)
+{
+	int	i;
+
+	if (!arg || arg[0] != '-' || arg[1] != 'n')
+		return (0);
+	i = 2;
+	while (arg[i] == 'n')
+		i++;
+	if (arg[i] != '\0')
+		return (0);
+	return (1);
+}
+
 int	ft_echo(char **args)
 {
 	int	i;
 	int	newline;
-	int	j;
 
 	i = 1;
 	newline = 1;
-	while (args[i] && args[i][0] == '-' && args[i][1] == 'n')
+	while (args[i] && check_n_flag(args[i]))
 	{
-		j = 2;
-		while (args[i][j] == 'n')
-			j++;
-		if (args[i][j] != '\0')
-			break ;
 		newline = 0;
 		i++;
 	}

@@ -6,59 +6,59 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 19:24:24 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/16 15:09:39 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/18 09:28:45 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-t_env	*create_env_node(char *envp_entry, t_env **head)
+t_env	*new_env(char *envp_entry, t_env **env)
 {
-	t_env	*node;
-	char	*equal;
+	t_env	*n;
+	char	*eq;
 
-	equal = ft_strchr(envp_entry, '=');
-	if (equal)
-		node = add_env_node(ft_substr(envp_entry, 0, equal - envp_entry),
-				ft_strdup(equal + 1));
+	eq = ft_strchr(envp_entry, '=');
+	if (eq)
+		n = env_new(ft_substr(envp_entry, 0, eq - envp_entry),
+				ft_strdup(eq + 1));
 	else
-		node = add_env_node(ft_strdup(envp_entry), NULL);
-	if (!node)
+		n = env_new(ft_strdup(envp_entry), NULL);
+	if (!n)
 	{
-		free_env_list(*head);
+		free_env_list(*env);
 		return (NULL);
 	}
-	return (node);
+	return (n);
 }
 
-t_env	*copy_env(char **envp)
+t_env	*dup_env(char **envp)
 {
-	t_env	*head;
-	t_env	*node;
+	t_env	*env;
+	t_env	*n;
 
-	head = NULL;
+	env = NULL;
 	while (*envp)
 	{
-		node = create_env_node(*envp, &head);
-		if (!node)
+		n = new_env(*envp, &env);
+		if (!n)
 			return (NULL);
-		add_node_back(&head, node);
+		add_node_back(&env, n);
 		envp++;
 	}
-	return (head);
+	return (env);
 }
 
-char	*get_env_value(t_env *env, const char *key)
+char	*env_get(t_env *env, const char *key)
 {
-	t_env	*node;
+	t_env	*n;
 
-	node = find_env_node(env, key);
-	if (node)
-		return (node->value);
+	n = find_env_node(env, key);
+	if (n)
+		return (n->value);
 	return (NULL);
 }
 
-void	set_env_var(t_env **env, const char *key, const char *value)
+void	env_set(t_env **env, const char *key, const char *value)
 {
 	t_env	*cur;
 
@@ -87,7 +87,7 @@ int	env_has_key(t_env *env, char *key)
 	return (0);
 }
 
-void	replace_env(t_env **env, char *key, char *value)
+void	env_replace(t_env **env, char *key, char *value)
 {
 	t_env	*tmp;
 
@@ -111,15 +111,15 @@ void	replace_env(t_env **env, char *key, char *value)
 		add_env(env, ft_strdup(key), ft_strdup(""));
 }
 
-void	handle_env_update(t_env **env, char *key, char *value)
+void	env_update(t_env **env, char *key, char *value)
 {
 	if (value)
-		replace_env(env, key, value);
+		env_replace(env, key, value);
 	else if (!env_has_key(*env, key))
 		add_env(env, ft_strdup(key), ft_strdup(""));
 }
 
-t_env	*add_env_node(char *key, char *value)
+t_env	*env_new(char *key, char *value)
 {
 	t_env	*new;
 
