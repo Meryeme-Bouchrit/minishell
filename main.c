@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:41:18 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/19 08:41:44 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/19 13:59:22 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ int main(int argc, char **argv, char **envp)
 
     signal(SIGINT, sigint_prompt);
     signal(SIGQUIT, SIG_IGN);
-
     while (1)
     {
         line = readline("minishell$ ");
@@ -88,7 +87,7 @@ int main(int argc, char **argv, char **envp)
 
             if (cmd)
             {
-                if (ft_preprocess_heredocs(cmd, env) != 0)
+                if (preprocess_heredocs(cmd, env) != 0)
                     skip_cmd = 1;
 
                 if (!skip_cmd && cmd->args && cmd->args[0])
@@ -107,7 +106,7 @@ int main(int argc, char **argv, char **envp)
             }
 
             free_token_list(tok);
-            cleanup_heredocs(cmd);
+            cleanup_all_heredocs(cmd);
             free_cmds(&cmd);
         }
 

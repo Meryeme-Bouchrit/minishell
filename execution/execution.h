@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 05:57:10 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/16 13:45:00 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/19 14:00:00 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,34 +38,56 @@
 #  define O_DIRECTORY 0
 # endif
 
-/* ===================== EXECUTION CORE ======================== */
+/* ===================== EXEC PIPE CORE ======================== */
 
-/* exec_cmd.c */
-int     exec_cmd(t_cmd *cmd, t_env *env, int *status);
-void    child_exec(t_cmd *cmd, char *path, t_env *env);
-
-/* exec_pipe.c */
 int     exec_pipeline(t_cmd *cmds, t_env *env);
+int     end_pipeline(pid_t *pids, int **pipes, int n, int ret);
+int     **init_pipes(int n);
+pid_t   *init_pids(int n, int **pipes);
+int     fork_one(t_cmd *cmd, t_env *env, pid_t *pids, int i);
+int     fork_all(t_cmd *cmds, t_env *env, pid_t *pids);
+int     wait_last(pid_t *pids, int n);
+void    close_all_pipes(int **pipes, int n);
+void    setup_child(int **pipes, int idx, int total);
+void    print_exit(char *cmd, char *msg, int code);
+void    check_cmd_errors(t_cmd *cmd);
+void    child_process(t_cmd *cmd, t_env *env);
+void    run_cmd(t_cmd *cmd, t_env *env);
+int     count_cmds(t_cmd *cmds);
+int     create_all_pipes(int **pipes, int n);
 
-/* exec_env.c */
+/* ===================== EXEC CMD ======================== */
+int     exec_cmd(t_cmd *cmd, t_env *env, int *status);
+
+/* ===================== EXEC ENV ======================== */
 char    **env_to_envp(t_env *env);
 
-/* exec_path.c */
+/* ===================== EXEC PATH ======================= */
 char    *find_cmd_path(char *cmd, char **envp);
 char    *get_path_envp(char **envp);
 char    *get_path_env(t_env *env);
 char    *find_bin(char *cmd, char **paths);
 
-/* exec_redirs.c */
-int     redir_in(char *filename);
-int     redir_out(char *filename);
-int     redir_app(char *filename);
-void    ft_handle_redirs(t_in_out_fds *redir);
-char    *redir_heredoc(char *limiter, t_env *env, bool expand);
-int     ft_preprocess_heredocs(t_cmd *cmds, t_env *env);
+/* ===================== EXEC REDIRS ===================== */
+int     redirect_fd(char *file, int fd_target, int flags);
+void    handle_single_redir(t_in_out_fds *redir);
+void    handle_redirections(t_in_out_fds *redir);
 
-/* ======================= BUILTINS ============================ */
+int     write_heredoc_line(int fd, char *line, t_env *env, bool expand);
+int     heredoc_loop(int fd, char *limiter, t_env *env, bool expand);
 
+char    *generate_heredoc_filename(void);
+int     create_heredoc_file(char **path);
+int     fork_heredoc_child(int fd, char *limiter, t_env *env, bool expand);
+char    *wait_heredoc_child(char *path, pid_t pid);
+char    *create_heredoc(char *limiter, t_env *env, bool expand);
+
+void    cleanup_cmd_heredoc(t_cmd *cmd);
+int     process_heredocs(t_cmd *cmd, t_env *env);
+int     preprocess_heredocs(t_cmd *cmds, t_env *env);
+void    cleanup_all_heredocs(t_cmd *cmds);
+
+/* ======================= BUILTINS ====================== */
 int     is_builtin(char *cmd);
 int     run_builtin(char **args, t_env **env, int *status);
 int     ft_cd(char **args, t_env **env);
@@ -77,7 +99,6 @@ int     ft_unset(char **args, t_env **env);
 int     ft_export(char **args, t_env **env);
 
 /* ==================== ENVIRONMENT UTILS ====================== */
-
 t_env   *dup_env(char **envp);
 void    free_env_list(t_env *env);
 void    add_env(t_env **env, char *key, char *value);
@@ -99,24 +120,22 @@ t_env   *env_new(char *key, char *value);
 t_env   *new_env(char *envp_entry, t_env **env);
 
 /* ======================== SIGNALS ============================ */
-
 void    sigquit_prompt(int sig);
 void    sigint_prompt(int sig);
 void    sigint_heredoc(int sig);
+void    sig_child(void);
+void    sig_prompt(void);
 
 /* ========================= UTILS ============================= */
-
 int     ft_strcmp(const char *s1, const char *s2);
 int     ft_is_numeric(const char *str);
 void    free_split(char **split);
 char    *ft_remove_quotes(char *str);
 int     only_spaces(const char *str);
 
-int     heredoc_child_loop(int out_fd, char *limiter, t_env *env, bool expand);
-char    *generate_temp_filename(void);
-int     redir_in_fd(int fd);
 int     fork_and_wait(t_cmd *cmd, char *path, t_env *env);
-// void    handle_exit(t_cmd *cmds, t_env **env);
-void cleanup_heredocs(t_cmd *cmds);
+int     check_directory(char *cmd, int *status);
+int     check_access_errors(char *cmd, int *status);
+int     resolve_and_exec(t_cmd *cmd, t_env *env, int *status);
 
 #endif

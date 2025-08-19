@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:21:01 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/19 08:45:41 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/19 13:57:06 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@ void child_process_single(t_cmd *cmd, char *path, t_env *env)
 
     signal(SIGINT, SIG_DFL);
     signal(SIGQUIT, SIG_DFL);
-
-    ft_handle_redirs(cmd->io_fds);
+    handle_redirections(cmd->io_fds);
     envp_arr = env_to_envp(env);
     if (!envp_arr)
     {
@@ -32,51 +31,48 @@ void child_process_single(t_cmd *cmd, char *path, t_env *env)
     exit(127);
 }
 
-
-int fork_and_wait(t_cmd *cmd, char *path, t_env *env)
+static int	get_exit_status(int status)
 {
-    pid_t   pid;
-    int     status;
+	int	exit_code;
+	int	sig;
 
-    pid = fork();
-    if (pid == -1)
-    {
-        perror("fork");
-        return (1);
-    }
-    else if (pid == 0)
-    {
-        signal(SIGINT, SIG_DFL);
-        signal(SIGQUIT, SIG_DFL);
-        child_process_single(cmd, path, env);
-    }
-    else
-    {
-        signal(SIGINT, SIG_IGN);
-		signal(SIGQUIT, SIG_IGN);
-		waitpid(pid, &status, 0);
-		signal(SIGINT, sigint_prompt);
-		signal(SIGQUIT, SIG_IGN);
-
-        if ((status % 256) == 0)
-        {
-            int exit_code = (status / 256) % 256;
-            return (exit_code);
-        }
-        else
-        {
-            int sig = status % 128; 
-            if (sig == SIGINT)
-                write(1, "\n", 1);
-            return (128 + sig);
-        }
-    }
-    return (1);
+	if ((status % 256) == 0)
+	{
+		exit_code = (status / 256) % 256;
+		return (exit_code);
+	}
+	sig = status % 128;
+	if (sig == SIGINT)
+		write(1, "\n", 1);
+	return (128 + sig);
 }
 
+int	fork_and_wait(t_cmd *cmd, char *path, t_env *env)
+{
+	pid_t	pid;
+	int		status;
+	int		ret;
 
+	pid = fork();
+	if (pid == -1)
+		return (perror("fork"), 1);
+	else if (pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
+		child_process_single(cmd, path, env);
+		return (0);
+	}
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	waitpid(pid, &status, 0);
+	signal(SIGINT, sigint_prompt);
+	signal(SIGQUIT, SIG_IGN);
+	ret = get_exit_status(status);
+	return (ret);
+}
 
-static int	check_directory(char *cmd, int *status)
+int	check_directory(char *cmd, int *status)
 {
 	int	fd;
 
@@ -92,7 +88,7 @@ static int	check_directory(char *cmd, int *status)
 	return (0);
 }
 
-static int	check_access_errors(char *cmd, int *status)
+int	check_access_errors(char *cmd, int *status)
 {
 	if (access(cmd, F_OK) == 0 && access(cmd, X_OK) != 0)
 	{
@@ -111,7 +107,7 @@ static int	check_access_errors(char *cmd, int *status)
 	return (0);
 }
 
-static int	resolve_and_exec(t_cmd *cmd, t_env *env, int *status)
+int	resolve_and_exec(t_cmd *cmd, t_env *env, int *status)
 {
 	char	**envp;
 	char	*path;

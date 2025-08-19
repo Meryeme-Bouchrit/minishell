@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:34:42 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/18 00:31:52 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/19 13:39:31 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,12 @@ typedef struct s_cmd
 	t_in_out_fds		*io_fds;
 	bool				pipe_output;
 	struct s_cmd		*next;
+
+	int					idx;      // index of this command in the pipeline
+	int					total;     // total number of commands/pipes
+	int					**pipe_fds;    // pointer to the array of all pipes
 }	t_cmd;
+
 
 typedef struct s_env
 {
@@ -54,5 +59,4 @@ typedef struct s_env
 # include "parsing/parsing.h"
 
 #endif
-
 
