@@ -90,8 +90,8 @@ static int	process_export_arg(char *arg, t_env **env)
 
 int	ft_export(char **args, t_env **env)
 {
-	int		i;
-	int		had_error;
+	int	i;
+	int	had_error;
 
 	i = 1;
 	had_error = 0;

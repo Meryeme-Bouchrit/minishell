@@ -3,18 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exec_redirs.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbouchri <mbouchri@student.1337.ma>       +#+  +:+       +#+        */
+/*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/11 03:22:10 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/19 14:30:00 by mbouchri         ###   ########.fr       */
+/*   Created: 2025/08/19 14:49:35 by mbouchri          #+#    #+#             */
+/*   Updated: 2025/08/19 15:27:43 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-/* -------------------- SIMPLE REDIRECTION -------------------- */
-
-int	redirect_fd(char *file, int fd_target, int flags)
+int	redirect_file(char *file, int target_fd, int flags)
 {
 	int	fd;
 
@@ -25,7 +23,7 @@ int	redirect_fd(char *file, int fd_target, int flags)
 		perror(file);
 		return (1);
 	}
-	if (dup2(fd, fd_target) == -1)
+	if (dup2(fd, target_fd) == -1)
 	{
 		perror("dup2");
 		close(fd);
@@ -35,11 +33,13 @@ int	redirect_fd(char *file, int fd_target, int flags)
 	return (0);
 }
 
-void	handle_single_redir(t_in_out_fds *redir)
+void	apply_redir(t_in_out_fds *redir)
 {
+	int	fd;
+
 	if (redir->type == REDIR_HEREDOC)
 	{
-		int	fd = open(redir->filename, O_RDONLY);
+		fd = open(redir->filename, O_RDONLY);
 		if (fd < 0 || dup2(fd, 0) == -1)
 		{
 			perror("heredoc");
@@ -48,28 +48,27 @@ void	handle_single_redir(t_in_out_fds *redir)
 		}
 		close(fd);
 	}
-	else if (redir->type == T_REDIR_IN && redirect_fd(redir->filename, 0, O_RDONLY))
+	else if (redir->type == T_REDIR_IN && redirect_file(redir->filename, 0,
+			O_RDONLY))
 		exit(1);
-	else if (redir->type == T_REDIR_OUT
-		&& redirect_fd(redir->filename, 1, O_WRONLY | O_CREAT | O_TRUNC))
+	else if (redir->type == T_REDIR_OUT && redirect_file(redir->filename, 1,
+			O_WRONLY | O_CREAT | O_TRUNC))
 		exit(1);
-	else if (redir->type == REDIR_APPEND
-		&& redirect_fd(redir->filename, 1, O_WRONLY | O_CREAT | O_APPEND))
+	else if (redir->type == REDIR_APPEND && redirect_file(redir->filename, 1,
+			O_WRONLY | O_CREAT | O_APPEND))
 		exit(1);
 }
 
-void	handle_redirections(t_in_out_fds *redir)
+void	apply_all_redirs(t_in_out_fds *redir)
 {
 	while (redir)
 	{
-		handle_single_redir(redir);
+		apply_redir(redir);
 		redir = redir->next;
 	}
 }
 
-/* -------------------- HEREDOC HELPERS -------------------- */
-
-int	write_heredoc_line(int fd, char *line, t_env *env, bool expand)
+int	write_heredoc(int fd, char *line, t_env *env, bool expand)
 {
 	char	*tmp;
 
@@ -91,7 +90,26 @@ int	write_heredoc_line(int fd, char *line, t_env *env, bool expand)
 	return (0);
 }
 
-int	heredoc_loop(int fd, char *limiter, t_env *env, bool expand)
+// char *read_line(void)
+// {
+//     char *line = NULL;
+//     size_t len = 0;
+//     ssize_t n;
+
+//     n = getline(&line, &len, stdin);
+//     if (n <= 0)
+//     {
+//         free(line);
+//         return NULL; // EOF or error
+//     }
+//     if (line[n - 1] == '\n')
+//         line[n - 1] = '\0';
+//     return line;
+// }
+
+
+
+int	heredoc_input(int fd, char *limiter, t_env *env, bool expand)
 {
 	char	*line;
 
@@ -105,31 +123,29 @@ int	heredoc_loop(int fd, char *limiter, t_env *env, bool expand)
 			free(line);
 			break ;
 		}
-		write_heredoc_line(fd, line, env, expand);
+		write_heredoc(fd, line, env, expand);
 		free(line);
 	}
 	return (0);
 }
 
-char	*generate_heredoc_filename(void)
+char	*new_heredoc_name(void)
 {
 	static int	counter = 0;
 	char		*num;
 	char		*file;
 
 	num = ft_itoa(counter++);
-	if (!num)
-		return (NULL);
 	file = ft_strjoin("/tmp/ms_heredoc_", num);
 	free(num);
 	return (file);
 }
 
-int	create_heredoc_file(char **path)
+int	create_heredoc_fd(char **path)
 {
 	int	fd;
 
-	*path = generate_heredoc_filename();
+	*path = new_heredoc_name();
 	if (!*path)
 		return (-1);
 	while (1)
@@ -138,14 +154,14 @@ int	create_heredoc_file(char **path)
 		if (fd != -1)
 			break ;
 		free(*path);
-		*path = generate_heredoc_filename();
+		*path = new_heredoc_name();
 		if (!*path)
 			return (-1);
 	}
 	return (fd);
 }
 
-int	fork_heredoc_child(int fd, char *limiter, t_env *env, bool expand)
+int	fork_heredoc(int fd, char *limiter, t_env *env, bool expand)
 {
 	pid_t	pid;
 
@@ -156,7 +172,7 @@ int	fork_heredoc_child(int fd, char *limiter, t_env *env, bool expand)
 	{
 		signal(SIGINT, sigint_heredoc);
 		signal(SIGQUIT, SIG_IGN);
-		heredoc_loop(fd, limiter, env, expand);
+		heredoc_input(fd, limiter, env, expand);
 		close(fd);
 		exit(0);
 	}
@@ -164,7 +180,7 @@ int	fork_heredoc_child(int fd, char *limiter, t_env *env, bool expand)
 	return (pid);
 }
 
-char	*wait_heredoc_child(char *path, pid_t pid)
+char	*wait_heredoc(pid_t pid, char *path)
 {
 	int	status;
 
@@ -177,18 +193,18 @@ char	*wait_heredoc_child(char *path, pid_t pid)
 	return (path);
 }
 
-char	*create_heredoc(char *limiter, t_env *env, bool expand)
+char	*make_heredoc(char *limiter, t_env *env, bool expand)
 {
 	char	*path;
 	int		fd;
 	int		pid;
 
-	fd = create_heredoc_file(&path);
+	fd = create_heredoc_fd(&path);
 	if (fd == -1)
 		return (NULL);
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
-	pid = fork_heredoc_child(fd, limiter, env, expand);
+	pid = fork_heredoc(fd, limiter, env, expand);
 	if (pid == -1)
 	{
 		unlink(path);
@@ -197,12 +213,10 @@ char	*create_heredoc(char *limiter, t_env *env, bool expand)
 		signal(SIGQUIT, SIG_IGN);
 		return (NULL);
 	}
-	return (wait_heredoc_child(path, pid));
+	return (wait_heredoc(pid, path));
 }
 
-/* -------------------- HEREDOC CLEANUP -------------------- */
-
-void	cleanup_cmd_heredoc(t_cmd *cmd)
+void	remove_cmd_heredocs(t_cmd *cmd)
 {
 	t_in_out_fds	*redir;
 
@@ -219,7 +233,7 @@ void	cleanup_cmd_heredoc(t_cmd *cmd)
 	}
 }
 
-int	process_heredocs(t_cmd *cmd, t_env *env)
+int	handle_heredocs(t_cmd *cmd, t_env *env)
 {
 	t_in_out_fds	*redir;
 	char			*file;
@@ -229,7 +243,7 @@ int	process_heredocs(t_cmd *cmd, t_env *env)
 	{
 		if (redir->type == REDIR_HEREDOC)
 		{
-			file = create_heredoc(redir->filename, env, redir->expand);
+			file = make_heredoc(redir->filename, env, redir->expand);
 			if (!file)
 				return (1);
 			free(redir->filename);
@@ -238,39 +252,34 @@ int	process_heredocs(t_cmd *cmd, t_env *env)
 		redir = redir->next;
 	}
 	if (!cmd->args || !cmd->args[0])
-		cleanup_cmd_heredoc(cmd);
+		remove_cmd_heredocs(cmd);
 	return (0);
 }
 
-int	preprocess_heredocs(t_cmd *cmds, t_env *env)
+int	handle_all_heredocs(t_cmd *cmds, t_env *env)
 {
-	t_cmd	*cmd;
-
-	cmd = cmds;
-	while (cmd)
+	while (cmds)
 	{
-		if (process_heredocs(cmd, env))
+		if (handle_heredocs(cmds, env))
 			return (1);
-		cmd = cmd->next;
+		cmds = cmds->next;
 	}
 	return (0);
 }
 
 void	cleanup_all_heredocs(t_cmd *cmds)
 {
-	t_cmd			*cmd;
 	t_in_out_fds	*redir;
 
-	cmd = cmds;
-	while (cmd)
+	while (cmds)
 	{
-		redir = cmd->io_fds;
+		redir = cmds->io_fds;
 		while (redir)
 		{
 			if (redir->type == REDIR_HEREDOC && redir->filename)
 				unlink(redir->filename);
 			redir = redir->next;
 		}
-		cmd = cmd->next;
+		cmds = cmds->next;
 	}
 }

@@ -19,8 +19,8 @@ t_env	*new_env(char *envp_entry, t_env **env)
 
 	eq = ft_strchr(envp_entry, '=');
 	if (eq)
-		n = env_new(ft_substr(envp_entry, 0, eq - envp_entry),
-				ft_strdup(eq + 1));
+		n = env_new(ft_substr(envp_entry, 0, eq - envp_entry), ft_strdup(eq
+					+ 1));
 	else
 		n = env_new(ft_strdup(envp_entry), NULL);
 	if (!n)

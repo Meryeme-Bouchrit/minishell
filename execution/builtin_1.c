@@ -40,7 +40,8 @@ static char	*get_oldpwd(t_env *env)
 	return (path);
 }
 
-static int	change_dir(char *path, t_env **env_list, char *old_path, char *new_path)
+static int	change_dir(char *path, t_env **env_list, char *old_path,
+		char *new_path)
 {
 	if (chdir(path) != 0)
 	{

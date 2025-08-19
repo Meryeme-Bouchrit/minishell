@@ -6,29 +6,29 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:21:01 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/19 13:57:06 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/19 14:42:21 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-void child_process_single(t_cmd *cmd, char *path, t_env *env)
+void	child_process_single(t_cmd *cmd, char *path, t_env *env)
 {
-    char    **envp_arr;
+	char	**envp_arr;
 
-    signal(SIGINT, SIG_DFL);
-    signal(SIGQUIT, SIG_DFL);
-    handle_redirections(cmd->io_fds);
-    envp_arr = env_to_envp(env);
-    if (!envp_arr)
-    {
-        perror("env_to_envp");
-        exit(1);
-    }
-    execve(path, cmd->args, envp_arr);
-    perror(cmd->args[0]);
-    free_split(envp_arr);
-    exit(127);
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	apply_all_redirs(cmd->io_fds);
+	envp_arr = env_to_envp(env);
+	if (!envp_arr)
+	{
+		perror("env_to_envp");
+		exit(1);
+	}
+	execve(path, cmd->args, envp_arr);
+	perror(cmd->args[0]);
+	free_split(envp_arr);
+	exit(127);
 }
 
 static int	get_exit_status(int status)

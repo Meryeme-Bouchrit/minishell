@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:41:18 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/19 13:59:22 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/19 15:27:11 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void free_in_out_fds(t_in_out_fds *redir)
         redir = redir->next;
         if (tmp->filename)
         {
-            unlink(tmp->filename); // remove heredoc file
+            unlink(tmp->filename);
             free(tmp->filename);
         }
         free(tmp);
@@ -87,7 +87,7 @@ int main(int argc, char **argv, char **envp)
 
             if (cmd)
             {
-                if (preprocess_heredocs(cmd, env) != 0)
+                if (handle_all_heredocs(cmd, env) != 0)
                     skip_cmd = 1;
 
                 if (!skip_cmd && cmd->args && cmd->args[0])

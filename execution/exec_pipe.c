@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 02:11:00 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/19 13:57:10 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/19 14:48:19 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ void	close_all_pipes(int **pipes, int n)
 
 int	count_cmds(t_cmd *cmds)
 {
-	int	n;
-	t_cmd *cur;
+	int		n;
+	t_cmd	*cur;
 
 	n = 0;
 	cur = cmds;
@@ -132,7 +132,7 @@ void	child_process(t_cmd *cmd, t_env *env)
 
 	exit_code = 0;
 	setup_child(cmd->pipe_fds, cmd->idx, cmd->total);
-	handle_redirections(cmd->io_fds);
+	apply_all_redirs(cmd->io_fds);
 	if (is_builtin(cmd->args[0]))
 	{
 		run_builtin(cmd->args, &env, &exit_code);
@@ -214,12 +214,11 @@ int	wait_last(pid_t *pids, int n)
 	return (0);
 }
 
-
 int	fork_all(t_cmd *cmds, t_env *env, pid_t *pids)
 {
 	t_cmd	*cur;
-	int	i;
-	int	ret;
+	int		i;
+	int		ret;
 
 	cur = cmds;
 	i = 0;
@@ -237,18 +236,19 @@ int	fork_all(t_cmd *cmds, t_env *env, pid_t *pids)
 	}
 	return (ret);
 }
-int end_pipeline(pid_t *pids, int **pipes, int n, int ret)
+
+int	end_pipeline(pid_t *pids, int **pipes, int n, int ret)
 {
-    if (pipes)
-        close_all_pipes(pipes, n - 1);
-    signal(SIGINT, SIG_IGN);
-    signal(SIGQUIT, SIG_IGN);
-    if (!ret)
-        ret = wait_last(pids, n);
-    signal(SIGINT, sigint_prompt);
-    signal(SIGQUIT, SIG_IGN);
-    free(pids);
-    return (ret);
+	if (pipes)
+		close_all_pipes(pipes, n - 1);
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	if (!ret)
+		ret = wait_last(pids, n);
+	signal(SIGINT, sigint_prompt);
+	signal(SIGQUIT, SIG_IGN);
+	free(pids);
+	return (ret);
 }
 
 int	exec_pipeline(t_cmd *cmds, t_env *env)
