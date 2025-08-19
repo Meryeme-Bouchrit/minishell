@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:41:18 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/18 11:08:02 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/19 08:41:44 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int main(int argc, char **argv, char **envp)
                     else if (cmd->next || cmd->io_fds)
                         g_exit = exec_pipeline(cmd, env);
                     else
-                        exec_cmd(cmd, env, &g_exit);
+                       g_exit = exec_cmd(cmd, env, &g_exit);
                 }
             }
 

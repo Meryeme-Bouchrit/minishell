@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 03:22:10 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/18 12:07:08 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/19 08:53:26 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,16 +158,15 @@ char *generate_temp_filename(void)
 
 char *redir_heredoc(char *limiter, t_env *env, bool expand)
 {
-    char  *path;
-    int   fd;
+    char *path;
+    int fd;
     pid_t pid;
-    int   status;
-    void  (*old_int)(int);
-    void  (*old_quit)(int);
+    int status;
 
     path = generate_temp_filename();
     if (!path)
         return (NULL);
+
     while (1)
     {
         fd = open(path, O_RDWR | O_CREAT | O_EXCL, 0600);
@@ -178,50 +177,74 @@ char *redir_heredoc(char *limiter, t_env *env, bool expand)
         if (!path)
             return (NULL);
     }
-    old_int = signal(SIGINT, SIG_IGN);
-    old_quit = signal(SIGQUIT, SIG_IGN);
+
+    signal(SIGINT, SIG_IGN);   // parent ignores Ctrl+C while child runs
+    signal(SIGQUIT, SIG_IGN);
+
     pid = fork();
     if (pid < 0)
     {
         close(fd);
         unlink(path);
         free(path);
-        signal(SIGINT, old_int);
-        signal(SIGQUIT, old_quit);
+        signal(SIGINT, sigint_prompt);
+        signal(SIGQUIT, SIG_IGN);
         return (NULL);
     }
-    if (pid == 0)
+
+    if (pid == 0) // child
     {
-        signal(SIGINT, sigint_heredoc);
+        signal(SIGINT, sigint_heredoc); // Ctrl+C exits heredoc child
         signal(SIGQUIT, SIG_IGN);
         heredoc_child_loop(fd, limiter, env, expand);
         close(fd);
         exit(0);
     }
+
+    // parent waits
     waitpid(pid, &status, 0);
-    signal(SIGINT, old_int);
-    signal(SIGQUIT, old_quit);
-    close(fd);
-    if ((status & 0x7f) != 0)
+    signal(SIGINT, sigint_prompt); // restore shell Ctrl+C
+    signal(SIGQUIT, SIG_IGN);
+
+    if ((status & 0xFF) != 0)
     {
-        if ((status & 0x7f) == 2)
+        int sig = status & 0x7F;
+        if (sig == SIGINT)
         {
             g_exit = 130;
             unlink(path);
             free(path);
             return (NULL);
         }
+        else if (sig == SIGQUIT)
+        {
+            write(2, "Quit (core dumped)\n", 19);
+            g_exit = 131;
+            unlink(path);
+            free(path);
+            return (NULL);
+        }
+        else
+        {
+            g_exit = 128 + sig;
+            unlink(path);
+            free(path);
+            return (NULL);
+        }
     }
-    else if (((status >> 8) & 0xff) != 0)
+
+    g_exit = (status >> 8) & 0xFF;
+    if (g_exit != 0)
     {
-        g_exit = (status >> 8) & 0xff;
         unlink(path);
         free(path);
         return (NULL);
     }
-    g_exit = 0;
-    return (path);
+
+    return path;
 }
+
+
 
 int ft_preprocess_heredocs(t_cmd *cmds, t_env *env)
 {
