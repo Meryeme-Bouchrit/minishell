@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/14 02:24:44 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/08 04:31:16 by zhassna          ###   ########.fr       */
+/*   Created: 2025/08/20 00:13:52 by zhassna           #+#    #+#             */
+/*   Updated: 2025/08/20 00:17:37 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define PARSING_H
 
 # include "../libft/libft.h"
-# include "minishell.h" // ✅ Shared structs
+# include "minishell.h" // Shared structs
 # include <ctype.h>
 # include <readline/history.h>
 # include <readline/readline.h>
@@ -49,56 +49,47 @@ typedef struct s_ctx
 	const char		*line;
 }					t_ctx;
 
-////////////////////helper_func_2.c//////////////////
-
-// int					token_list_size(t_token *list);
-
-// void				add_token(t_token **head, char *val, t_token_type type);
-//////////////////////token_list.c////////////////////////////
+//////////////////////token_list.c///////////////////////////////////////////
 int					token_list_size(t_token *list);
 char				**token_list_to_array(t_token *list);
 void				free_token_list(t_token *list);
 t_cmd				*new_cmd(void);
 void				add_redirection(t_cmd *cmd, t_redirections type,
 						const char *filename, bool expand);
-////////////////////correct_token.c///////////////
+////////////////////correct_token.c///////////////////////////////////////////
 t_token				*tokenize(const char *line, t_env *env);
 
-////////////////////////libft////////////////////////////////
+////////////////////////libft/////////////////////////////////////////////////
 int					my_strcmp(const char *s1, const char *s2);
-// int					ft_strncmp(const char *s1, const char *s2, size_t n);
-// char				*ft_strdup(const char *s1);
 char				*ft_strncpy(char *dest, const char *src, size_t n);
 
-/////////////////////utils_1.c///////////////////
+/////////////////////utils_1.c/////////////////////////////////////////////////
 int					ft_isspace(char c);
 int					is_special(char c);
 t_token				*new_token(char *value, t_token_type type);
 void				add_token(t_token **head, char *val, t_token_type type);
 
-//////////////////////parser.c//////////////////////////
+//////////////////////parser.c//////////////////////////////////////////////////
 t_cmd				*parse_commands(t_token *token);
 void				print_commands(t_cmd *cmds);
-
-//////////////////////continue_heredoc.c////////////////
+//////////////////////continue_heredoc.c////////////////////////////////////////
 char				*expand_variables(const char *line, t_env *env);
-/////////////////////get_type.c/////////////////////////
+/////////////////////get_type.c/////////////////////////////////////////////////
 t_token_type		get_type(char *s, int a);
 bool				redirection(t_token_type type);
 bool				is_redirection(char *s);
 t_redirections		get_redirect_type(char *s);
-/////////////////////free_cmds.c//////////////////////
+/////////////////////free_cmds.c////////////////////////////////////////////////
 void				free_cmds(t_cmd **cmds);
-// char				*expand_if_needed(char *token_value, char quote_type);
-// char				*expand_dollar(const char *str);
-////////////////////my_strjoin.c///////////////////////
+////////////////////my_strjoin.c////////////////////////////////////////////////
 char				*my_strjoin(char *s1, char *s2);
 int					check_for_syntax_error(t_token *token);
-////////////////expansion.c///////////////////////////
+void				is_heredoc(t_token *tokens, const char *line, t_env *env);
+////////////////expansion.c/////////////////////////////////////////////////////
 int					empty_check(char *s);
 char				*secnd_expand_dollar(t_ctx *ctx, int end, const char *str,
 						t_env *env);
-////////////////continue.c/////////////////////////////
+////////////////continue.c//////////////////////////////////////////////////////
 int					end_len(const char *line, int i, bool heredoc);
 char				*grep_doubleq(t_ctx *ctx, t_env *env);
 char				*grep_singleq(t_ctx *ctx);

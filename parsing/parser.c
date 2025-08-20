@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   array_to_tokens.c                                  :+:      :+:    :+:   */
+/*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/14 02:04:44 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/08 15:59:40 by zhassna          ###   ########.fr       */
+/*   Created: 2025/08/20 00:11:28 by zhassna           #+#    #+#             */
+/*   Updated: 2025/08/20 00:13:03 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	parsing_redir(t_token **tokens, t_cmd **head, t_cmd **current,
 	return (0);
 }
 
-void	parsing_last(t_cmd **tmp, t_cmd **head, t_cmd **current,
+void	last_parsing(t_cmd **tmp, t_cmd **head, t_cmd **current,
 		t_token **temp_args)
 {
 	if (*temp_args)
@@ -96,6 +96,6 @@ t_cmd	*parse_commands(t_token *tokens)
 			add_token(&temp_args, ft_strdup(tokens->value), tokens->type);
 		tokens = tokens->next;
 	}
-	parsing_last(&tmp, &head, &current, &temp_args);
+	last_parsing(&tmp, &head, &current, &temp_args);
 	return (head);
 }

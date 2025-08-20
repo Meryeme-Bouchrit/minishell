@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_list.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/14 02:04:18 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/17 17:08:47 by mbouchri         ###   ########.fr       */
+/*   Created: 2025/08/20 00:17:59 by zhassna           #+#    #+#             */
+/*   Updated: 2025/08/20 00:18:42 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,8 @@ void	free_token_list(t_token *list)
 	{
 		tmp = list;
 		list = list->next;
-		if (tmp->value)
-			free(tmp->value);
-		tmp->value = NULL;
-		if (tmp)
-			free(tmp);
-		tmp = NULL;
+		free(tmp->value);
+		free(tmp);
 	}
 }
 
