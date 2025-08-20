@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 14:49:35 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/19 15:27:43 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/20 07:07:07 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,25 +90,6 @@ int	write_heredoc(int fd, char *line, t_env *env, bool expand)
 	return (0);
 }
 
-// char *read_line(void)
-// {
-//     char *line = NULL;
-//     size_t len = 0;
-//     ssize_t n;
-
-//     n = getline(&line, &len, stdin);
-//     if (n <= 0)
-//     {
-//         free(line);
-//         return NULL; // EOF or error
-//     }
-//     if (line[n - 1] == '\n')
-//         line[n - 1] = '\0';
-//     return line;
-// }
-
-
-
 int	heredoc_input(int fd, char *limiter, t_env *env, bool expand)
 {
 	char	*line;
@@ -188,6 +169,7 @@ char	*wait_heredoc(pid_t pid, char *path)
 	{
 		unlink(path);
 		free(path);
+		g_exit = 130;
 		return (NULL);
 	}
 	return (path);
@@ -213,8 +195,12 @@ char	*make_heredoc(char *limiter, t_env *env, bool expand)
 		signal(SIGQUIT, SIG_IGN);
 		return (NULL);
 	}
-	return (wait_heredoc(pid, path));
+	path = wait_heredoc(pid, path);
+	signal(SIGINT, sigint_prompt);
+	signal(SIGQUIT, SIG_IGN);
+	return (path);
 }
+
 
 void	remove_cmd_heredocs(t_cmd *cmd)
 {
