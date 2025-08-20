@@ -69,6 +69,7 @@ int	adds_token(char *token_value, t_token **tokens, int *i)
 		{
 			write(2, "minishell: syntax error near unexpected token `|'\n", 51);
 			free_token_list(*tokens);
+			g_exit = 2;
 			free(token_value);
 			return (0);
 		}

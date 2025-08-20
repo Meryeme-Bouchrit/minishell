@@ -16,17 +16,13 @@ int	check_for_syntax_error(t_token *token)
 {
 	if (!token)
 		return (0);
-	if (token && (token->type == PIPE))
-	{
-		write(2, "minishell: syntax error near unexpected token `|'\n", 51);
-		return (0);
-	}
 	while (token->next)
 	{
 		if (token->type != WORD && (token->type == token->next->type))
 		{
 			write(2, "Error! syntax error near unexpected token `newline'\n",
 				53);
+			g_exit = 2;
 			return (1);
 		}
 		token = token->next;
@@ -34,6 +30,7 @@ int	check_for_syntax_error(t_token *token)
 	if (token->type != WORD)
 	{
 		write(2, "Error! syntax error near unexpected token `newline'\n", 53);
+		g_exit = 2;
 		return (1);
 	}
 	return (0);
