@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 10:05:47 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/19 23:59:10 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/20 22:53:00 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ t_token	*tokenize(const char *line, t_env *env)
 	i[0] = 0;
 	tokens = NULL;
 	ctx.line = line;
-	while (line[i[0]])
+	while (i[0] < (int)ft_strlen(line))
 	{
 		if (!upper_parsing(line, i))
 			break ;

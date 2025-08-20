@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 13:48:26 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/18 10:42:39 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/20 22:46:28 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,9 @@ int	end_len(const char *line, int i, bool heredoc)
 			while (line[end] && line[end] != quote)
 				end++;
 			if ((line[end] == '\0') && !heredoc)
-			{
-				write(2, "ERROR! quotes are not closed!\n", 31);
-				return (0);
-			}
+				return (write(2, "ERROR! quotes are not closed!\n", 31), 0);
+			else if ((line[end] == '\0') && heredoc)
+				return (end);
 			end++;
 		}
 		else
