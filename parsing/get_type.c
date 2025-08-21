@@ -16,7 +16,7 @@ t_token_type	get_type(char *s, int a)
 {
 	if (a == 1)
 		return (SPLIT);
-	if (a == 2)
+	if (a == 2 || a == 4)
 		return (WORD);
 	if (my_strcmp(s, "|") == 0)
 		return (PIPE);
