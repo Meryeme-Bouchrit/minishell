@@ -13,15 +13,7 @@
 #ifndef PARSING_H
 # define PARSING_H
 
-# include "../libft/libft.h"
-# include "minishell.h" // Shared structs
-# include <ctype.h>
-# include <readline/history.h>
-# include <readline/readline.h>
-# include <stdbool.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
+# include "minishell.h"
 
 typedef enum e_token_type
 {

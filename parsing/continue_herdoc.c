@@ -34,7 +34,8 @@ char	*heredoc_expand_dollar(int *start, int end, const char *str, t_env *env)
 
 	i = 0;
 	if (str[i] == '$' && (str[i + 1] == '\0' || str[i + 1] == ' ' || (*start
-				+ 1) == end || empty_check((char *)str + i + 1)))
+				+ 1) == end || empty_check((char *)str + i + 1) || str[i
+				+ 1] == '$'))
 		return (first_if_herdoc(start, str));
 	if (str[++i] == '?')
 		return (++(*start), ++(*start), ft_itoa(g_exit));

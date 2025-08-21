@@ -14,44 +14,18 @@
 # define MINISHELL_H
 
 # include <stdbool.h>
+# include <ctype.h>
+# include <readline/history.h>
+# include <readline/readline.h>
+# include <stdbool.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include "libft/libft.h"
+# include "structs.h"
 # include "execution/execution.h"
 # include "parsing/parsing.h"
 
 extern int				g_exit;
-
-typedef enum e_redirections
-{
-	T_REDIR_IN,
-	T_REDIR_OUT,
-	REDIR_APPEND,
-	REDIR_HEREDOC
-}						t_redirections;
-
-typedef struct s_in_out_fds
-{
-	t_redirections		type;
-	char				*filename;
-	bool				expand;
-	struct s_in_out_fds	*next;
-}						t_in_out_fds;
-
-typedef struct s_cmd
-{
-	char				**args;
-	t_in_out_fds		*io_fds;
-	bool				pipe_output;
-	struct s_cmd		*next;
-	int					idx;
-	int					total;
-	int					**pipe_fds;
-}						t_cmd;
-
-typedef struct s_env
-{
-	char				*key;
-	char				*value;
-	bool				heredoc;
-	struct s_env		*next;
-}						t_env;
 
 #endif
