@@ -14,8 +14,10 @@
 # define MINISHELL_H
 
 # include <stdbool.h>
+# include "execution/execution.h"
+# include "parsing/parsing.h"
 
-extern int	g_exit;
+extern int				g_exit;
 
 typedef enum e_redirections
 {
@@ -23,15 +25,15 @@ typedef enum e_redirections
 	T_REDIR_OUT,
 	REDIR_APPEND,
 	REDIR_HEREDOC
-}	t_redirections;
+}						t_redirections;
 
-typedef struct s_in_out_fds 
- {
+typedef struct s_in_out_fds
+{
 	t_redirections		type;
 	char				*filename;
 	bool				expand;
 	struct s_in_out_fds	*next;
-}	t_in_out_fds;
+}						t_in_out_fds;
 
 typedef struct s_cmd
 {
@@ -39,24 +41,17 @@ typedef struct s_cmd
 	t_in_out_fds		*io_fds;
 	bool				pipe_output;
 	struct s_cmd		*next;
-
-	int					idx;      // index of this command in the pipeline
-	int					total;     // total number of commands/pipes
-	int					**pipe_fds;    // pointer to the array of all pipes
-}	t_cmd;
-
+	int					idx;
+	int					total;
+	int					**pipe_fds;
+}						t_cmd;
 
 typedef struct s_env
 {
-        char                    *key;
-        char                    *value;
-        bool			heredoc;
-	struct s_env    *next;
-}       t_env;
-
-
-# include "execution/execution.h"
-# include "parsing/parsing.h"
+	char				*key;
+	char				*value;
+	bool				heredoc;
+	struct s_env		*next;
+}						t_env;
 
 #endif
-
