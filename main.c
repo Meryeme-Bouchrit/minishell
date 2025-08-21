@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:41:18 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/20 03:02:36 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/21 10:11:22 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,25 +50,87 @@ void	handle_exit(t_cmd *cmds, t_env *env)
 	}
 }
 
+void	check_if_cmd(t_cmd *cmd, t_env **env)
+{
+	int	run;
+	int	skip_cmd;
+
+	skip_cmd = 0;
+	if (cmd)
+	{
+		if (handle_all_heredocs(cmd, *env) != 0)
+			skip_cmd = 1;
+		if (!skip_cmd && cmd->args && cmd->args[0])
+		{
+			run = (!cmd->next && !cmd->io_fds);
+			if (ft_strcmp(cmd->args[0], "exit") == 0)
+				handle_exit(cmd, *env);
+			else if (is_builtin(cmd->args[0]) && run)
+				run_builtin(cmd->args, env, &g_exit);
+			else if (cmd->next || cmd->io_fds)
+				g_exit = exec_pipeline(cmd, *env);
+			else
+				g_exit = exec_cmd(cmd, *env, &g_exit);
+		}
+	}
+}
+
+// int	check_if_cmd(t_cmd **cmd, t_env **env)
+// {
+// 	int	run;
+// 	int	skip_cmd;
+
+// 	skip_cmd = 0;
+// 	if (*cmd)
+// 	{
+// 		if (handle_all_heredocs(*cmd, *env) != 0)
+// 			skip_cmd = 1;
+// 		if (!skip_cmd && (*cmd)->args && (*cmd)->args[0])
+// 		{
+// 			run = (!(*cmd)->next && !(*cmd)->io_fds);
+// 			if (ft_strcmp((*cmd)->args[0], "exit") == 0)
+// 				handle_exit(*cmd, *env);
+// 			else if (is_builtin((*cmd)->args[0]) && run)
+// 				run_builtin((*cmd)->args, env, &g_exit);
+// 			else if ((*cmd)->next || (*cmd)->io_fds)
+// 				g_exit = exec_pipeline(*cmd, *env);
+// 			else
+// 				g_exit = exec_cmd(*cmd, *env, &g_exit);
+// 		}
+// 	}
+// 	return (skip_cmd);
+// }
+
+void	set_sig(void)
+{
+	signal(SIGINT, sigint_prompt);
+	signal(SIGQUIT, SIG_IGN);
+}
+
+void	process_line(char *line, t_env **env, t_cmd **cmd, t_token *tok)
+{
+	tok = tokenize(line, *env);
+	*cmd = parse_commands(tok);
+	free_token_list(tok);
+	check_if_cmd(*cmd, env);
+	cleanup_all_heredocs(*cmd);
+	free_cmds(cmd);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
-	t_env	*env;
 	t_token	*tok;
 	t_cmd	*cmd;
+	t_env	*env;
 	char	*line;
-	int		skip;
-	int		run;
-	int		skip_cmd;
-	int		hasna;
 
 	(void)argc;
 	(void)argv;
+	tok = NULL;
 	env = dup_env(envp);
 	g_exit = 0;
-	signal(SIGINT, sigint_prompt);
-	signal(SIGQUIT, SIG_IGN);
-	hasna = 1;
-	while (hasna)
+	set_sig();
+	while (1)
 	{
 		line = readline("minishell$ ");
 		if (!line)
@@ -76,34 +138,10 @@ int	main(int argc, char **argv, char **envp)
 			write(1, "exit\n", 5);
 			break ;
 		}
-		skip = only_spaces(line);
-		skip_cmd = 0;
-		if (!skip)
+		if (!only_spaces(line))
 		{
 			add_history(line);
-			tok = tokenize(line, env);
-			cmd = parse_commands(tok);
-			free_token_list(tok);
-			if (cmd)
-			{
-				if (handle_all_heredocs(cmd, env) != 0)
-					skip_cmd = 1;
-				if (!skip_cmd && cmd->args && cmd->args[0])
-				{
-					run = (!cmd->next && !cmd->io_fds);
-					if (ft_strcmp(cmd->args[0], "exit") == 0)
-						handle_exit(cmd, env);
-					else if (is_builtin(cmd->args[0]) && run)
-						run_builtin(cmd->args, &env, &g_exit);
-					else if (cmd->next || cmd->io_fds)
-						g_exit = exec_pipeline(cmd, env);
-					else
-						g_exit = exec_cmd(cmd, env, &g_exit);
-				}
-			}
-			//free_token_list(tok);
-			cleanup_all_heredocs(cmd);
-			free_cmds(&cmd);
+			process_line(line, &env, &cmd, tok);
 		}
 		free(line);
 	}
