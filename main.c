@@ -75,58 +75,32 @@ void	check_if_cmd(t_cmd *cmd, t_env **env)
 	}
 }
 
-// int	check_if_cmd(t_cmd **cmd, t_env **env)
-// {
-// 	int	run;
-// 	int	skip_cmd;
-
-// 	skip_cmd = 0;
-// 	if (*cmd)
-// 	{
-// 		if (handle_all_heredocs(*cmd, *env) != 0)
-// 			skip_cmd = 1;
-// 		if (!skip_cmd && (*cmd)->args && (*cmd)->args[0])
-// 		{
-// 			run = (!(*cmd)->next && !(*cmd)->io_fds);
-// 			if (ft_strcmp((*cmd)->args[0], "exit") == 0)
-// 				handle_exit(*cmd, *env);
-// 			else if (is_builtin((*cmd)->args[0]) && run)
-// 				run_builtin((*cmd)->args, env, &g_exit);
-// 			else if ((*cmd)->next || (*cmd)->io_fds)
-// 				g_exit = exec_pipeline(*cmd, *env);
-// 			else
-// 				g_exit = exec_cmd(*cmd, *env, &g_exit);
-// 		}
-// 	}
-// 	return (skip_cmd);
-// }
-
 void	set_sig(void)
 {
 	signal(SIGINT, sigint_prompt);
 	signal(SIGQUIT, SIG_IGN);
 }
 
-void	process_line(char *line, t_env **env, t_cmd **cmd, t_token *tok)
+void	process_line(char *line, t_env **env)
 {
+	t_token	*tok;
+	t_cmd	*cmd;
+
 	tok = tokenize(line, *env);
-	*cmd = parse_commands(tok);
+	cmd = parse_commands(tok);
 	free_token_list(tok);
-	check_if_cmd(*cmd, env);
-	cleanup_all_heredocs(*cmd);
-	free_cmds(cmd);
+	check_if_cmd(cmd, env);
+	cleanup_all_heredocs(cmd);
+	free_cmds(&cmd);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_token	*tok;
-	t_cmd	*cmd;
 	t_env	*env;
 	char	*line;
 
 	(void)argc;
 	(void)argv;
-	tok = NULL;
 	env = dup_env(envp);
 	g_exit = 0;
 	set_sig();
@@ -141,7 +115,7 @@ int	main(int argc, char **argv, char **envp)
 		if (!only_spaces(line))
 		{
 			add_history(line);
-			process_line(line, &env, &cmd, tok);
+			process_line(line, &env);
 		}
 		free(line);
 	}
