@@ -12,6 +12,19 @@
 
 #include "parsing.h"
 
+char	*first_if_herdoc(int *start, const char *str)
+{
+	int	i;
+
+	i = 0;
+	if (empty_check((char *)str + i + 1))
+		return (++(*start), ft_substr("", 0, 1));
+	else if (str[i + 1] == '$')
+		return (++(*start), ++(*start), ft_substr("", 0, 1));
+	else
+		return (++(*start), ft_substr(str, 0, 1));
+}
+
 char	*heredoc_expand_dollar(int *start, int end, const char *str, t_env *env)
 {
 	int		i;
@@ -22,14 +35,11 @@ char	*heredoc_expand_dollar(int *start, int end, const char *str, t_env *env)
 	i = 0;
 	if (str[i] == '$' && (str[i + 1] == '\0' || str[i + 1] == ' ' || (*start
 				+ 1) == end || empty_check((char *)str + i + 1)))
-	{
-		if (empty_check((char *)str + i + 1))
-			return (++(*start), ft_substr("", 0, 1));
-		else
-			return (++(*start), ft_substr(str, 0, 1));
-	}
+		return (first_if_herdoc(start, str));
 	if (str[++i] == '?')
 		return (++(*start), ++(*start), ft_itoa(g_exit));
+	if (str[i] >= '0' && str[i] <= '9')
+		return (++(*start), ++(*start), ft_strdup(""));
 	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
 		i++;
 	var = ft_substr(str, 1, i - 1);
