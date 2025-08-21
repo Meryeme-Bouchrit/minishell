@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 13:48:26 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/20 22:46:28 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/21 02:48:30 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	end_len(const char *line, int i, bool heredoc)
 	return (end);
 }
 
-char	*grep_doubleq(t_ctx *ctx, t_env *env)
+char	*grep_doubleq(int *i, t_ctx *ctx, t_env *env)
 {
 	char	*tmp;
 	char	*result;
@@ -64,11 +64,11 @@ char	*grep_doubleq(t_ctx *ctx, t_env *env)
 			ctx->start++;
 		result = my_strjoin(result, ft_substr(ctx->line, j, ctx->start - j));
 	}
-	ctx->start++;
-	return (result);
+	i[1] = 4;
+	return (++ctx->start, result);
 }
 
-char	*grep_singleq(t_ctx *ctx)
+char	*grep_singleq(int *i, t_ctx *ctx)
 {
 	int		j;
 	char	*result;
@@ -81,6 +81,7 @@ char	*grep_singleq(t_ctx *ctx)
 		ctx->start++;
 	result = my_strjoin(result, ft_substr(ctx->line, j, ctx->start - j));
 	ctx->start++;
+	i[1] = 4;
 	return (result);
 }
 

@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 10:05:47 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/20 22:53:00 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/21 02:50:58 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ char	*token_next_string(t_token *tokens, t_ctx *ctx, int *i, t_env *env)
 	while (ctx->start < ctx->end)
 	{
 		if (ctx->line[ctx->start] == '\"')
-			result = my_strjoin(result, grep_doubleq(ctx, env));
+			result = my_strjoin(result, grep_doubleq(i, ctx, env));
 		else if (ctx->line[ctx->start] == '\'')
-			result = my_strjoin(result, grep_singleq(ctx));
+			result = my_strjoin(result, grep_singleq(i, ctx));
 		else
 			result = my_strjoin(result, grep_no_quotes(i, ctx, env));
 	}
@@ -62,7 +62,7 @@ static char	*get_next_special_token(const char *line, int *i)
 
 int	adds_token(char *token_value, t_token **tokens, int *i)
 {
-	if (token_value[0])
+	if (token_value[0] || (!token_value[0] && i[1] == 4))
 	{
 		add_token(tokens, ft_strdup(token_value), get_type(token_value, i[1]));
 		if ((*tokens)->type == PIPE)
@@ -85,6 +85,8 @@ int	upper_parsing(const char *line, int *i)
 		return (0);
 	while (ft_isspace(line[i[0]]))
 		i[0]++;
+	if (!line[i[0]])
+		return (0);
 	return (1);
 }
 

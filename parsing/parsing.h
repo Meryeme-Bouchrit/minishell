@@ -6,7 +6,7 @@
 /*   By: zhassna <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 00:13:52 by zhassna           #+#    #+#             */
-/*   Updated: 2025/08/20 00:17:37 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/21 02:52:00 by zhassna          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,8 @@ char				*secnd_expand_dollar(t_ctx *ctx, int end, const char *str,
 						t_env *env);
 ////////////////continue.c//////////////////////////////////////////////////////
 int					end_len(const char *line, int i, bool heredoc);
-char				*grep_doubleq(t_ctx *ctx, t_env *env);
-char				*grep_singleq(t_ctx *ctx);
+char				*grep_doubleq(int *i, t_ctx *ctx, t_env *env);
+char				*grep_singleq(int *i, t_ctx *ctx);
 bool				check_for_espace(char *res);
 char				*grep_no_quotes(int *i, t_ctx *ctx, t_env *env);
 
