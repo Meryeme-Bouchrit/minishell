@@ -6,13 +6,13 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 10:05:04 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/20 07:05:06 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/22 12:16:49 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-int	g_exit = 0;
+int		g_exit = 0;
 
 void	sigint_prompt(int sig)
 {
@@ -24,14 +24,14 @@ void	sigint_prompt(int sig)
 	rl_redisplay();
 }
 
-void	sigquit_prompt(int sig)
-{
-	(void)sig;
-}
-
 void	sigint_heredoc(int sig)
 {
 	(void)sig;
 	write(1, "\n", 1);
 	exit(130);
+}
+
+void	sigquit_prompt(int sig)
+{
+	(void)sig;
 }

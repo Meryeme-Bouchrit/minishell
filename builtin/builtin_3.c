@@ -1,48 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_1.c                                        :+:      :+:    :+:   */
+/*   builtin_3.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/09 20:31:35 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/18 11:18:47 by mbouchri         ###   ########.fr       */
+/*   Created: 2025/08/21 11:56:19 by mbouchri          #+#    #+#             */
+/*   Updated: 2025/08/21 14:20:12 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "execution.h"
+#include "builtin.h"
 
-static char	*get_home(t_env *env)
+char	*get_home(t_env *env)
 {
-	char	*path;
+	char	*path = env_get(env, "HOME");
 
-	path = env_get(env, "HOME");
 	if (!path)
-	{
 		write(2, "minishell: cd: HOME not set\n", 28);
-		return (NULL);
-	}
 	return (path);
 }
 
-static char	*get_oldpwd(t_env *env)
+char	*get_oldpwd(t_env *env)
 {
-	char	*path;
+	char	*path = env_get(env, "OLDPWD");
 
-	path = env_get(env, "OLDPWD");
 	if (!path)
-	{
 		write(2, "minishell: cd: OLDPWD not set\n", 30);
-		return (NULL);
+	else
+	{
+		write(1, path, ft_strlen(path));
+		write(1, "\n", 1);
 	}
-	write(1, path, ft_strlen(path));
-	write(1, "\n", 1);
 	return (path);
 }
 
-static int	change_dir(char *path, t_env **env_list, char *old_path,
-		char *new_path)
+int	change_dir(char *path, t_env **env_list, char *old_path)
 {
+	char	*new_path;
+
 	if (chdir(path) != 0)
 	{
 		write(2, "minishell: cd: ", 15);
@@ -70,10 +66,12 @@ int	ft_cd(char **args, t_env **env_list)
 {
 	char	*path;
 	char	*old_dir;
-	char	*new_dir;
 
 	if (args[1] && args[2])
-		return (write(2, "minishell: cd: too many arguments\n", 34), 1);
+	{
+		write(2, "minishell: cd: too many arguments\n", 34);
+		return (1);
+	}
 	path = args[1];
 	if (!path || ft_strcmp(path, "~") == 0)
 		path = get_home(*env_list);
@@ -83,39 +81,32 @@ int	ft_cd(char **args, t_env **env_list)
 		return (1);
 	old_dir = getcwd(NULL, 0);
 	if (!old_dir)
-		return (perror("minishell: cd"), 1);
-	new_dir = NULL;
-	return (change_dir(path, env_list, old_dir, new_dir));
-}
-
-int	ft_pwd(void)
-{
-	char	*path;
-
-	path = getcwd(NULL, 0);
-	if (!path)
 	{
-		perror("pwd");
+		perror("minishell: cd");
 		return (1);
 	}
-	write(1, path, ft_strlen(path));
-	write(1, "\n", 1);
-	free(path);
-	return (0);
+	return (change_dir(path, env_list, old_dir));
 }
 
-int	ft_env(t_env *env_list)
+int	ft_exit(char **args, int *status)
 {
-	while (env_list)
+	write(1, "exit\n", 5);
+	if (!args[1])
+		return (-1);
+	if (!ft_is_numeric(args[1]))
 	{
-		if (env_list->value)
-		{
-			write(1, env_list->key, ft_strlen(env_list->key));
-			write(1, "=", 1);
-			write(1, env_list->value, ft_strlen(env_list->value));
-			write(1, "\n", 1);
-		}
-		env_list = env_list->next;
+		write(2, "minishell: exit: ", 17);
+		write(2, args[1], ft_strlen(args[1]));
+		write(2, ": numeric argument required\n", 29);
+		*status = 2;
+		return (-1);
 	}
-	return (0);
+	if (args[2])
+	{
+		write(2, "minishell: exit: too many arguments\n", 36);
+		*status = 1;
+		return (1);
+	}
+	*status = (unsigned char)ft_atoi(args[1]);
+	return (-1);
 }

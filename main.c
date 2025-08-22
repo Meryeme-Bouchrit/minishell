@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 09:41:18 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/21 10:11:22 by zhassna          ###   ########.fr       */
+/*   Updated: 2025/08/22 11:18:04 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,8 @@ void	process_line(char *line, t_env **env)
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_env	*env;
-	char	*line;
+	t_env *env;
+	char *line;
 
 	(void)argc;
 	(void)argv;

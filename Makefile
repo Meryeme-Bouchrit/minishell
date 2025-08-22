@@ -1,56 +1,62 @@
-NAME		= minishell
+NAME        = minishell
 
-CC			= cc
-CFLAGS		= -Wall -Wextra -Werror -g
-LDFLAGS		= -lreadline
-RM			= rm -f
+CC          = cc
+CFLAGS      = -Wall -Wextra -Werror -g
+LDFLAGS     = -lreadline
+RM          = rm -f
 
-EXEC_DIR	= execution
-PARSING_DIR	= parsing
+EXEC    = execution
+BUILT   = builtin
+PARS    = parsing
+LIBFT   = libft/libft.a
 
-SRC = 		\
-			execution/signals.c \
-			execution/built.c \
-			execution/exec_cmd.c \
-			execution/exec_path.c \
-			execution/exec_redirs.c \
-			execution/exec_pipe.c \
-			execution/exec_env.c \
-			execution/builtin_1.c \
-			execution/builtin_2.c \
-			execution/builtin_3.c \
-			execution/builtin_utils_1.c \
-			execution/builtin_utils_2.c \
-			execution/builtin_utils_3.c \
-			execution/builtin_utils_4.c \
-			parsing/parser.c \
-			parsing/get_type.c \
-			parsing/free_cmds.c \
-			parsing/token_list.c \
-			parsing/libft.c \
-			parsing/utils.c \
-			parsing/expansion.c \
-			parsing/correct_token.c \
-			parsing/continue.c \
-			parsing/my_strjoin.c \
-			parsing/error_syntax.c \
-			parsing/continue_herdoc.c \
-			main.c
+# ===================== SOURCES ===================== #
+SRC = \
+	$(EXEC)/child_process.c \
+	$(EXEC)/exec_command.c \
+	$(EXEC)/env_utils.c \
+	$(EXEC)/heredoc_manage.c \
+	$(EXEC)/heredoc_utils.c \
+	$(EXEC)/path_utils.c \
+	$(EXEC)/pipe_utils.c \
+	$(EXEC)/pipe_setup.c \
+	$(EXEC)/redir_utils.c \
+	$(EXEC)/signals.c \
+	$(BUILT)/builtin_core.c \
+	$(BUILT)/builtin_1.c \
+	$(BUILT)/builtin_2.c \
+	$(BUILT)/builtin_3.c \
+	$(BUILT)/builtin_env.c \
+	$(BUILT)/builtin_utils.c \
+	$(BUILT)/env_init.c \
+	$(BUILT)/env_list.c \
+	$(BUILT)/env_lookup.c \
+	$(PARS)/parser.c \
+	$(PARS)/get_type.c \
+	$(PARS)/free_cmds.c \
+	$(PARS)/token_list.c \
+	$(PARS)/libft.c \
+	$(PARS)/utils.c \
+	$(PARS)/expansion.c \
+	$(PARS)/correct_token.c \
+	$(PARS)/continue.c \
+	$(PARS)/my_strjoin.c \
+	$(PARS)/error_syntax.c \
+	$(PARS)/continue_herdoc.c \
+	main.c
 
-OBJ			= $(SRC:.c=.o)
+OBJ = $(SRC:.c=.o)
+INCLUDES = -I. -I$(EXEC) -I$(BUILT) -Ilibft -I$(PARS)
 
-INCLUDES	= -I. -I$(EXEC_DIR) -Ilibft -I$(PARSING_DIR)
-
-LIBFT	= libft/libft.a
-
+# ===================== RULES ===================== #
 all: $(NAME)
 
 $(NAME): $(OBJ)
 	@make -C libft
-	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(LDFLAGS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(LDFLAGS) -o $(NAME)
 
 %.o: %.c
-	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
 	$(RM) $(OBJ)
