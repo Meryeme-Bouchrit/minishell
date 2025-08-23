@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 10:38:03 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/22 10:38:52 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/23 19:12:29 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,6 @@ char	*get_path_envp(char **envp)
 		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
 			return (envp[i] + 5);
 		i++;
-	}
-	return (NULL);
-}
-
-char	*get_path_env(t_env *env)
-{
-	while (env)
-	{
-		if (ft_strcmp(env->key, "PATH") == 0)
-			return (env->value);
-		env = env->next;
 	}
 	return (NULL);
 }

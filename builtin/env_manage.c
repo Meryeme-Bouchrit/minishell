@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_list.c                                         :+:      :+:    :+:   */
+/*   env_manage.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 12:04:42 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/21 14:20:36 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:22:03 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ t_env	*env_new(char *key, char *value)
 	return (new);
 }
 
-void	add_env(t_env **env, char *key, char *value)
+void	env_add(t_env **env, char *key, char *value)
 {
 	t_env	*n;
 	t_env	*cur;
@@ -44,7 +44,7 @@ void	add_env(t_env **env, char *key, char *value)
 	cur->next = n;
 }
 
-void	free_env_list(t_env *env)
+void	env_free_all(t_env *env)
 {
 	t_env	*tmp;
 
@@ -59,14 +59,37 @@ void	free_env_list(t_env *env)
 	}
 }
 
-int	env_len(char **envp)
+t_env	*env_from_entry(char *envp_entry)
 {
-	int	i;
+	t_env	*n;
+	char	*eq;
 
-	i = 0;
-	if (!envp)
-		return (0);
-	while (envp[i])
-		i++;
-	return (i);
+	eq = ft_strchr(envp_entry, '=');
+	if (eq)
+		n = env_new(ft_substr(envp_entry, 0, eq - envp_entry),
+				ft_strdup(eq + 1));
+	else
+		n = env_new(ft_strdup(envp_entry), NULL);
+	return (n);
+}
+
+t_env	*env_dup(char **envp)
+{
+	t_env	*env;
+	t_env	*n;
+
+	env = NULL;
+	while (*envp)
+	{
+		n = env_from_entry(*envp);
+		if (!n)
+		{
+			env_free_all(env);
+			return (NULL);
+		}
+		env_add(&env, n->key, n->value);
+		free(n);
+		envp++;
+	}
+	return (env);
 }

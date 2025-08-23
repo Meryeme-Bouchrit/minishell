@@ -12,24 +12,24 @@ LIBFT   = libft/libft.a
 
 # ===================== SOURCES ===================== #
 SRC = \
-	$(EXEC)/child_process.c \
+	$(EXEC)/child_fork.c \
 	$(EXEC)/exec_command.c \
 	$(EXEC)/env_utils.c \
 	$(EXEC)/heredoc_manage.c \
 	$(EXEC)/heredoc_utils.c \
 	$(EXEC)/path_utils.c \
-	$(EXEC)/pipe_utils.c \
+	$(EXEC)/pipeline.c \
 	$(EXEC)/pipe_setup.c \
 	$(EXEC)/redir_utils.c \
+	$(EXEC)/wait_utils.c \
 	$(EXEC)/signals.c \
 	$(BUILT)/builtin_core.c \
 	$(BUILT)/builtin_1.c \
 	$(BUILT)/builtin_2.c \
 	$(BUILT)/builtin_3.c \
 	$(BUILT)/builtin_env.c \
-	$(BUILT)/builtin_utils.c \
-	$(BUILT)/env_init.c \
-	$(BUILT)/env_list.c \
+	$(BUILT)/utils.c \
+	$(BUILT)/env_manage.c \
 	$(BUILT)/env_lookup.c \
 	$(PARS)/parser.c \
 	$(PARS)/get_type.c \
@@ -43,7 +43,8 @@ SRC = \
 	$(PARS)/my_strjoin.c \
 	$(PARS)/error_syntax.c \
 	$(PARS)/continue_herdoc.c \
-	main.c
+	main.c \
+	main_utils.c
 
 OBJ = $(SRC:.c=.o)
 INCLUDES = -I. -I$(EXEC) -I$(BUILT) -Ilibft -I$(PARS)

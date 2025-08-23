@@ -6,25 +6,27 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 11:56:19 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/21 14:20:12 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:58:25 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 
-char	*get_home(t_env *env)
+char	*get_home(t_env *envp)
 {
-	char	*path = env_get(env, "HOME");
+	char	*path;
 
+	path = env_get(envp, "HOME");
 	if (!path)
 		write(2, "minishell: cd: HOME not set\n", 28);
 	return (path);
 }
 
-char	*get_oldpwd(t_env *env)
+char	*get_oldpwd(t_env *envp)
 {
-	char	*path = env_get(env, "OLDPWD");
+	char	*path;
 
+	path = env_get(envp, "OLDPWD");
 	if (!path)
 		write(2, "minishell: cd: OLDPWD not set\n", 30);
 	else
@@ -35,7 +37,7 @@ char	*get_oldpwd(t_env *env)
 	return (path);
 }
 
-int	change_dir(char *path, t_env **env_list, char *old_path)
+int	change_dir(char *path, t_env **envp, char *oldpwd)
 {
 	char	*new_path;
 
@@ -45,24 +47,24 @@ int	change_dir(char *path, t_env **env_list, char *old_path)
 		write(2, path, ft_strlen(path));
 		write(2, ": ", 2);
 		perror("");
-		free(old_path);
+		free(oldpwd);
 		return (1);
 	}
 	new_path = getcwd(NULL, 0);
 	if (!new_path)
 	{
 		perror("minishell: cd");
-		free(old_path);
+		free(oldpwd);
 		return (1);
 	}
-	env_set(env_list, "OLDPWD", old_path);
-	env_set(env_list, "PWD", new_path);
-	free(old_path);
+	env_set(envp, "OLDPWD", oldpwd);
+	env_set(envp, "PWD", new_path);
+	free(oldpwd);
 	free(new_path);
 	return (0);
 }
 
-int	ft_cd(char **args, t_env **env_list)
+int	ft_cd(char **args, t_env **envp)
 {
 	char	*path;
 	char	*old_dir;
@@ -74,9 +76,9 @@ int	ft_cd(char **args, t_env **env_list)
 	}
 	path = args[1];
 	if (!path || ft_strcmp(path, "~") == 0)
-		path = get_home(*env_list);
+		path = get_home(*envp);
 	else if (ft_strcmp(path, "-") == 0)
-		path = get_oldpwd(*env_list);
+		path = get_oldpwd(*envp);
 	if (!path)
 		return (1);
 	old_dir = getcwd(NULL, 0);
@@ -85,7 +87,7 @@ int	ft_cd(char **args, t_env **env_list)
 		perror("minishell: cd");
 		return (1);
 	}
-	return (change_dir(path, env_list, old_dir));
+	return (change_dir(path, envp, old_dir));
 }
 
 int	ft_exit(char **args, int *status)

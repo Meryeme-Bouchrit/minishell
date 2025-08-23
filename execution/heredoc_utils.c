@@ -6,29 +6,30 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 10:56:07 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/22 10:58:51 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/23 19:36:18 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-char	*new_heredoc_name(void)
+char	*heredoc_name(void)
 {
-	static int	counter = 0;
-	char		*num;
-	char		*file;
+	int		counter;
+	char	*num;
+	char	*file;
 
+	counter = 0;
 	num = ft_itoa(counter++);
 	file = ft_strjoin("/tmp/ms_heredoc_", num);
 	free(num);
 	return (file);
 }
 
-int	create_heredoc_fd(char **path)
+int	heredoc_fd_new(char **path)
 {
 	int	fd;
 
-	*path = new_heredoc_name();
+	*path = heredoc_name();
 	if (!*path)
 		return (-1);
 	while (1)
@@ -37,7 +38,7 @@ int	create_heredoc_fd(char **path)
 		if (fd != -1)
 			break ;
 		free(*path);
-		*path = new_heredoc_name();
+		*path = heredoc_name();
 		if (!*path)
 			return (-1);
 	}
@@ -83,7 +84,7 @@ char	*make_heredoc(char *limiter, t_env *env, bool expand)
 	int		fd;
 	int		pid;
 
-	fd = create_heredoc_fd(&path);
+	fd = heredoc_fd_new(&path);
 	if (fd == -1)
 		return (NULL);
 	signal(SIGINT, SIG_IGN);

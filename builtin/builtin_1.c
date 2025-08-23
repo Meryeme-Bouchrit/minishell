@@ -6,13 +6,13 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 11:56:25 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/21 14:19:59 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:54:56 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 
-static int	check_n_flag(char *arg)
+int	check_n_flag(char *arg)
 {
 	int	i;
 
@@ -26,9 +26,11 @@ static int	check_n_flag(char *arg)
 
 int	ft_echo(char **args)
 {
-	int	i = 1;
-	int	newline = 1;
+	int	i;
+	int	newline;
 
+	i = 1;
+	newline = 1;
 	while (args[i] && check_n_flag(args[i]))
 	{
 		newline = 0;
@@ -48,8 +50,9 @@ int	ft_echo(char **args)
 
 int	ft_pwd(void)
 {
-	char	*path = getcwd(NULL, 0);
+	char	*path;
 
+	path = getcwd(NULL, 0);
 	if (!path)
 	{
 		perror("pwd");
@@ -61,18 +64,18 @@ int	ft_pwd(void)
 	return (0);
 }
 
-int	ft_env(t_env *env_list)
+int	ft_env(t_env *envp)
 {
-	while (env_list)
+	while (envp)
 	{
-		if (env_list->value)
+		if (envp->value)
 		{
-			write(1, env_list->key, ft_strlen(env_list->key));
+			write(1, envp->key, ft_strlen(envp->key));
 			write(1, "=", 1);
-			write(1, env_list->value, ft_strlen(env_list->value));
+			write(1, envp->value, ft_strlen(envp->value));
 			write(1, "\n", 1);
 		}
-		env_list = env_list->next;
+		envp = envp->next;
 	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 10:01:59 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/22 12:31:00 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/23 19:05:00 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,11 @@ int	exec_cmd(t_cmd *cmd, t_env *env, int *status)
 	}
 	if (ft_strchr(cmd->args[0], '/'))
 	{
-		err = check_directory(cmd->args[0], status);
-		if (err != 0)
-			return (err);
-		err = check_access_errors(cmd->args[0], status);
+		err = check_cmd_errors(cmd->args[0], status);
 		if (err != 0)
 			return (err);
 	}
-	err = resolve_and_exec(cmd, env, status);
+	err = exec_resolve(cmd, env, status);
 	if (err != 0)
 		return (err);
 	return (0);
@@ -54,7 +51,7 @@ int	fork_and_wait(t_cmd *cmd, char *path, t_env *env)
 	{
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
-		child_process_single(cmd, path, env);
+		child_single_run(cmd, path, env);
 		return (0);
 	}
 	signal(SIGINT, SIG_IGN);
@@ -62,46 +59,11 @@ int	fork_and_wait(t_cmd *cmd, char *path, t_env *env)
 	waitpid(pid, &status, 0);
 	signal(SIGINT, sigint_prompt);
 	signal(SIGQUIT, SIG_IGN);
-	ret = get_exit_status(status);
+	ret = status_to_exit(status);
 	return (ret);
 }
 
-int	check_directory(char *cmd, int *status)
-{
-	int	fd;
-
-	fd = open(cmd, O_DIRECTORY);
-	if (fd != -1)
-	{
-		close(fd);
-		write(2, cmd, ft_strlen(cmd));
-		write(2, ": Is a directory\n", 18);
-		*status = 126;
-		return (126);
-	}
-	return (0);
-}
-
-int	check_access_errors(char *cmd, int *status)
-{
-	if (access(cmd, F_OK) == 0 && access(cmd, X_OK) != 0)
-	{
-		write(2, cmd, ft_strlen(cmd));
-		write(2, ": Permission denied\n", 21);
-		*status = 126;
-		return (126);
-	}
-	if (access(cmd, F_OK) != 0)
-	{
-		write(2, cmd, ft_strlen(cmd));
-		write(2, ": No such file or directory\n", 29);
-		*status = 127;
-		return (127);
-	}
-	return (0);
-}
-
-int	resolve_and_exec(t_cmd *cmd, t_env *env, int *status)
+int	exec_resolve(t_cmd *cmd, t_env *env, int *status)
 {
 	char	**envp;
 	char	*path;

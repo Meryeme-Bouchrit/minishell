@@ -6,13 +6,13 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 12:06:39 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/21 14:19:48 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:49:24 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 
-void	builtin_print_export_env(t_env *env)
+void	print_export_env(t_env *env)
 {
 	while (env)
 	{
@@ -27,10 +27,9 @@ void	builtin_print_export_env(t_env *env)
 		write(1, "\n", 1);
 		env = env->next;
 	}
-
 }
 
-void	builtin_parse_export_arg(char *arg, char **key, char **value)
+void	parse_export_arg(char *arg, char **key, char **value)
 {
 	char	*eq;
 
@@ -58,17 +57,3 @@ void	free_split(char **split)
 		free(split[i++]);
 	free(split);
 }
-
-char	*builtin_create_env_var(const char *key, const char *value)
-{
-	char	*tmp;
-	char	*full;
-
-	tmp = ft_strjoin(key, "=");
-	if (!tmp)
-		return (NULL);
-	full = ft_strjoin(tmp, value);
-	free(tmp);
-	return (full);
-}
-

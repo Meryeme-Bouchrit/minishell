@@ -6,13 +6,13 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 11:51:06 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/21 19:28:03 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:21:30 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 
-t_env	*env_find_node(t_env *env, const char *key)
+t_env	*env_find(t_env *env, const char *key)
 {
 	while (env)
 	{
@@ -27,7 +27,7 @@ char	*env_get(t_env *env, const char *key)
 {
 	t_env	*n;
 
-	n = env_find_node(env, key);
+	n = env_find(env, key);
 	if (n)
 		return (n->value);
 	return (NULL);
@@ -38,7 +38,7 @@ void	env_set(t_env **env, const char *key, const char *value)
 	t_env	*cur;
 	char	*val_to_set;
 
-	cur = env_find_node(*env, key);
+	cur = env_find(*env, key);
 	if (value)
 		val_to_set = ft_strdup(value);
 	else
@@ -49,7 +49,7 @@ void	env_set(t_env **env, const char *key, const char *value)
 		cur->value = val_to_set;
 		return ;
 	}
-	add_env(env, ft_strdup(key), val_to_set);
+	env_add(env, ft_strdup(key), val_to_set);
 }
 
 void	env_unset(t_env **env, char *key)

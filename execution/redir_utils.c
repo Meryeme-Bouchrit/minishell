@@ -6,13 +6,13 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 10:55:20 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/22 10:55:33 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/23 19:08:51 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-int	redirect_file(char *file, int target_fd, int flags)
+int	redir_file(char *file, int target_fd, int flags)
 {
 	int	fd;
 
@@ -48,13 +48,13 @@ void	apply_redir(t_in_out_fds *redir)
 		}
 		close(fd);
 	}
-	else if (redir->type == T_REDIR_IN && redirect_file(redir->filename, 0,
+	else if (redir->type == T_REDIR_IN && redir_file(redir->filename, 0,
 			O_RDONLY))
 		exit(1);
-	else if (redir->type == T_REDIR_OUT && redirect_file(redir->filename, 1,
+	else if (redir->type == T_REDIR_OUT && redir_file(redir->filename, 1,
 			O_WRONLY | O_CREAT | O_TRUNC))
 		exit(1);
-	else if (redir->type == REDIR_APPEND && redirect_file(redir->filename, 1,
+	else if (redir->type == REDIR_APPEND && redir_file(redir->filename, 1,
 			O_WRONLY | O_CREAT | O_APPEND))
 		exit(1);
 }

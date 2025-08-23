@@ -6,49 +6,65 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 10:23:29 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/22 12:31:16 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/23 19:52:11 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
+int	env_len(t_env *env)
+{
+	int	len;
+
+	len = 0;
+	while (env)
+	{
+		len++;
+		env = env->next;
+	}
+	return (len);
+}
+
+char	*build_env_str(char *key, char *value)
+{
+	char	*tmp;
+	char	*str;
+
+	tmp = ft_strjoin(key, "=");
+	if (!tmp)
+		return (NULL);
+	str = ft_strjoin(tmp, value);
+	free(tmp);
+	return (str);
+}
+
+int	envp_free_on_error(char **envp, int i)
+{
+	while (--i >= 0)
+		free(envp[i]);
+	free(envp);
+	return (1);
+}
+
 char	**env_to_envp(t_env *env)
 {
 	int		len;
-	t_env	*cur;
 	char	**envp;
-	char	*tmp;
+	t_env	*cur;
 	int		i;
 
-	len = 0;
-	cur = env;
-	while (cur)
-	{
-		len++;
-		cur = cur->next;
-	}
+	len = env_len(env);
 	envp = malloc(sizeof(char *) * (len + 1));
 	if (!envp)
 		return (NULL);
-	i = 0;
 	cur = env;
+	i = 0;
 	while (cur)
 	{
-		tmp = ft_strjoin(cur->key, "=");
-		if (!tmp)
-		{
-			while (i--)
-				free(envp[i]);
-			free(envp);
-			return (NULL);
-		}
-		envp[i] = ft_strjoin(tmp, cur->value);
-		free(tmp);
+		envp[i] = build_env_str(cur->key, cur->value);
 		if (!envp[i])
 		{
-			while (i--)
-				free(envp[i]);
-			free(envp);
+			envp_free_on_error(envp, i);
 			return (NULL);
 		}
 		i++;
@@ -77,34 +93,9 @@ t_env	*dup_env(char **envp)
 			ft_memcpy(key, *envp, eq - *envp);
 			key[eq - *envp] = '\0';
 			value = ft_strdup(eq + 1);
-			add_env(&env, key, value);
+			env_add(&env, key, value);
 		}
 		envp++;
 	}
 	return (env);
-}
-
-void	unset_env_var(t_env **env, char *key)
-{
-	t_env	*cur;
-	t_env	*prev;
-
-	cur = *env;
-	prev = NULL;
-	while (cur)
-	{
-		if (ft_strcmp(cur->key, key) == 0)
-		{
-			if (prev)
-				prev->next = cur->next;
-			else
-				*env = cur->next;
-			free(cur->key);
-			free(cur->value);
-			free(cur);
-			return ;
-		}
-		prev = cur;
-		cur = cur->next;
-	}
 }

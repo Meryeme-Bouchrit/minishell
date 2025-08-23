@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 12:19:44 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/21 12:23:49 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/23 18:59:03 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	is_builtin(char *cmd)
 	return (0);
 }
 
-int	run_builtin(char **args, t_env **env, int *status)
+int	run_builtin(char **args, t_env **envp, int *status)
 {
 	if (!args || !args[0])
 		return (0);
@@ -54,17 +54,17 @@ int	run_builtin(char **args, t_env **env, int *status)
 		return (-1);
 	}
 	else if (!ft_strcmp(args[0], "cd"))
-		*status = ft_cd(args, env);
+		*status = ft_cd(args, envp);
 	else if (!ft_strcmp(args[0], "export"))
-		*status = ft_export(args, env);
+		*status = ft_export(args, envp);
 	else if (!ft_strcmp(args[0], "unset"))
-		*status = ft_unset(args, env);
+		*status = ft_unset(args, envp);
 	else if (!ft_strcmp(args[0], "echo"))
 		*status = ft_echo(args);
 	else if (!ft_strcmp(args[0], "pwd"))
 		*status = ft_pwd();
 	else if (!ft_strcmp(args[0], "env"))
-		*status = ft_env(*env);
+		*status = ft_env(*envp);
 	else
 		return (0);
 	return (1);

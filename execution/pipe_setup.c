@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 10:51:57 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/22 12:34:51 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/23 13:35:05 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,30 +68,36 @@ void	setup_child(int **pipes, int idx, int total)
 	close_all_pipes(pipes, total - 1);
 }
 
-void	print_exit(char *cmd, char *msg, int code)
+int	print_error(char *cmd, char *msg, int code, int *status)
 {
 	write(2, cmd, ft_strlen(cmd));
 	write(2, msg, ft_strlen(msg));
-	exit(code);
+	*status = code;
+	return (code);
 }
 
-void	check_cmd_errors(t_cmd *cmd)
+int	check_cmd_errors(char *cmd, int *status)
 {
-	int	fd;
+	char	*new_path;
+	int		ret;
 
-	if (!cmd->args[0] || !cmd->args[0][0])
-		exit(0);
-	if (ft_strchr(cmd->args[0], '/'))
+	new_path = ft_strjoin(cmd, "/");
+	if (access(new_path, F_OK) == 0)
 	{
-		fd = open(cmd->args[0], O_DIRECTORY);
-		if (fd != -1)
-		{
-			close(fd);
-			print_exit(cmd->args[0], ": Is a directory\n", 126);
-		}
-		if (access(cmd->args[0], F_OK) == 0 && access(cmd->args[0], X_OK) != 0)
-			print_exit(cmd->args[0], ": Permission denied\n", 126);
-		if (access(cmd->args[0], F_OK) != 0)
-			print_exit(cmd->args[0], ": No such file or directory\n", 127);
+		free(new_path);
+		ret = print_error(cmd, ": Is a directory\n", 126, status);
+		return (ret);
 	}
+	free(new_path);
+	if (access(cmd, F_OK) != 0)
+	{
+		ret = print_error(cmd, ": No such file or directory\n", 127, status);
+		return (ret);
+	}
+	if (access(cmd, X_OK) != 0)
+	{
+		ret = print_error(cmd, ": Permission denied\n", 126, status);
+		return (ret);
+	}
+	return (0);
 }
