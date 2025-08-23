@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 10:01:59 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/23 19:05:00 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/24 00:07:49 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,9 @@ int	exec_resolve(t_cmd *cmd, t_env *env, int *status)
 	path = find_cmd_path(cmd->args[0], envp);
 	if (!path)
 	{
-		write(2, cmd->args[0], ft_strlen(cmd->args[0]));
-		write(2, ": command not found\n", 21);
+		ft_putstr_fd("minishell: ", 2);
+		execve(cmd->args[0], cmd->args, envp);
+        perror(cmd->args[0]);
 		free_split(envp);
 		*status = 127;
 		return (127);

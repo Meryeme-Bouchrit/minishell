@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 10:51:57 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/23 13:35:05 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/23 23:57:45 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ void	setup_child(int **pipes, int idx, int total)
 
 int	print_error(char *cmd, char *msg, int code, int *status)
 {
+	ft_putstr_fd("minishell: ", 2);
 	write(2, cmd, ft_strlen(cmd));
 	write(2, msg, ft_strlen(msg));
 	*status = code;
