@@ -46,7 +46,7 @@ int	parsing_redir(t_token **tokens, t_cmd **head, t_cmd **current,
 		free_cmds(current);
 		free_cmds(head);
 		g_exit = 2;
-		write(2, "ERROR! syntax error near unexpected token `|'\n", 47);
+		write(2, "minishell: syntax error near unexpected token `|'\n", 51);
 		if (*temp_args)
 			free_token_list(*temp_args);
 		return (1);
