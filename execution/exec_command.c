@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 10:01:59 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/24 10:44:54 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/24 22:23:39 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int fork_and_wait(t_cmd *cmd, char *path, t_env *env)
     if (ret == 130)
         write(1, "\n", 1);
     else if (ret == 131)
-        write(2, "Quit\n", 5);
+        write(2, "Quit (core dumped)\n", 20);
     return (ret);
 }
 
