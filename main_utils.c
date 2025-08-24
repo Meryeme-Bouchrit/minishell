@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 19:56:51 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/23 19:57:07 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/24 12:42:29 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,8 @@ void	check_if_cmd(t_cmd *cmd, t_env **env)
 			else if (cmd->next || cmd->io_fds)
 				g_exit = pipeline_run(cmd, *env);
 			else
-				g_exit = exec_cmd(cmd, *env, &g_exit);
+				exec_cmd(cmd, *env, &g_exit);
+		
 		}
 	}
 }
