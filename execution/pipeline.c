@@ -6,40 +6,41 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 10:39:28 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/23 19:38:54 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/24 10:45:31 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-int	pipeline_run(t_cmd *cmds, t_env *env)
+int pipeline_run(t_cmd *cmds, t_env *env)
 {
-	int		n;
-	int		**pipes;
-	pid_t	*pids;
-	int		ret;
-	t_cmd	*cur;
+    int     n;
+    int     **pipes;
+    pid_t   *pids;
+    int     ret;
+    t_cmd   *cur;
 
-	ret = 0;
-	signal(SIGINT, sigint_prompt);
-	signal(SIGQUIT, SIG_IGN);
-	n = cmd_count(cmds);
-	if (n == 0)
-		return (0);
-	pipes = init_pipes(n);
-	pids = init_pids(n, pipes);
-	if (!pids)
-		return (1);
-	cur = cmds;
-	while (cur)
-	{
-		cur->total = n;
-		cur->pipe_fds = pipes;
-		cur = cur->next;
-	}
-	ret = fork_all(cmds, env, pids);
-	return (pipeline_end(pids, pipes, n, ret));
+    ret = 0;
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+    n = cmd_count(cmds);
+    if (n == 0)
+        return (0);
+    pipes = init_pipes(n);
+    pids = init_pids(n, pipes);
+    if (!pids)
+        return (1);
+    cur = cmds;
+    while (cur)
+    {
+        cur->total = n;
+        cur->pipe_fds = pipes;
+        cur = cur->next;
+    }
+    ret = fork_all(cmds, env, pids);
+    return (pipeline_end(pids, pipes, n, ret));
 }
+
 
 int	pipeline_end(pid_t *pids, int **pipes, int n, int ret)
 {

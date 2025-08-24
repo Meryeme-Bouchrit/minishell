@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 10:23:29 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/23 19:52:11 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/24 10:51:08 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,32 +46,40 @@ int	envp_free_on_error(char **envp, int i)
 	return (1);
 }
 
-char	**env_to_envp(t_env *env)
+char **env_to_envp(t_env *env)
 {
-	int		len;
-	char	**envp;
-	t_env	*cur;
-	int		i;
+    int     len;
+    char    **envp;
+    t_env   *cur;
+    int     i;
 
-	len = env_len(env);
-	envp = malloc(sizeof(char *) * (len + 1));
-	if (!envp)
-		return (NULL);
-	cur = env;
-	i = 0;
-	while (cur)
-	{
-		envp[i] = build_env_str(cur->key, cur->value);
-		if (!envp[i])
-		{
-			envp_free_on_error(envp, i);
-			return (NULL);
-		}
-		i++;
-		cur = cur->next;
-	}
-	envp[i] = NULL;
-	return (envp);
+    if (!env)
+    {
+        envp = malloc(sizeof(char *) * 1); // empty array with NULL terminator
+        if (!envp)
+            return (NULL);
+        envp[0] = NULL;
+        return envp;
+    }
+    len = env_len(env);
+    envp = malloc(sizeof(char *) * (len + 1));
+    if (!envp)
+        return (NULL);
+    cur = env;
+    i = 0;
+    while (cur)
+    {
+        envp[i] = build_env_str(cur->key, cur->value);
+        if (!envp[i])
+        {
+            envp_free_on_error(envp, i);
+            return (NULL);
+        }
+        i++;
+        cur = cur->next;
+    }
+    envp[i] = NULL;
+    return (envp);
 }
 
 t_env	*dup_env(char **envp)
@@ -82,6 +90,8 @@ t_env	*dup_env(char **envp)
 	char	*value;
 
 	env = NULL;
+	if (!envp || !*envp)
+		return (NULL);
 	while (*envp)
 	{
 		eq = ft_strchr(*envp, '=');

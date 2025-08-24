@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 10:38:03 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/23 19:12:29 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/24 10:49:56 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,21 +50,24 @@ char	*find_bin(char *cmd, char **paths)
 	return (NULL);
 }
 
-char	*find_cmd_path(char *cmd, char **envp)
+char *find_cmd_path(char *cmd, char **envp)
 {
-	char	*path;
-	char	**paths;
-	char	*full;
+    char *path;
+    char **paths;
+    char *full;
 
-	if (access(cmd, X_OK) == 0)
-		return (ft_strdup(cmd));
-	path = get_path_envp(envp);
-	if (!path)
-		return (NULL);
-	paths = ft_split(path, ':');
-	if (!paths)
-		return (NULL);
-	full = find_bin(cmd, paths);
-	free_split(paths);
-	return (full);
+    if (access(cmd, X_OK) == 0)
+        return (ft_strdup(cmd));
+    if (!envp)
+        return (NULL);
+    path = get_path_envp(envp);
+    if (!path)
+        return (NULL);
+    paths = ft_split(path, ':');
+    if (!paths)
+        return (NULL);
+    full = find_bin(cmd, paths);
+    free_split(paths);
+    return (full);
 }
+
