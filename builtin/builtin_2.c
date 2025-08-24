@@ -6,7 +6,7 @@
 /*   By: mbouchri <mbouchri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 11:58:35 by mbouchri          #+#    #+#             */
-/*   Updated: 2025/08/23 18:56:29 by mbouchri         ###   ########.fr       */
+/*   Updated: 2025/08/24 00:32:18 by mbouchri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,22 +64,13 @@ int	ft_export(char **args, t_env **envp)
 int	ft_unset(char **args, t_env **env)
 {
 	int	j;
-	int	had_error;
 
 	j = 1;
-	had_error = 0;
 	while (args[j])
 	{
-		if (!is_valid_key(args[j]))
-		{
-			write(2, "minishell: unset: ", 18);
-			write(2, args[j], ft_strlen(args[j]));
-			write(2, ": not a valid identifier\n", 25);
-			had_error = 1;
-		}
-		else
+		if (args[j][0] != '\0' && is_valid_key(args[j]))
 			env_unset(env, args[j]);
 		j++;
 	}
-	return (had_error);
+	return (0);
 }
